@@ -4,12 +4,8 @@
         <title>sqlcmd</title>
     </head>
     <body>
-        <a href="help">help</a><br>
-        <a href="connect">connect</a><br>
-        <a href="clear">clear</a><br>
-        <a href="create">create</a><br>
-        <a href="list">list</a><br>
-        <a href="find">find</a><br>
-        <a href="table">table</a><br>
+        <c:forEach items="${item}" var="item">
+            <a href="item">${item}</a>
+        </c:forEach>
     </body>
 </html>

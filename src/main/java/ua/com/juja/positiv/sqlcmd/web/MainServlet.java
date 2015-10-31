@@ -1,5 +1,8 @@
 package ua.com.juja.positiv.sqlcmd.web;
 
+import ua.com.juja.positiv.sqlcmd.service.Service;
+import ua.com.juja.positiv.sqlcmd.service.ServiceImpl;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -11,16 +14,31 @@ import java.io.IOException;
  */
 public class MainServlet extends HttpServlet{
 
+    private Service service = new ServiceImpl();
+
+
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = getAction(request);
 
         if(action.startsWith("/menu") || action.equals("/")){
+            request.setAttribute("items", service.commandList());
             request.getRequestDispatcher("menu.jsp").forward(request, response);
         } else if(action.startsWith("/help")){
             request.getRequestDispatcher("help.jsp").forward(request, response);
-        } else {
+        } else if(action.startsWith("/connect")){
+            request.getRequestDispatcher("connect.jsp").forward(request, response);
+        }else {
             request.getRequestDispatcher("menu.jsp").forward(request, response);
+        }
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String action = getAction(request);
+        if(action.startsWith("/connect")){
+            response.sendRedirect(response.encodeRedirectURL("/menu"));
         }
     }
 
@@ -28,10 +46,5 @@ public class MainServlet extends HttpServlet{
         String requestURI = request.getRequestURI();
         String action = requestURI.substring(request.getContextPath().length(), requestURI.length());
         return action;
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response){
-        System.out.println(request.getParameterMap().toString());
     }
 }
