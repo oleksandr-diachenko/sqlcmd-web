@@ -6,8 +6,8 @@
 </head>
   <body>
     Tables:<br>
-    <c:forEach items="${items}" var="item">
-      <b> ${item}</b><br>
+    <c:forEach items="${tables}" var="table">
+      <b> <a href="${table}">${table}</a></b><br>
     </c:forEach>
   </body>
 </html>

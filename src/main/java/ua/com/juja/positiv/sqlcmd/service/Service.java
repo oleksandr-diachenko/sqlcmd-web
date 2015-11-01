@@ -14,4 +14,6 @@ public interface Service {
     void connect(String database, String user, String password) throws SQLException, ClassNotFoundException;
 
     Set<String> list() throws SQLException;
+
+    List<String> find(String tableName) throws SQLException;
 }
