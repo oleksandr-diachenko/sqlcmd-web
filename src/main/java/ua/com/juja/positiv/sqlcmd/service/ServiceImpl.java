@@ -9,7 +9,6 @@ import java.util.List;
 public class ServiceImpl implements Service{
     @Override
     public List<String> commandList() {
-        List<String> commands = Arrays.asList("menu", "help", "connect");
-        return commands;
+        return Arrays.asList("menu", "help", "connect");
     }
 }

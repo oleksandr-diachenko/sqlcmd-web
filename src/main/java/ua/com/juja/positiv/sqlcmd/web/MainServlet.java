@@ -22,15 +22,15 @@ public class MainServlet extends HttpServlet{
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = getAction(request);
 
-        if(action.startsWith("/menu") || action.equals("/")){
+        if(action.equals("/menu") || action.equals("/")){
             request.setAttribute("items", service.commandList());
             request.getRequestDispatcher("menu.jsp").forward(request, response);
-        } else if(action.startsWith("/help")){
+        } else if(action.equals("/help")){
             request.getRequestDispatcher("help.jsp").forward(request, response);
-        } else if(action.startsWith("/connect")){
+        } else if(action.equals("/connect")){
             request.getRequestDispatcher("connect.jsp").forward(request, response);
-        }else {
-            request.getRequestDispatcher("menu.jsp").forward(request, response);
+        } else {
+            request.getRequestDispatcher("error.jsp").forward(request, response);
         }
     }
 
