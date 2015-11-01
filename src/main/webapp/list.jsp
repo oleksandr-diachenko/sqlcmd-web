@@ -2,10 +2,12 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
-    <title>sqlcmd</title>
+    <title></title>
 </head>
-    <body>
-        Что-то пошло не так.. ${message}<br>
-        В меню <a href="menu">menu</a>
-    </body>
+  <body>
+    Tables:<br>
+    <c:forEach items="${items}" var="item">
+      <b> ${item}</b><br>
+    </c:forEach>
+  </body>
 </html>

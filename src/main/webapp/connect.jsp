@@ -5,30 +5,28 @@
     <title>sqlcmd</title>
 </head>
     <body>
-    <form action="connect" method="post"></form>
+    <form action="connect" method="post">
         <table>
-            <td>
-                database
-            </td>
-            <tr><td>
-                <input type="text" name="database"/>
-            </tr> </td>
-            <td>
-                user
-            </td>
-            <tr><td>
-                <input type="text" name="user"/>
-            </tr></td>
-            <td>
-                password
-            </td>
-            <tr><td>
-                <input type="text" name="password"/>
-            </tr></td>
+            <tr>
+            <td>database</td>
+            <td><input type="text" name="database"/></td>
+            </tr>
+
+            <tr>
+            <td>user</td>
+            <td><input type="text" name="user"/></td>
+            </tr>
+
+            <tr>
+            <td>password</td>
+            <td><input type="text" name="password"/></td>
+            </tr>
+
+            <tr>
             <td></td>
-            <tr><td>
-                <input type="submit" name="connect"/>
-            </tr></td>
+            <td><input type="submit" name="connect"/></td>
+            </tr>
         </table>
+    </form>
     </body>
 </html>

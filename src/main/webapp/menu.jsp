@@ -6,7 +6,7 @@
     </head>
     <body>
         <c:forEach items="${items}" var="item">
-            <a href="${item}">${item}</a><br>
+           <b> <a href="${item}">${item}</a></b><br>
         </c:forEach>
     </body>
 </html>

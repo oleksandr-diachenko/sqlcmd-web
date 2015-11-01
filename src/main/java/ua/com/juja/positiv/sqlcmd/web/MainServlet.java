@@ -8,15 +8,20 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.sql.SQLException;
 
 /**
  * Created by POSITIV on 30.10.2015.
  */
 public class MainServlet extends HttpServlet{
 
-    private Service service = new ServiceImpl();
+    private Service service;
 
-
+    @Override
+    public void init() throws ServletException {
+        super.init();
+        service = new ServiceImpl();
+    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -29,16 +34,33 @@ public class MainServlet extends HttpServlet{
             request.getRequestDispatcher("help.jsp").forward(request, response);
         } else if(action.equals("/connect")){
             request.getRequestDispatcher("connect.jsp").forward(request, response);
+        } else if(action.equals("/list")){
+            try {
+                request.setAttribute("items", service.list());
+                request.getRequestDispatcher("list.jsp").forward(request, response);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         } else {
             request.getRequestDispatcher("error.jsp").forward(request, response);
         }
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         String action = getAction(request);
         if(action.startsWith("/connect")){
-            response.sendRedirect(response.encodeRedirectURL("/menu"));
+            String database = request.getParameter("database");
+            String user = request.getParameter("user");
+            String password = request.getParameter("password");
+
+            try {
+                service.connect(database, user, password);
+                response.sendRedirect(response.encodeRedirectURL("menu"));
+            } catch (Exception e){
+                request.setAttribute("message", e.getMessage());
+                request.getRequestDispatcher("error.jsp").forward(request, response);
+            }
         }
     }
 
