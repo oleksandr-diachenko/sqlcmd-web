@@ -8,7 +8,7 @@
 <form action="find" method="post">
   <table>
     <tr>
-      <td>database</td>
+      <td>Database name</td>
       <td><input type="text" name="tableName"/></td>
     </tr>
 

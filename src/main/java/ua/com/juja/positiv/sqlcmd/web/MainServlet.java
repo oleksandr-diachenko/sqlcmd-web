@@ -38,7 +38,7 @@ public class MainServlet extends HttpServlet {
         } else if (action.equals("/connect")) {
             request.getRequestDispatcher("connect.jsp").forward(request, response);
         } else if (action.equals("/list")) {
-            getListPage(request, response);
+            list(request, response);
         } else if (action.equals("/find")) {
             request.getRequestDispatcher("findTableName.jsp").forward(request, response);
         } else {
@@ -50,13 +50,13 @@ public class MainServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         String action = getAction(request);
         if (action.startsWith("/connect")) {
-            getConnectPage(request, response);
+            connect(request, response);
         } else if (action.startsWith("/find")) {
-            getFindPage(request, response);
+            find(request, response);
         }
     }
 
-    private Set<String> getListPage(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private Set<String> list(HttpServletRequest request, HttpServletResponse response) throws IOException {
         Set<String> tableNames = null;
         try {
             tableNames = service.list();
@@ -68,18 +68,18 @@ public class MainServlet extends HttpServlet {
         return tableNames;
     }
 
-    private void getFindPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    private void find(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String tableName = request.getParameter("tableName");
         try {
             List<String> tableData = service.find(tableName);
             request.setAttribute("tableData", tableData);
             request.getRequestDispatcher("findTableData.jsp").forward(request, response);
-        } catch (SQLException e) {
+        } catch (Exception e) {
             response.sendRedirect(response.encodeRedirectURL("connect")); //TODO придумать информативный вывод при ошибке
         }
     }
 
-    private void getConnectPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    private void connect(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String database = request.getParameter("database");
         String user = request.getParameter("user");
         String password = request.getParameter("password");
