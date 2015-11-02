@@ -5,7 +5,7 @@
   <title>sqlcmd</title>
 </head>
 <body>
-<form action="find" method="post">
+<form action="clear" method="post">
   <table>
     <tr>
       <td>Table name</td>
@@ -14,7 +14,7 @@
 
     <tr>
       <td></td>
-      <td><input type="submit" name="find"/></td>
+      <td><input type="submit" name="clear"/></td>
     </tr>
   </table>
 </form>

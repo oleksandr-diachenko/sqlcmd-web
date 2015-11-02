@@ -21,7 +21,7 @@ public class ServiceImpl implements Service{
 
     @Override
     public List<String> commandList() {
-        return Arrays.asList("menu", "help", "connect", "list", "find");
+        return Arrays.asList("menu", "help", "connect", "list", "find", "clear");
     }
 
     @Override
@@ -37,5 +37,10 @@ public class ServiceImpl implements Service{
     @Override
     public List<String> find(String tableName) throws SQLException {
         return manager.getTableData(tableName);
+    }
+
+    @Override
+    public void clear(String tableName) throws SQLException {
+        manager.clear(tableName);
     }
 }

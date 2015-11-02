@@ -16,4 +16,6 @@ public interface Service {
     Set<String> list() throws SQLException;
 
     List<String> find(String tableName) throws SQLException;
+
+    void clear(String tableName) throws SQLException;
 }

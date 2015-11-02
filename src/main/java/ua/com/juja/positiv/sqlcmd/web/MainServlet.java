@@ -41,6 +41,8 @@ public class MainServlet extends HttpServlet {
             list(request, response);
         } else if (action.equals("/find")) {
             request.getRequestDispatcher("findTableName.jsp").forward(request, response);
+        } else if (action.equals("/clear")) {
+            request.getRequestDispatcher("clear.jsp").forward(request, response);
         } else {
             request.getRequestDispatcher("error.jsp").forward(request, response);
         }
@@ -53,6 +55,19 @@ public class MainServlet extends HttpServlet {
             connect(request, response);
         } else if (action.startsWith("/find")) {
             find(request, response);
+        } else if (action.startsWith("/clear")) {
+            clear(request, response);
+        }
+    }
+
+    private void clear(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String tableName = request.getParameter("tableName");
+        try {
+            service.clear(tableName);
+            request.getRequestDispatcher("success.jsp").forward(request, response);
+        } catch (Exception e) {
+            request.setAttribute("message", e.getMessage());
+            request.getRequestDispatcher("error.jsp").forward(request, response);
         }
     }
 
