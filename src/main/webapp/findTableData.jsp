@@ -5,30 +5,14 @@
   <title>sqlcmd</title>
 </head>
 <table border="1">
-  <body>
-        <tr>
-        <c:forEach begin="1" end="4" items="${tableData}" var="data">
-          <td>${data}</td>
+  <tbody>
+        <c:forEach begin="1" items="${tableData}" step="${tableData[0]}" var="data" varStatus="loop">
+            <tr>
+                <c:forEach begin="${loop.index}" end="${loop.index - 1 + tableData[0]}" items="${tableData}" var="data">
+                    <td>${data}</td>
+                </c:forEach>
+            </tr>
         </c:forEach>
-        </tr>
-
-        <tr>
-        <c:forEach begin="5" end="8" items="${tableData}" var="data">
-          <td>${data}</td>
-        </c:forEach>
-        </tr>
-
-        <tr>
-        <c:forEach begin="9" end="12" items="${tableData}" var="data">
-          <td>${data}</td>
-        </c:forEach>
-        </tr>
-
-        <tr>
-        <c:forEach begin="13" end="16" items="${tableData}" var="data">
-          <td>${data}</td>
-        </c:forEach>
-        </tr>
-  </body>
+  </tbody>
 </table>
 </html>

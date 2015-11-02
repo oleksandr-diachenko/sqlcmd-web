@@ -7,8 +7,8 @@
   <body>
   <table border="1">
     <tr><td></td><td>Tables</td></tr>
-    <c:forEach items="${tables}" var="table" varStatus="count">
-     <tr><td>${count.index + 1}</td> <td>${table}</td></tr>
+    <c:forEach items="${tables}" var="table" varStatus="loop">
+     <tr><td>${loop.count}</td> <td>${table}</td></tr>
     </c:forEach>
 </table>
   </body>

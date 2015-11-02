@@ -46,6 +46,16 @@ public class MainServlet extends HttpServlet {
         }
     }
 
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        String action = getAction(request);
+        if (action.startsWith("/connect")) {
+            getConnectPage(request, response);
+        } else if (action.startsWith("/find")) {
+            getFindPage(request, response);
+        }
+    }
+
     private Set<String> getListPage(HttpServletRequest request, HttpServletResponse response) throws IOException {
         Set<String> tableNames = null;
         try {
@@ -56,16 +66,6 @@ public class MainServlet extends HttpServlet {
             response.sendRedirect(response.encodeRedirectURL("connect")); //TODO придумать информативный вывод при ошибке
         }
         return tableNames;
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        String action = getAction(request);
-        if (action.startsWith("/connect")) {
-            getConnectPage(request, response);
-        } else if (action.startsWith("/find")) {
-            getFindPage(request, response);
-        }
     }
 
     private void getFindPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
