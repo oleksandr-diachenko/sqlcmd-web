@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -37,15 +38,15 @@ public class MainServlet extends HttpServlet {
         } else if (action.equals("/connect")) {
             request.getRequestDispatcher("connect.jsp").forward(request, response);
         } else if (action.equals("/list")) {
-            getTableNames(request, response);
+            getListPage(request, response);
         } else if (action.equals("/find")) {
-            request.getRequestDispatcher("find.jsp").forward(request, response);
+            request.getRequestDispatcher("findTableName.jsp").forward(request, response);
         } else {
             request.getRequestDispatcher("error.jsp").forward(request, response);
         }
     }
 
-    private Set<String> getTableNames(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private Set<String> getListPage(HttpServletRequest request, HttpServletResponse response) throws IOException {
         Set<String> tableNames = null;
         try {
             tableNames = service.list();
@@ -61,24 +62,34 @@ public class MainServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         String action = getAction(request);
         if (action.startsWith("/connect")) {
-            String database = request.getParameter("database");
-            String user = request.getParameter("user");
-            String password = request.getParameter("password");
-
-            try {
-                service.connect(database, user, password);
-                response.sendRedirect(response.encodeRedirectURL("menu"));
-            } catch (Exception e) {
-                request.setAttribute("message", e.getMessage());
-                request.getRequestDispatcher("error.jsp").forward(request, response);
-            }
+            getConnectPage(request, response);
         } else if (action.startsWith("/find")) {
-            String tableName = request.getParameter("tableName");
-            try {
-                request.setAttribute("items", service.find(tableName));
-            } catch (SQLException e) {
-                response.sendRedirect(response.encodeRedirectURL("connect")); //TODO придумать информативный вывод при ошибке
-            }
+            getFindPage(request, response);
+        }
+    }
+
+    private void getFindPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String tableName = request.getParameter("tableName");
+        try {
+            List<String> tableData = service.find(tableName);
+            request.setAttribute("tableData", tableData);
+            request.getRequestDispatcher("findTableData.jsp").forward(request, response);
+        } catch (SQLException e) {
+            response.sendRedirect(response.encodeRedirectURL("connect")); //TODO придумать информативный вывод при ошибке
+        }
+    }
+
+    private void getConnectPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String database = request.getParameter("database");
+        String user = request.getParameter("user");
+        String password = request.getParameter("password");
+
+        try {
+            service.connect(database, user, password);
+            response.sendRedirect(response.encodeRedirectURL("menu"));
+        } catch (Exception e) {
+            request.setAttribute("message", e.getMessage());
+            request.getRequestDispatcher("error.jsp").forward(request, response);
         }
     }
 

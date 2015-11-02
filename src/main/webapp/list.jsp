@@ -2,12 +2,14 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
-    <title></title>
+  <title>sqlcmd</title>
 </head>
   <body>
-    Tables:<br>
-    <c:forEach items="${tables}" var="table">
-      <b> <a href="${table}">${table}</a></b><br>
+  <table border="1">
+    <tr><td></td><td>Tables</td></tr>
+    <c:forEach items="${tables}" var="table" varStatus="count">
+     <tr><td>${count.index + 1}</td> <td>${table}</td></tr>
     </c:forEach>
+</table>
   </body>
 </html>
