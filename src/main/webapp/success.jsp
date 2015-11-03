@@ -4,8 +4,8 @@
 <head>
     <title></title>
 </head>
-<body>
-<img src="<c:url value="http://www.communityroundtable.com/wp-content/uploads/2015/04/success.jpg" />" alt="TestDisplay"/><br>
-<tr><td><b>В меню <a href="menu">menu</a></b></td></tr>
-</body>
+    <body>
+        <img src="<c:url value="http://www.communityroundtable.com/wp-content/uploads/2015/04/success.jpg" />" alt="TestDisplay"/><br>
+        <tr><td><b>В меню <a href="menu">menu</a></b></td></tr>
+    </body>
 </html>

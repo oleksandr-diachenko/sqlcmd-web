@@ -4,19 +4,19 @@
 <head>
   <title>sqlcmd</title>
 </head>
-<body>
-<form action="clear" method="post">
-  <table>
-    <tr>
-      <td>Table name</td>
-      <td><input type="text" name="tableName"/></td>
-    </tr>
+  <body>
+    <form action="clear" method="post">
+      <table>
+        <tr>
+          <td>Table name</td>
+          <td><input type="text" name="tableName"/></td>
+        </tr>
 
-    <tr>
-      <td></td>
-      <td><input type="submit" name="clear"/></td>
-    </tr>
-  </table>
-</form>
-</body>
+        <tr>
+          <td></td>
+          <td><input type="submit" name="clear"/></td>
+        </tr>
+      </table>
+    </form>
+  </body>
 </html>

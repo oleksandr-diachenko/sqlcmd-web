@@ -73,7 +73,7 @@ public class MainServlet extends HttpServlet {
     private void create(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String tableName = request.getParameter("tableName");
         Map <String, Object> data = new HashMap<>();
-        for (int index = 1; index < 5; index++) {
+        for (int index = 1; index < 5; index++) { //TODO убрать меджик намбер(количество колонок)
             data.put(request.getParameter("columnName" + index), request.getParameter("columnValue" + index));
         }
         try {
