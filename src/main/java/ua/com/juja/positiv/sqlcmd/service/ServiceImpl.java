@@ -6,6 +6,7 @@ import ua.com.juja.positiv.sqlcmd.databasemanager.JDBCDatabaseManager;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -21,7 +22,7 @@ public class ServiceImpl implements Service{
 
     @Override
     public List<String> commandList() {
-        return Arrays.asList("menu", "help", "connect", "list", "find", "clear");
+        return Arrays.asList("menu", "help", "connect", "list", "find", "clear", "create", "delete");
     }
 
     @Override
@@ -42,5 +43,15 @@ public class ServiceImpl implements Service{
     @Override
     public void clear(String tableName) throws SQLException {
         manager.clear(tableName);
+    }
+
+    @Override
+    public void delete(String tableName, String keyName, String keyValue) throws SQLException {
+        manager.delete(tableName, keyName, keyValue);
+    }
+
+    @Override
+    public void create(String tableName, Map<String, Object> columnData) throws SQLException {
+        manager.create(tableName, columnData);
     }
 }

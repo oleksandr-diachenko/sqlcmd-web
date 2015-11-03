@@ -9,7 +9,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -40,9 +42,13 @@ public class MainServlet extends HttpServlet {
         } else if (action.equals("/list")) {
             list(request, response);
         } else if (action.equals("/find")) {
-            request.getRequestDispatcher("findTableName.jsp").forward(request, response);
+            request.getRequestDispatcher("findInput.jsp").forward(request, response);
         } else if (action.equals("/clear")) {
             request.getRequestDispatcher("clear.jsp").forward(request, response);
+        } else if (action.equals("/delete")) {
+            request.getRequestDispatcher("delete.jsp").forward(request, response);
+        } else if (action.equals("/create")) {
+            request.getRequestDispatcher("create.jsp").forward(request, response);
         } else {
             request.getRequestDispatcher("error.jsp").forward(request, response);
         }
@@ -57,6 +63,38 @@ public class MainServlet extends HttpServlet {
             find(request, response);
         } else if (action.startsWith("/clear")) {
             clear(request, response);
+        } else if (action.startsWith("/delete")) {
+            delete(request, response);
+        } else if (action.startsWith("/create")) {
+            create(request, response);
+        }
+    }
+
+    private void create(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String tableName = request.getParameter("tableName");
+        String columnName = request.getParameter("columnName");
+        String columnValue = request.getParameter("columnValue");
+        Map<String, Object> data = new HashMap<>();
+        data.put(columnName, columnValue);
+        try {
+            service.create(tableName, data);
+            request.getRequestDispatcher("success.jsp").forward(request, response);
+        } catch (SQLException e) {
+            request.setAttribute("message", e.getMessage());
+            request.getRequestDispatcher("error.jsp").forward(request, response);
+        }
+    }
+
+    private void delete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String tableName = request.getParameter("tableName");
+        String keyName = request.getParameter("keyName");
+        String keyValue = request.getParameter("keyValue");
+        try {
+            service.delete(tableName, keyName, keyValue);
+            request.getRequestDispatcher("success.jsp").forward(request, response);
+        } catch (Exception e) {
+            request.setAttribute("message", e.getMessage());
+            request.getRequestDispatcher("error.jsp").forward(request, response);
         }
     }
 
@@ -83,12 +121,12 @@ public class MainServlet extends HttpServlet {
         return tableNames;
     }
 
-    private void find(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    private void find(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String tableName = request.getParameter("tableName");
         try {
             List<String> tableData = service.find(tableName);
             request.setAttribute("tableData", tableData);
-            request.getRequestDispatcher("findTableData.jsp").forward(request, response);
+            request.getRequestDispatcher("findOut.jsp").forward(request, response);
         } catch (Exception e) {
             response.sendRedirect(response.encodeRedirectURL("connect")); //TODO придумать информативный вывод при ошибке
         }

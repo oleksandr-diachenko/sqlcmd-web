@@ -6,6 +6,6 @@
 </head>
     <body>
         Что-то пошло не так.. ${message}<br>
-        В меню <a href="menu">menu</a>
+        <tr><td><b>В меню <a href="menu">menu</a></b></td></tr>
     </body>
 </html>

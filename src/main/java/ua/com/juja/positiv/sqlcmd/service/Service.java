@@ -2,6 +2,7 @@ package ua.com.juja.positiv.sqlcmd.service;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -18,4 +19,8 @@ public interface Service {
     List<String> find(String tableName) throws SQLException;
 
     void clear(String tableName) throws SQLException;
+
+    void delete(String tableName, String keyName, String keyValue) throws SQLException;
+
+    void create(String tableName, Map<String, Object> columnData) throws SQLException;
 }
