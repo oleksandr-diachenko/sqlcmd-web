@@ -13,11 +13,11 @@
             </tr>
 
             <tr>
-              <td>Primary key</td>
+              <td>Primary key name</td>
               <td><input type="text" name="keyName"/></td>
 
-              <td>Primary key</td>
-              <td><input type="text" name="keyName"/></td>
+              <td>Primary key value</td>
+              <td><input type="text" name="keyValue"/></td>
             </tr>
 
             <tr>
