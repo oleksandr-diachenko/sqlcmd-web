@@ -80,6 +80,7 @@ public class MainServlet extends HttpServlet {
 
     private void deleteDatabase(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String databaseName = request.getParameter("databaseName");
+
         try {
             service.deleteBase(databaseName);
             request.getRequestDispatcher("success.jsp").forward(request, response);
@@ -90,6 +91,7 @@ public class MainServlet extends HttpServlet {
 
     private void createDatabase(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String databaseName = request.getParameter("databaseName");
+
         try {
             service.createBase(databaseName);
             request.getRequestDispatcher("success.jsp").forward(request, response);
@@ -100,16 +102,17 @@ public class MainServlet extends HttpServlet {
 
     private void create(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String tableName = request.getParameter("tableName");
-        Map <String, Object> data = new HashMap<>();
+
+        Map<String, Object> data = new HashMap<>();
         for (int index = 1; index < 5; index++) { //TODO убрать меджик намбер(количество колонок)
             data.put(request.getParameter("columnName" + index), request.getParameter("columnValue" + index));
         }
+
         try {
             service.create(tableName, data);
             request.getRequestDispatcher("success.jsp").forward(request, response);
         } catch (SQLException e) {
-            request.setAttribute("message", e.getMessage());
-            request.getRequestDispatcher("error.jsp").forward(request, response);
+            error(request, response, e);
         }
     }
 
@@ -117,28 +120,29 @@ public class MainServlet extends HttpServlet {
         String tableName = request.getParameter("tableName");
         String keyName = request.getParameter("keyName");
         String keyValue = request.getParameter("keyValue");
+
         try {
             service.delete(tableName, keyName, keyValue);
             request.getRequestDispatcher("success.jsp").forward(request, response);
         } catch (Exception e) {
-            request.setAttribute("message", e.getMessage());
-            request.getRequestDispatcher("error.jsp").forward(request, response);
+            error(request, response, e);
         }
     }
 
     private void clear(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String tableName = request.getParameter("tableName");
+
         try {
             service.clear(tableName);
             request.getRequestDispatcher("success.jsp").forward(request, response);
         } catch (Exception e) {
-            request.setAttribute("message", e.getMessage());
-            request.getRequestDispatcher("error.jsp").forward(request, response);
+            error(request, response, e);
         }
     }
 
     private Set<String> list(HttpServletRequest request, HttpServletResponse response) throws IOException {
         Set<String> tableNames = null;
+
         try {
             tableNames = service.list();
             request.setAttribute("tables", tableNames);
@@ -151,6 +155,7 @@ public class MainServlet extends HttpServlet {
 
     private void find(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String tableName = request.getParameter("tableName");
+
         try {
             List<String> tableData = service.find(tableName);
             request.setAttribute("tableData", tableData);
@@ -169,13 +174,17 @@ public class MainServlet extends HttpServlet {
             service.connect(database, user, password);
             response.sendRedirect(response.encodeRedirectURL("menu"));
         } catch (Exception e) {
-            request.setAttribute("message", e.getMessage());
-            request.getRequestDispatcher("error.jsp").forward(request, response);
+            error(request, response, e);
         }
     }
 
     private String getAction(HttpServletRequest request) {
         String requestURI = request.getRequestURI();
         return requestURI.substring(request.getContextPath().length(), requestURI.length());
+    }
+
+    private void error(HttpServletRequest request, HttpServletResponse response, Exception e) throws ServletException, IOException {
+        request.setAttribute("message", e.getMessage());
+        request.getRequestDispatcher("error.jsp").forward(request, response);
     }
 }
