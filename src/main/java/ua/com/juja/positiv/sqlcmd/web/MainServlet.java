@@ -49,6 +49,10 @@ public class MainServlet extends HttpServlet {
             request.getRequestDispatcher("delete.jsp").forward(request, response);
         } else if (action.equals("/create")) {
             request.getRequestDispatcher("create.jsp").forward(request, response);
+        } else if (action.equals("/createDatabase")) {
+            request.getRequestDispatcher("createDatabase.jsp").forward(request, response);
+        } else if (action.equals("/deleteDatabase")) {
+            request.getRequestDispatcher("deleteDatabase.jsp").forward(request, response);
         } else {
             request.getRequestDispatcher("error.jsp").forward(request, response);
         }
@@ -57,16 +61,40 @@ public class MainServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         String action = getAction(request);
-        if (action.startsWith("/connect")) {
+        if (action.equals("/connect")) {
             connect(request, response);
-        } else if (action.startsWith("/find")) {
+        } else if (action.equals("/find")) {
             find(request, response);
-        } else if (action.startsWith("/clear")) {
+        } else if (action.equals("/clear")) {
             clear(request, response);
-        } else if (action.startsWith("/delete")) {
+        } else if (action.equals("/delete")) {
             delete(request, response);
-        } else if (action.startsWith("/create")) {
+        } else if (action.equals("/create")) {
             create(request, response);
+        } else if (action.equals("/createDatabase")) {
+            createDatabase(request, response);
+        } else if (action.equals("/deleteDatabase")) {
+            deleteDatabase(request, response);
+        }
+    }
+
+    private void deleteDatabase(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String databaseName = request.getParameter("databaseName");
+        try {
+            service.deleteBase(databaseName);
+            request.getRequestDispatcher("success.jsp").forward(request, response);
+        } catch (Exception e) {
+            response.sendRedirect(response.encodeRedirectURL("connect")); //TODO придумать информативный вывод при ошибке
+        }
+    }
+
+    private void createDatabase(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String databaseName = request.getParameter("databaseName");
+        try {
+            service.createBase(databaseName);
+            request.getRequestDispatcher("success.jsp").forward(request, response);
+        } catch (Exception e) {
+            response.sendRedirect(response.encodeRedirectURL("connect")); //TODO придумать информативный вывод при ошибке
         }
     }
 

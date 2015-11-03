@@ -22,7 +22,8 @@ public class ServiceImpl implements Service{
 
     @Override
     public List<String> commandList() {
-        return Arrays.asList("menu", "help", "connect", "list", "find", "clear", "create", "delete");
+        return Arrays.asList("menu", "help", "connect", "list", "find", "clear",
+                "create", "delete", "createDatabase", "deleteDatabase");
     }
 
     @Override
@@ -53,5 +54,15 @@ public class ServiceImpl implements Service{
     @Override
     public void create(String tableName, Map<String, Object> columnData) throws SQLException {
         manager.create(tableName, columnData);
+    }
+
+    @Override
+    public void createBase(String databaseName) throws SQLException {
+        manager.createBase(databaseName);
+    }
+
+    @Override
+    public void deleteBase(String databaseName) throws SQLException {
+        manager.dropBase(databaseName);
     }
 }
