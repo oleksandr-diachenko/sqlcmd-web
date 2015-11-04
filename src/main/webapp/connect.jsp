@@ -6,6 +6,7 @@
 </head>
     <body>
         <form action="connect" method="post">
+            <b>Подключение к базе данных.</b>
             <table>
                 <tr>
                     <td>database</td>

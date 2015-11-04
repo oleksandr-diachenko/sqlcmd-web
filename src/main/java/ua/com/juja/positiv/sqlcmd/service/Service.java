@@ -29,4 +29,6 @@ public interface Service {
     void deleteBase(String databaseName) throws SQLException;
 
     void update(String tableName, String keyName, String keyValue, Map<String, Object> columnData) throws SQLException;
+
+    void table(String tableName, String keyName, Map<String, Object> columnData) throws SQLException;
 }

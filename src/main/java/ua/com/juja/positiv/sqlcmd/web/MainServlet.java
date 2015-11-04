@@ -31,13 +31,17 @@ public class MainServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = getAction(request);
 
-        if (action.equals("/menu") || action.equals("/")) {
+        if(action.equals("/")){
+            request.getRequestDispatcher("connect.jsp").forward(request, response);
+        } else if (action.equals("/menu")) {
             request.setAttribute("items", service.commandList());
             request.getRequestDispatcher("menu.jsp").forward(request, response);
-        } else if (action.equals("/help")) {
-            request.getRequestDispatcher("help.jsp").forward(request, response);
         } else if (action.equals("/connect")) {
             request.getRequestDispatcher("connect.jsp").forward(request, response);
+        } else if (action.equals("/help")) {
+            request.getRequestDispatcher("help.jsp").forward(request, response);
+        } else if (action.equals("/table")) {
+            request.getRequestDispatcher("table.jsp").forward(request, response);
         } else if (action.equals("/list")) {
             list(request, response);
         } else if (action.equals("/find")) {
@@ -76,8 +80,26 @@ public class MainServlet extends HttpServlet {
             createDatabase(request, response);
         } else if (action.equals("/deleteDatabase")) {
             deleteDatabase(request, response);
+        } else if (action.equals("/table")) {
+            table(request, response);
         } else if (action.equals("/update")) {
             update(request, response);
+        }
+    }
+
+    private void table(HttpServletRequest request, HttpServletResponse response) {
+        String tableName = request.getParameter("tableName");
+        String keyName = request.getParameter("keyName");
+
+        Map<String, Object> data = new HashMap<>();
+        for (int index = 1; index < 4; index++) { //TODO убрать меджик намбер(количество колонок)
+            data.put(request.getParameter("columnName" + index), request.getParameter("columnType" + index));
+        }
+        try {
+            service.table(tableName, keyName, data);
+            request.getRequestDispatcher("success.jsp").forward(request, response);
+        } catch (ServletException | SQLException | IOException e) {
+            error(request, response, e);
         }
     }
 

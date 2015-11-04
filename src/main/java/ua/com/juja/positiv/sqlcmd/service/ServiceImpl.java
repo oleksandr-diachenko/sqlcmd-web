@@ -22,7 +22,7 @@ public class ServiceImpl implements Service{
 
     @Override
     public List<String> commandList() {
-        return Arrays.asList("menu", "help", "connect", "list", "find", "update", "clear",
+        return Arrays.asList("help", "connect", "table", "list", "find", "update", "clear",
                 "create", "delete", "createDatabase", "deleteDatabase");
     }
 
@@ -69,5 +69,10 @@ public class ServiceImpl implements Service{
     @Override
     public void update(String tableName, String keyName, String keyValue, Map<String, Object> columnData) throws SQLException {
         manager.update(tableName, keyName, keyValue, columnData);
+    }
+
+    @Override
+    public void table(String tableName, String keyName, Map<String, Object> columnData) throws SQLException {
+        manager.table(tableName, keyName, columnData);
     }
 }
