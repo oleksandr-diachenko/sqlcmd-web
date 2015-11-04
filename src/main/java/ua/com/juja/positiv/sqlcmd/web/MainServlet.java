@@ -53,7 +53,7 @@ public class MainServlet extends HttpServlet {
             request.getRequestDispatcher("createDatabase.jsp").forward(request, response);
         } else if (action.equals("/deleteDatabase")) {
             request.getRequestDispatcher("deleteDatabase.jsp").forward(request, response);
-        }  else if (action.equals("/update")) {
+        } else if (action.equals("/update")) {
             request.getRequestDispatcher("update.jsp").forward(request, response);
         } else {
             request.getRequestDispatcher("error.jsp").forward(request, response);
@@ -61,7 +61,7 @@ public class MainServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) {
         String action = getAction(request);
         if (action.equals("/connect")) {
             connect(request, response);
@@ -82,7 +82,7 @@ public class MainServlet extends HttpServlet {
         }
     }
 
-    private void update(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    private void update(HttpServletRequest request, HttpServletResponse response) {
         String tableName = request.getParameter("tableName");
         String keyName = request.getParameter("keyName");
         String keyValue = request.getParameter("keyValue");
@@ -95,34 +95,34 @@ public class MainServlet extends HttpServlet {
         try {
             service.update(tableName, keyName, keyValue, data);
             request.getRequestDispatcher("success.jsp").forward(request, response);
-        } catch (SQLException e) {
+        } catch (ServletException | SQLException | IOException e) {
             error(request, response, e);
         }
     }
 
-    private void deleteDatabase(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    private void deleteDatabase(HttpServletRequest request, HttpServletResponse response) {
         String databaseName = request.getParameter("databaseName");
 
         try {
             service.deleteBase(databaseName);
             request.getRequestDispatcher("success.jsp").forward(request, response);
-        } catch (Exception e) {
-            response.sendRedirect(response.encodeRedirectURL("connect")); //TODO придумать информативный вывод при ошибке
+        } catch (ServletException | SQLException | IOException e) {
+            error(request, response, e);
         }
     }
 
-    private void createDatabase(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    private void createDatabase(HttpServletRequest request, HttpServletResponse response) {
         String databaseName = request.getParameter("databaseName");
 
         try {
             service.createBase(databaseName);
             request.getRequestDispatcher("success.jsp").forward(request, response);
-        } catch (Exception e) {
-            response.sendRedirect(response.encodeRedirectURL("connect")); //TODO придумать информативный вывод при ошибке
+        } catch (ServletException | SQLException | IOException e) {
+            error(request, response, e);
         }
     }
 
-    private void create(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    private void create(HttpServletRequest request, HttpServletResponse response) {
         String tableName = request.getParameter("tableName");
 
         Map<String, Object> data = new HashMap<>();
@@ -133,12 +133,12 @@ public class MainServlet extends HttpServlet {
         try {
             service.create(tableName, data);
             request.getRequestDispatcher("success.jsp").forward(request, response);
-        } catch (SQLException e) {
+        } catch (ServletException | SQLException | IOException e) {
             error(request, response, e);
         }
     }
 
-    private void delete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    private void delete(HttpServletRequest request, HttpServletResponse response) {
         String tableName = request.getParameter("tableName");
         String keyName = request.getParameter("keyName");
         String keyValue = request.getParameter("keyValue");
@@ -146,48 +146,48 @@ public class MainServlet extends HttpServlet {
         try {
             service.delete(tableName, keyName, keyValue);
             request.getRequestDispatcher("success.jsp").forward(request, response);
-        } catch (Exception e) {
+        } catch (ServletException | SQLException | IOException e) {
             error(request, response, e);
         }
     }
 
-    private void clear(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    private void clear(HttpServletRequest request, HttpServletResponse response) {
         String tableName = request.getParameter("tableName");
 
         try {
             service.clear(tableName);
             request.getRequestDispatcher("success.jsp").forward(request, response);
-        } catch (Exception e) {
+        } catch (ServletException | SQLException | IOException e) {
             error(request, response, e);
         }
     }
 
-    private Set<String> list(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private Set<String> list(HttpServletRequest request, HttpServletResponse response) {
         Set<String> tableNames = null;
 
         try {
             tableNames = service.list();
             request.setAttribute("tables", tableNames);
             request.getRequestDispatcher("list.jsp").forward(request, response);
-        } catch (Exception e) {
-            response.sendRedirect(response.encodeRedirectURL("connect")); //TODO придумать информативный вывод при ошибке
+        } catch (ServletException | SQLException | IOException e) {
+            error(request, response, e);
         }
         return tableNames;
     }
 
-    private void find(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private void find(HttpServletRequest request, HttpServletResponse response) {
         String tableName = request.getParameter("tableName");
 
         try {
             List<String> tableData = service.find(tableName);
             request.setAttribute("tableData", tableData);
             request.getRequestDispatcher("find.jsp").forward(request, response);
-        } catch (Exception e) {
-            response.sendRedirect(response.encodeRedirectURL("connect")); //TODO придумать информативный вывод при ошибке
+        } catch (ServletException | SQLException | IOException e) {
+            error(request, response, e);
         }
     }
 
-    private void connect(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    private void connect(HttpServletRequest request, HttpServletResponse response) {
         String database = request.getParameter("database");
         String user = request.getParameter("user");
         String password = request.getParameter("password");
@@ -195,7 +195,7 @@ public class MainServlet extends HttpServlet {
         try {
             service.connect(database, user, password);
             response.sendRedirect(response.encodeRedirectURL("menu"));
-        } catch (Exception e) {
+        } catch (SQLException | ClassNotFoundException | IOException e) {
             error(request, response, e);
         }
     }
@@ -205,8 +205,12 @@ public class MainServlet extends HttpServlet {
         return requestURI.substring(request.getContextPath().length(), requestURI.length());
     }
 
-    private void error(HttpServletRequest request, HttpServletResponse response, Exception e) throws ServletException, IOException {
+    private void error(HttpServletRequest request, HttpServletResponse response, Exception e) {
         request.setAttribute("message", e.getMessage());
-        request.getRequestDispatcher("error.jsp").forward(request, response);
+        try {
+            request.getRequestDispatcher("error.jsp").forward(request, response);
+        } catch (ServletException | IOException e1) {
+            //
+        }
     }
 }

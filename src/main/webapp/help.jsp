@@ -29,6 +29,6 @@
         <b>dropbase|databaseName</b><br>
         &#8195; удаление базы<br>
 
-        <tr><td><b>В меню <a href="menu">menu</a></b></td></tr>
+        <b>В меню <a href="menu">menu</a></b>
     </body>
 </html>
