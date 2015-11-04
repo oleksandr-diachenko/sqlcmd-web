@@ -210,7 +210,7 @@ public class MainServlet extends HttpServlet {
         try {
             request.getRequestDispatcher("error.jsp").forward(request, response);
         } catch (ServletException | IOException e1) {
-            //
+            // do nothing
         }
     }
 }
