@@ -5,7 +5,7 @@
   <title>sqlcmd</title>
 </head>
   <body>
-    <form action="" method="post">
+    <form action="${message}" method="post">
       <table>
         <tr>
           <td>Table name</td>
@@ -14,7 +14,7 @@
 
         <tr>
           <td></td>
-          <td><input type="submit" name="submit"/></td>
+          <td><input type="submit" value="OK"/></td>
         </tr>
       </table>
     </form>

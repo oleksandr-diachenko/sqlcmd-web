@@ -25,7 +25,7 @@
 
                 <tr>
                     <td></td>
-                    <td><input type="submit" name="connect"/></td>
+                    <td><input type="submit" value="connect"/></td>
                 </tr>
             </table>
         </form>

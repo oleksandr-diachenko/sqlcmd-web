@@ -31,7 +31,7 @@ public class MainServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = getAction(request);
 
-        if(action.equals("/")){
+        if (action.equals("/")) {
             request.getRequestDispatcher("connect.jsp").forward(request, response);
         } else if (action.equals("/menu")) {
             request.setAttribute("items", service.commandList());
@@ -51,7 +51,8 @@ public class MainServlet extends HttpServlet {
         } else if (action.equals("/delete")) {
             request.getRequestDispatcher("delete.jsp").forward(request, response);
         } else if (action.equals("/create")) {
-            request.getRequestDispatcher("create.jsp").forward(request, response);
+            request.setAttribute("message", "create");
+            request.getRequestDispatcher("tableName.jsp").forward(request, response);
         } else if (action.equals("/createDatabase")) {
             request.getRequestDispatcher("createDatabase.jsp").forward(request, response);
         } else if (action.equals("/deleteDatabase")) {
@@ -141,16 +142,19 @@ public class MainServlet extends HttpServlet {
     }
 
     private void create(HttpServletRequest request, HttpServletResponse response) {
-        String tableName = request.getParameter("tableName");
-        Map<String, Object> data = new HashMap<>();
-        for (int index = 1; index < 5; index++) { //TODO убрать меджик намбер(количество колонок)
-            data.put(request.getParameter("columnName" + index), request.getParameter("columnValue" + index));
-        }
         try {
+            String tableName = request.getParameter("tableName");
+            List<String> tableData = service.find(tableName);
+            request.setAttribute("columnCount", tableData.get(0));
+            request.getRequestDispatcher("create.jsp").forward(request, response);
+            Map<String, Object> data = new HashMap<>();
+            for (int index = 1; index < 5; index++) { //TODO убрать меджик намбер(количество колонок)
+                data.put(request.getParameter("columnName" + index), request.getParameter("columnValue" + index));
+            }
             service.create(tableName, data);
-            request.getRequestDispatcher("success.jsp").forward(request, response);
+//            request.getRequestDispatcher("success.jsp").forward(request, response);
         } catch (ServletException | SQLException | IOException e) {
-            error(request, response, e);
+//            error(request, response, e);
         }
     }
 
@@ -193,6 +197,7 @@ public class MainServlet extends HttpServlet {
         try {
             List<String> tableData = service.find(tableName);
             request.setAttribute("tableData", tableData);
+            request.setAttribute("columnCount", tableData.get(0));
             request.getRequestDispatcher("find.jsp").forward(request, response);
         } catch (ServletException | SQLException | IOException e) {
             error(request, response, e);

@@ -6,9 +6,9 @@
 </head>
     <table border="1">
       <body>
-        <c:forEach begin="1" items="${tableData}" step="${tableData[0]}" var="data" varStatus="loop">
+        <c:forEach begin="1" items="${tableData}" step="${columnCount}" var="data" varStatus="loop">
             <tr>
-                <c:forEach begin="${loop.index}" end="${loop.index - 1 + tableData[0]}" items="${tableData}" var="data">
+                <c:forEach begin="${loop.index}" end="${loop.index - 1 + columnCount}" items="${tableData}" var="data">
                     <td>${data}</td>
                 </c:forEach>
             </tr>
