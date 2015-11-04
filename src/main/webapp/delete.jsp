@@ -6,20 +6,25 @@
 </head>
     <body>
         <form action="delete" method="post">
-          <table>
-            <tr>
-              <td>Primary key name</td>
-              <td><input type="text" name="keyName"/></td>
+            <table>
+                <tr>
+                    <td>Table name</td>
+                    <td><input type="text" name="tableName"/></td>
+                </tr>
 
-              <td>Primary key value</td>
-              <td><input type="text" name="keyValue"/></td>
-            </tr>
+                <tr>
+                  <td>Primary key name</td>
+                  <td><input type="text" name="keyName"/></td>
 
-            <tr>
-              <td></td>
-              <td><input type="submit" name="delete"/></td>
-            </tr>
-          </table>
+                  <td>Primary key value</td>
+                  <td><input type="text" name="keyValue"/></td>
+                </tr>
+
+                <tr>
+                  <td></td>
+                  <td><input type="submit" name="delete"/></td>
+                </tr>
+            </table>
         </form>
     </body>
 </html>
