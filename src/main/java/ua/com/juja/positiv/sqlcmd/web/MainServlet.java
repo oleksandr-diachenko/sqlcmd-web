@@ -27,7 +27,6 @@ public class MainServlet extends HttpServlet {
         service = new ServiceImpl();
     }
 
-
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = getAction(request);
@@ -91,7 +90,6 @@ public class MainServlet extends HttpServlet {
         for (int index = 1; index < 4; index++) { //TODO убрать меджик намбер(количество колонок)
             data.put(request.getParameter("columnName" + index), request.getParameter("columnValue" + index));
         }
-
         try {
             service.update(tableName, keyName, keyValue, data);
             request.getRequestDispatcher("success.jsp").forward(request, response);
@@ -102,7 +100,6 @@ public class MainServlet extends HttpServlet {
 
     private void deleteDatabase(HttpServletRequest request, HttpServletResponse response) {
         String databaseName = request.getParameter("databaseName");
-
         try {
             service.deleteBase(databaseName);
             request.getRequestDispatcher("success.jsp").forward(request, response);
@@ -113,7 +110,6 @@ public class MainServlet extends HttpServlet {
 
     private void createDatabase(HttpServletRequest request, HttpServletResponse response) {
         String databaseName = request.getParameter("databaseName");
-
         try {
             service.createBase(databaseName);
             request.getRequestDispatcher("success.jsp").forward(request, response);
@@ -124,12 +120,10 @@ public class MainServlet extends HttpServlet {
 
     private void create(HttpServletRequest request, HttpServletResponse response) {
         String tableName = request.getParameter("tableName");
-
         Map<String, Object> data = new HashMap<>();
         for (int index = 1; index < 5; index++) { //TODO убрать меджик намбер(количество колонок)
             data.put(request.getParameter("columnName" + index), request.getParameter("columnValue" + index));
         }
-
         try {
             service.create(tableName, data);
             request.getRequestDispatcher("success.jsp").forward(request, response);
@@ -142,7 +136,6 @@ public class MainServlet extends HttpServlet {
         String tableName = request.getParameter("tableName");
         String keyName = request.getParameter("keyName");
         String keyValue = request.getParameter("keyValue");
-
         try {
             service.delete(tableName, keyName, keyValue);
             request.getRequestDispatcher("success.jsp").forward(request, response);
@@ -153,7 +146,6 @@ public class MainServlet extends HttpServlet {
 
     private void clear(HttpServletRequest request, HttpServletResponse response) {
         String tableName = request.getParameter("tableName");
-
         try {
             service.clear(tableName);
             request.getRequestDispatcher("success.jsp").forward(request, response);
@@ -164,7 +156,6 @@ public class MainServlet extends HttpServlet {
 
     private Set<String> list(HttpServletRequest request, HttpServletResponse response) {
         Set<String> tableNames = null;
-
         try {
             tableNames = service.list();
             request.setAttribute("tables", tableNames);
@@ -177,7 +168,6 @@ public class MainServlet extends HttpServlet {
 
     private void find(HttpServletRequest request, HttpServletResponse response) {
         String tableName = request.getParameter("tableName");
-
         try {
             List<String> tableData = service.find(tableName);
             request.setAttribute("tableData", tableData);
@@ -191,7 +181,6 @@ public class MainServlet extends HttpServlet {
         String database = request.getParameter("database");
         String user = request.getParameter("user");
         String password = request.getParameter("password");
-
         try {
             service.connect(database, user, password);
             response.sendRedirect(response.encodeRedirectURL("menu"));
