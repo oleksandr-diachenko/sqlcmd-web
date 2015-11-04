@@ -8,11 +8,6 @@
         <form action="delete" method="post">
           <table>
             <tr>
-              <td>Table name</td>
-              <td><input type="text" name="tableName"/></td>
-            </tr>
-
-            <tr>
               <td>Primary key name</td>
               <td><input type="text" name="keyName"/></td>
 

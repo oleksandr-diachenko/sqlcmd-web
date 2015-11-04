@@ -42,17 +42,19 @@ public class MainServlet extends HttpServlet {
         } else if (action.equals("/list")) {
             list(request, response);
         } else if (action.equals("/find")) {
-            request.getRequestDispatcher("findInput.jsp").forward(request, response);
+            request.getRequestDispatcher("tableName.jsp").forward(request, response);
         } else if (action.equals("/clear")) {
             request.getRequestDispatcher("clear.jsp").forward(request, response);
         } else if (action.equals("/delete")) {
-            request.getRequestDispatcher("delete.jsp").forward(request, response);
+            request.getRequestDispatcher("tableName.jsp").forward(request, response);
         } else if (action.equals("/create")) {
             request.getRequestDispatcher("create.jsp").forward(request, response);
         } else if (action.equals("/createDatabase")) {
             request.getRequestDispatcher("createDatabase.jsp").forward(request, response);
         } else if (action.equals("/deleteDatabase")) {
             request.getRequestDispatcher("deleteDatabase.jsp").forward(request, response);
+        }  else if (action.equals("/update")) {
+            request.getRequestDispatcher("update.jsp").forward(request, response);
         } else {
             request.getRequestDispatcher("error.jsp").forward(request, response);
         }
@@ -75,6 +77,26 @@ public class MainServlet extends HttpServlet {
             createDatabase(request, response);
         } else if (action.equals("/deleteDatabase")) {
             deleteDatabase(request, response);
+        } else if (action.equals("/update")) {
+            update(request, response);
+        }
+    }
+
+    private void update(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String tableName = request.getParameter("tableName");
+        String keyName = request.getParameter("keyName");
+        String keyValue = request.getParameter("keyValue");
+
+        Map<String, Object> data = new HashMap<>();
+        for (int index = 1; index < 4; index++) { //TODO убрать меджик намбер(количество колонок)
+            data.put(request.getParameter("columnName" + index), request.getParameter("columnValue" + index));
+        }
+
+        try {
+            service.update(tableName, keyName, keyValue, data);
+            request.getRequestDispatcher("success.jsp").forward(request, response);
+        } catch (SQLException e) {
+            error(request, response, e);
         }
     }
 
@@ -159,7 +181,7 @@ public class MainServlet extends HttpServlet {
         try {
             List<String> tableData = service.find(tableName);
             request.setAttribute("tableData", tableData);
-            request.getRequestDispatcher("findOut.jsp").forward(request, response);
+            request.getRequestDispatcher("find.jsp").forward(request, response);
         } catch (Exception e) {
             response.sendRedirect(response.encodeRedirectURL("connect")); //TODO придумать информативный вывод при ошибке
         }
