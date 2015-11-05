@@ -143,13 +143,13 @@ public class MainServlet extends HttpServlet {
 
     private void create(HttpServletRequest request, HttpServletResponse response) {
         try {
-            String tableName = request.getParameter("tableName");
+            String tableName = request.getParameter("tableName"); //TODO убрать повторный ввод tableName в jsp
             List<String> tableData = service.find(tableName);
             int columnCount = Integer.parseInt(tableData.get(0));
             request.setAttribute("columnCount", columnCount);
             request.getRequestDispatcher("create.jsp").include(request, response);
             Map<String, Object> data = new HashMap<>();
-            for (int index = 1; index <= columnCount; index++) { //TODO убрать меджик намбер(количество колонок)
+            for (int index = 1; index <= columnCount; index++) {
                 data.put(request.getParameter("columnName" + index), request.getParameter("columnValue" + index));
             }
             service.create(tableName, data);

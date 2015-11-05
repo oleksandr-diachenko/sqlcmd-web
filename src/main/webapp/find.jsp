@@ -15,5 +15,5 @@
         </c:forEach>
       </body>
     </table>
-    <tr><td><b>В меню <a href="menu">menu</a></b></td></tr>
+    <tr><td><b>To menu <a href="menu">menu</a></b></td></tr>
 </html>

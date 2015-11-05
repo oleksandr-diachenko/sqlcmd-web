@@ -4,18 +4,18 @@
         <title>sqlcmd</title>
     </head>
     <body>
-        <b>connect</b> - подключение к базе<br>
-        <b>createDatabase</b> - создание базы<br>
-        <b>table</b> - создание таблицы<br>
-        <b>list</b> - вывод списка всех таблиц<br>
-        <b>find</b> - вывод всей таблицы<br>
-        <b>create</b> - создание поля<br>
-        <b>update</b> - обновление поля<br>
-        <b>delete</b> - удаление поля<br>
-        <b>clear</b> - очистка таблицы<br>
-        <b>drop</b> - удаление таблицы<br>
-        <b>deleteDatabase</b> - удаление базы<br>
+        <b>connect</b> - connect to database<br>
+        <b>createDatabase</b> - create database<br>
+        <b>table</b> - create table<br>
+        <b>list</b> - show all tables<br>
+        <b>find</b> - show table content<br>
+        <b>create</b> - create record<br>
+        <b>update</b> - update record<br>
+        <b>delete</b> - delete record<br>
+        <b>clear</b> - clear table<br>
+        <b>drop</b> - delete table<br>
+        <b>deleteDatabase</b> - delete database<br>
 
-        <b>В меню <a href="menu">menu</a></b>
+        <b>To menu <a href="menu">menu</a></b>
     </body>
 </html>
