@@ -58,7 +58,7 @@ public class MainServlet extends HttpServlet {
         } else if (action.equals("/deleteDatabase")) {
             request.getRequestDispatcher("deleteDatabase.jsp").forward(request, response);
         } else if (action.equals("/update")) {
-            request.getRequestDispatcher("update.jsp").forward(request, response);
+            request.getRequestDispatcher("tableName.jsp").forward(request, response);
         } else {
             request.getRequestDispatcher("error.jsp").forward(request, response);
         }
@@ -105,19 +105,23 @@ public class MainServlet extends HttpServlet {
     }
 
     private void update(HttpServletRequest request, HttpServletResponse response) {
-        String tableName = request.getParameter("tableName");
-        String keyName = request.getParameter("keyName");
-        String keyValue = request.getParameter("keyValue");
-
-        Map<String, Object> data = new HashMap<>();
-        for (int index = 1; index < 4; index++) { //TODO убрать меджик намбер(количество колонок)
-            data.put(request.getParameter("columnName" + index), request.getParameter("columnValue" + index));
-        }
         try {
+            String tableName = request.getParameter("tableName"); //TODO убрать повторный ввод tableName в jsp
+            List<String> tableData = service.find(tableName);
+            int columnCount = Integer.parseInt(tableData.get(0));
+            request.setAttribute("columnCount", columnCount);
+            request.getRequestDispatcher("update.jsp").include(request, response);
+            String keyName = request.getParameter("keyName");
+            String keyValue = request.getParameter("keyValue");
+
+            Map<String, Object> data = new HashMap<>();
+            for (int index = 1; index < columnCount; index++) {
+                data.put(request.getParameter("columnName" + index), request.getParameter("columnValue" + index));
+            }
             service.update(tableName, keyName, keyValue, data);
             request.getRequestDispatcher("success.jsp").forward(request, response);
         } catch (ServletException | SQLException | IOException e) {
-            error(request, response, e);
+//            error(request, response, e);
         }
     }
 
