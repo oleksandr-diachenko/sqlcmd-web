@@ -147,13 +147,13 @@ public class MainServlet extends HttpServlet {
             List<String> tableData = service.find(tableName);
             int columnCount = Integer.parseInt(tableData.get(0));
             request.setAttribute("columnCount", columnCount);
-            request.getRequestDispatcher("create.jsp").forward(request, response);
+            request.getRequestDispatcher("create.jsp").include(request, response);
             Map<String, Object> data = new HashMap<>();
             for (int index = 1; index <= columnCount; index++) { //TODO убрать меджик намбер(количество колонок)
                 data.put(request.getParameter("columnName" + index), request.getParameter("columnValue" + index));
             }
             service.create(tableName, data);
-//            request.getRequestDispatcher("success.jsp").forward(request, response);
+            request.getRequestDispatcher("success.jsp").forward(request, response);
         } catch (ServletException | SQLException | IOException e) {
 //            error(request, response, e);
         }
