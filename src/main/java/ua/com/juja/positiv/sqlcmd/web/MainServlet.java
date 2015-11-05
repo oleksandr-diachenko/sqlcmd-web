@@ -51,7 +51,6 @@ public class MainServlet extends HttpServlet {
         } else if (action.equals("/delete")) {
             request.getRequestDispatcher("delete.jsp").forward(request, response);
         } else if (action.equals("/create")) {
-            request.setAttribute("message", "create");
             request.getRequestDispatcher("tableName.jsp").forward(request, response);
         } else if (action.equals("/createDatabase")) {
             request.getRequestDispatcher("createDatabase.jsp").forward(request, response);
