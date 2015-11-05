@@ -9,16 +9,22 @@
       <table>
         <tr>
           <td>Table name</td>
-          <td><input type="text" name="tableName"/></td>
+          <td><label>
+            <input type="text" name="tableName"/>
+          </label></td>
         </tr>
 
         <c:forEach begin="1" end="${columnCount}" varStatus="loop">
           <tr>
             <td>Column name${loop.count}</td>
-            <td><input type="text" name="columnName${loop.count}"/></td>
+            <td><label>
+              <input type="text" name="columnName${loop.count}"/>
+            </label></td>
 
             <td>Column value${loop.count}</td>
-            <td><input type="text" name="columnValue${loop.count}"/></td>
+            <td><label>
+              <input type="text" name="columnValue${loop.count}"/>
+            </label></td>
           </tr>
         </c:forEach>
 
