@@ -5,7 +5,7 @@
     <title>sqlcmd</title>
 </head>
     <body>
-        Что-то пошло не так.. ${message}<br>
-        <tr><td><b>В меню <a href="menu">menu</a></b></td></tr>
+        Something going wrong.. ${message}<br>
+        <tr><td><b>To menu <a href="menu">menu</a></b></td></tr>
     </body>
 </html>

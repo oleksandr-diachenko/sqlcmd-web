@@ -4,18 +4,21 @@
 <head>
   <title>sqlcmd</title>
 </head>
-<body>
-<form action="" method="post">
-  <table>
-    <tr>
-      <td>Table name</td>
-      <td><input type="text" name="tableName"/></td>
-    </tr>
-    <tr>
-      <td></td>
-      <td><input type="submit" name="submit"/></td>
-    </tr>
-  </table>
-</form>
-</body>
+  <body>
+    <form action="${message}" method="post">
+      <table>
+        <tr>
+          <td>Table name</td>
+          <td><label>
+            <input type="text" name="tableName"/>
+          </label></td>
+        </tr>
+
+        <tr>
+          <td></td>
+          <td><input type="submit" value="OK"/></td>
+        </tr>
+      </table>
+    </form>
+  </body>
 </html>

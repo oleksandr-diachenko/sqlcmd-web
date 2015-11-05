@@ -14,7 +14,7 @@
 
         <tr>
           <td></td>
-          <td><input type="submit" name="clear"/></td>
+          <td><input type="submit" value="clear"/></td>
         </tr>
       </table>
     </form>

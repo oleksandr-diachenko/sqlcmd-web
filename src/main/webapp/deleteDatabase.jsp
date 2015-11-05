@@ -14,7 +14,7 @@
 
     <tr>
       <td></td>
-      <td><input type="submit" name="deleteDatabase"/></td>
+      <td><input type="submit" value="deleteDatabase"/></td>
     </tr>
   </table>
 </form>

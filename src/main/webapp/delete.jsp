@@ -22,7 +22,7 @@
 
                 <tr>
                   <td></td>
-                  <td><input type="submit" name="delete"/></td>
+                  <td><input type="submit" value="delete"/></td>
                 </tr>
             </table>
         </form>

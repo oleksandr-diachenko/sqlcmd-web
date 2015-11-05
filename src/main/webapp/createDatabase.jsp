@@ -14,7 +14,7 @@
 
     <tr>
       <td></td>
-      <td><input type="submit" name="createDatabase"/></td>
+      <td><input type="submit" value="createDatabase"/></td>
     </tr>
   </table>
 </form>

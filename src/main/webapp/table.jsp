@@ -29,7 +29,7 @@
 
         <tr>
           <td></td>
-          <td><input type="submit" name="create"/></td>
+          <td><input type="submit" value="create"/></td>
         </tr>
       </table>
     </form>
