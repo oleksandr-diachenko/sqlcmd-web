@@ -20,7 +20,7 @@
           <td><input type="text" name="keyValue"/></td>
         </tr>
 
-        <c:forEach begin="1" end="${columnCount - 1}" varStatus="loop">
+        <c:forEach begin="1" end="3" varStatus="loop">
           <tr>
             <td>Column name${loop.count}</td>
             <td><input type="text" name="columnName${loop.count}"/></td>

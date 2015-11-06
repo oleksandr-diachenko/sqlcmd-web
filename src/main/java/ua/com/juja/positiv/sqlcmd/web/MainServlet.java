@@ -9,10 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by POSITIV on 30.10.2015.
@@ -51,13 +48,13 @@ public class MainServlet extends HttpServlet {
         } else if (action.equals("/delete")) {
             request.getRequestDispatcher("delete.jsp").forward(request, response);
         } else if (action.equals("/create")) {
-            request.getRequestDispatcher("tableName.jsp").forward(request, response);
+            request.getRequestDispatcher("create.jsp").forward(request, response);
         } else if (action.equals("/createDatabase")) {
             request.getRequestDispatcher("createDatabase.jsp").forward(request, response);
         } else if (action.equals("/deleteDatabase")) {
             request.getRequestDispatcher("deleteDatabase.jsp").forward(request, response);
         } else if (action.equals("/update")) {
-            request.getRequestDispatcher("tableName.jsp").forward(request, response);
+            request.getRequestDispatcher("update.jsp").forward(request, response);
         } else {
             request.getRequestDispatcher("error.jsp").forward(request, response);
         }
@@ -92,7 +89,7 @@ public class MainServlet extends HttpServlet {
         String keyName = request.getParameter("keyName");
 
         Map<String, Object> data = new HashMap<>();
-        for (int index = 1; index < 4; index++) { //TODO убрать меджик намбер(количество колонок)
+        for (int index = 1; index < 4; index++) { //TODO убрать меджик намбер
             data.put(request.getParameter("columnName" + index), request.getParameter("columnType" + index));
         }
         try {
@@ -105,22 +102,19 @@ public class MainServlet extends HttpServlet {
 
     private void update(HttpServletRequest request, HttpServletResponse response) {
         try {
-            String tableName = request.getParameter("tableName"); //TODO убрать повторный ввод tableName в jsp
-            List<String> tableData = service.find(tableName);
-            int columnCount = Integer.parseInt(tableData.get(0));
-            request.setAttribute("columnCount", columnCount);
+            String tableName = request.getParameter("tableName");
             request.getRequestDispatcher("update.jsp").include(request, response);
             String keyName = request.getParameter("keyName");
             String keyValue = request.getParameter("keyValue");
 
             Map<String, Object> data = new HashMap<>();
-            for (int index = 1; index < columnCount; index++) {
+            for (int index = 1; index < 4; index++) { //TODO убрать magic number
                 data.put(request.getParameter("columnName" + index), request.getParameter("columnValue" + index));
             }
             service.update(tableName, keyName, keyValue, data);
             request.getRequestDispatcher("success.jsp").forward(request, response);
         } catch (ServletException | SQLException | IOException e) {
-//            error(request, response, e);
+            error(request, response, e);
         }
     }
 
@@ -146,19 +140,16 @@ public class MainServlet extends HttpServlet {
 
     private void create(HttpServletRequest request, HttpServletResponse response) {
         try {
-            String tableName = request.getParameter("tableName"); //TODO убрать повторный ввод tableName в jsp
-            List<String> tableData = service.find(tableName);
-            int columnCount = Integer.parseInt(tableData.get(0));
-            request.setAttribute("columnCount", columnCount);
+            String tableName = request.getParameter("tableName");
             request.getRequestDispatcher("create.jsp").include(request, response);
             Map<String, Object> data = new HashMap<>();
-            for (int index = 1; index <= columnCount; index++) {
+            for (int index = 1; index <= 4; index++) {//TODO убрать magic number
                 data.put(request.getParameter("columnName" + index), request.getParameter("columnValue" + index));
             }
             service.create(tableName, data);
             request.getRequestDispatcher("success.jsp").forward(request, response);
         } catch (ServletException | SQLException | IOException e) {
-//            error(request, response, e);
+            error(request, response, e);
         }
     }
 

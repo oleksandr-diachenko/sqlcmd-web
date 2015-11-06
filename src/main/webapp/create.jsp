@@ -14,7 +14,7 @@
           </label></td>
         </tr>
 
-        <c:forEach begin="1" end="${columnCount}" varStatus="loop">
+        <c:forEach begin="1" end="4" varStatus="loop">
           <tr>
             <td>Column name${loop.count}</td>
             <td><label>
