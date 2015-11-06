@@ -37,15 +37,6 @@ public class JDBCDatabaseManager implements DatabaseManager {
     }
 
     @Override
-    public int getColumnCount(String tableName) throws SQLException {
-        PreparedStatement ps = connection.prepareStatement("select * from " + tableName + "");
-        ResultSet rs = ps.executeQuery();
-        ResultSetMetaData rsmd = rs.getMetaData();
-
-        return rsmd.getColumnCount();
-    }
-
-    @Override
     public Set<String> getTableNames() throws SQLException {
         DatabaseMetaData metaData = connection.getMetaData();
         ResultSet resultSet = metaData.getTables(null, "public", "%", new String[]{"TABLE"});
@@ -152,10 +143,5 @@ public class JDBCDatabaseManager implements DatabaseManager {
         Statement stmt = connection.createStatement();
         stmt.executeUpdate("DROP DATABASE " + database);
         stmt.close();
-    }
-
-    @Override
-    public boolean isConnected() {
-        return connection != null;
     }
 }
