@@ -29,7 +29,8 @@ public class MainServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         String action = getAction(request);
 
         if (action.equals("/connect")) {
@@ -118,13 +119,15 @@ public class MainServlet extends HttpServlet {
         }
     }
 
-    private void table(DatabaseManager manager, HttpServletRequest request, HttpServletResponse response) {
+    private void table(DatabaseManager manager, HttpServletRequest request,
+                       HttpServletResponse response) {
         String tableName = request.getParameter("tableName");
         String keyName = request.getParameter("keyName");
 
         Map<String, Object> data = new HashMap<>();
         for (int index = 1; index < 4; index++) { //TODO убрать меджик намбер
-            data.put(request.getParameter("columnName" + index), request.getParameter("columnType" + index));
+            data.put(request.getParameter("columnName" + index),
+                    request.getParameter("columnType" + index));
         }
         try {
             service.table(manager, tableName, keyName, data);
@@ -134,7 +137,8 @@ public class MainServlet extends HttpServlet {
         }
     }
 
-    private void update(DatabaseManager manager, HttpServletRequest request, HttpServletResponse response) {
+    private void update(DatabaseManager manager, HttpServletRequest request,
+                        HttpServletResponse response) {
         try {
             String tableName = request.getParameter("tableName");
             request.getRequestDispatcher("update.jsp").include(request, response);
@@ -143,7 +147,8 @@ public class MainServlet extends HttpServlet {
 
             Map<String, Object> data = new HashMap<>();
             for (int index = 1; index < 4; index++) { //TODO убрать magic number
-                data.put(request.getParameter("columnName" + index), request.getParameter("columnValue" + index));
+                data.put(request.getParameter("columnName" + index),
+                        request.getParameter("columnValue" + index));
             }
             service.update(manager, tableName, keyName, keyValue, data);
             request.getRequestDispatcher("success.jsp").forward(request, response);
@@ -152,7 +157,8 @@ public class MainServlet extends HttpServlet {
         }
     }
 
-    private void deleteDatabase(DatabaseManager manager, HttpServletRequest request, HttpServletResponse response) {
+    private void deleteDatabase(DatabaseManager manager, HttpServletRequest request,
+                                HttpServletResponse response) {
         String databaseName = request.getParameter("databaseName");
         try {
             service.deleteBase(manager, databaseName);
@@ -162,7 +168,8 @@ public class MainServlet extends HttpServlet {
         }
     }
 
-    private void createDatabase(DatabaseManager manager, HttpServletRequest request, HttpServletResponse response) {
+    private void createDatabase(DatabaseManager manager, HttpServletRequest request,
+                                HttpServletResponse response) {
         String databaseName = request.getParameter("databaseName");
         try {
             service.createBase(manager, databaseName);
@@ -172,13 +179,15 @@ public class MainServlet extends HttpServlet {
         }
     }
 
-    private void create(DatabaseManager manager, HttpServletRequest request, HttpServletResponse response) {
+    private void create(DatabaseManager manager, HttpServletRequest request,
+                        HttpServletResponse response) {
         try {
             String tableName = request.getParameter("tableName");
             request.getRequestDispatcher("create.jsp").include(request, response);
             Map<String, Object> data = new HashMap<>();
             for (int index = 1; index <= 4; index++) {//TODO убрать magic number
-                data.put(request.getParameter("columnName" + index), request.getParameter("columnValue" + index));
+                data.put(request.getParameter("columnName" + index),
+                        request.getParameter("columnValue" + index));
             }
             service.create(manager, tableName, data);
             request.getRequestDispatcher("success.jsp").forward(request, response);
@@ -187,7 +196,8 @@ public class MainServlet extends HttpServlet {
         }
     }
 
-    private void delete(DatabaseManager manager, HttpServletRequest request, HttpServletResponse response) {
+    private void delete(DatabaseManager manager, HttpServletRequest request,
+                        HttpServletResponse response) {
         String tableName = request.getParameter("tableName");
         String keyName = request.getParameter("keyName");
         String keyValue = request.getParameter("keyValue");
@@ -199,7 +209,8 @@ public class MainServlet extends HttpServlet {
         }
     }
 
-    private void clear(DatabaseManager manager, HttpServletRequest request, HttpServletResponse response) {
+    private void clear(DatabaseManager manager, HttpServletRequest request,
+                       HttpServletResponse response) {
         String tableName = request.getParameter("tableName");
         try {
             service.clear(manager, tableName);
@@ -209,7 +220,8 @@ public class MainServlet extends HttpServlet {
         }
     }
 
-    private Set<String> list(DatabaseManager manager, HttpServletRequest request, HttpServletResponse response) {
+    private Set<String> list(DatabaseManager manager, HttpServletRequest request,
+                             HttpServletResponse response) {
         Set<String> tableNames = null;
         try {
             tableNames = service.list(manager);
@@ -221,7 +233,8 @@ public class MainServlet extends HttpServlet {
         return tableNames;
     }
 
-    private void find(DatabaseManager manager, HttpServletRequest request, HttpServletResponse response) {
+    private void find(DatabaseManager manager, HttpServletRequest request,
+                      HttpServletResponse response) {
         String tableName = request.getParameter("tableName");
         try {
             List<String> tableData = service.find(manager, tableName);

@@ -21,7 +21,8 @@ public class ServiceImpl implements Service{
     }
 
     @Override
-    public DatabaseManager connect(String database, String user, String password) throws SQLException, ClassNotFoundException {
+    public DatabaseManager connect(String database, String user, String password)
+            throws SQLException, ClassNotFoundException {
         DatabaseManager manager = new JDBCDatabaseManager();
         manager.connect(database, user, password);
         return manager;
@@ -43,12 +44,14 @@ public class ServiceImpl implements Service{
     }
 
     @Override
-    public void delete(DatabaseManager manager, String tableName, String keyName, String keyValue) throws SQLException {
+    public void delete(DatabaseManager manager, String tableName, String keyName, String keyValue)
+            throws SQLException {
         manager.delete(tableName, keyName, keyValue);
     }
 
     @Override
-    public void create(DatabaseManager manager, String tableName, Map<String, Object> columnData) throws SQLException {
+    public void create(DatabaseManager manager, String tableName, Map<String, Object> columnData)
+            throws SQLException {
         manager.create(tableName, columnData);
     }
 
@@ -63,12 +66,14 @@ public class ServiceImpl implements Service{
     }
 
     @Override
-    public void update(DatabaseManager manager, String tableName, String keyName, String keyValue, Map<String, Object> columnData) throws SQLException {
+    public void update(DatabaseManager manager, String tableName, String keyName,
+                       String keyValue, Map<String, Object> columnData) throws SQLException {
         manager.update(tableName, keyName, keyValue, columnData);
     }
 
     @Override
-    public void table(DatabaseManager manager, String tableName, String keyName, Map<String, Object> columnData) throws SQLException {
+    public void table(DatabaseManager manager, String tableName, String keyName,
+                      Map<String, Object> columnData) throws SQLException {
         manager.table(tableName, keyName, columnData);
     }
 }
