@@ -14,12 +14,6 @@ import java.util.Set;
  */
 public class ServiceImpl implements Service{
 
-    private DatabaseManager manager;
-
-    public ServiceImpl(){
-        manager = new JDBCDatabaseManager();
-    }
-
     @Override
     public List<String> commandList() {
         return Arrays.asList("help", "connect", "table", "list", "find", "update", "clear",
@@ -27,52 +21,54 @@ public class ServiceImpl implements Service{
     }
 
     @Override
-    public void connect(String database, String user, String password) throws SQLException, ClassNotFoundException {
+    public DatabaseManager connect(String database, String user, String password) throws SQLException, ClassNotFoundException {
+        DatabaseManager manager = new JDBCDatabaseManager();
         manager.connect(database, user, password);
+        return manager;
     }
 
     @Override
-    public Set<String> list() throws SQLException {
+    public Set<String> list(DatabaseManager manager) throws SQLException {
         return manager.getTableNames();
     }
 
     @Override
-    public List<String> find(String tableName) throws SQLException {
+    public List<String> find(DatabaseManager manager, String tableName) throws SQLException {
         return manager.getTableData(tableName);
     }
 
     @Override
-    public void clear(String tableName) throws SQLException {
+    public void clear(DatabaseManager manager, String tableName) throws SQLException {
         manager.clear(tableName);
     }
 
     @Override
-    public void delete(String tableName, String keyName, String keyValue) throws SQLException {
+    public void delete(DatabaseManager manager, String tableName, String keyName, String keyValue) throws SQLException {
         manager.delete(tableName, keyName, keyValue);
     }
 
     @Override
-    public void create(String tableName, Map<String, Object> columnData) throws SQLException {
+    public void create(DatabaseManager manager, String tableName, Map<String, Object> columnData) throws SQLException {
         manager.create(tableName, columnData);
     }
 
     @Override
-    public void createBase(String databaseName) throws SQLException {
+    public void createBase(DatabaseManager manager, String databaseName) throws SQLException {
         manager.createBase(databaseName);
     }
 
     @Override
-    public void deleteBase(String databaseName) throws SQLException {
+    public void deleteBase(DatabaseManager manager, String databaseName) throws SQLException {
         manager.dropBase(databaseName);
     }
 
     @Override
-    public void update(String tableName, String keyName, String keyValue, Map<String, Object> columnData) throws SQLException {
+    public void update(DatabaseManager manager, String tableName, String keyName, String keyValue, Map<String, Object> columnData) throws SQLException {
         manager.update(tableName, keyName, keyValue, columnData);
     }
 
     @Override
-    public void table(String tableName, String keyName, Map<String, Object> columnData) throws SQLException {
+    public void table(DatabaseManager manager, String tableName, String keyName, Map<String, Object> columnData) throws SQLException {
         manager.table(tableName, keyName, columnData);
     }
 }
