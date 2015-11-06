@@ -47,26 +47,37 @@ public class MainServlet extends HttpServlet {
         if (action.equals("/menu") || action.equals("/")) {
             request.setAttribute("items", service.commandList());
             request.getRequestDispatcher("menu.jsp").forward(request, response);
+
         } else if (action.equals("/help")) {
             request.getRequestDispatcher("help.jsp").forward(request, response);
+
         } else if (action.equals("/table")) {
             request.getRequestDispatcher("table.jsp").forward(request, response);
+
         } else if (action.equals("/list")) {
             list(manager, request, response);
+
         } else if (action.equals("/find")) {
             request.getRequestDispatcher("tableName.jsp").forward(request, response);
+
         } else if (action.equals("/clear")) {
             request.getRequestDispatcher("clear.jsp").forward(request, response);
+
         } else if (action.equals("/delete")) {
             request.getRequestDispatcher("delete.jsp").forward(request, response);
+
         } else if (action.equals("/create")) {
             request.getRequestDispatcher("create.jsp").forward(request, response);
+
         } else if (action.equals("/createDatabase")) {
             request.getRequestDispatcher("createDatabase.jsp").forward(request, response);
+
         } else if (action.equals("/deleteDatabase")) {
             request.getRequestDispatcher("deleteDatabase.jsp").forward(request, response);
+
         } else if (action.equals("/update")) {
             request.getRequestDispatcher("update.jsp").forward(request, response);
+
         } else {
             request.getRequestDispatcher("error.jsp").forward(request, response);
         }
@@ -80,20 +91,28 @@ public class MainServlet extends HttpServlet {
 
         if (action.equals("/connect")) {
             connect(request, response);
+
         } else if (action.equals("/find")) {
             find(manager, request, response);
+
         } else if (action.equals("/clear")) {
             clear(manager, request, response);
+
         } else if (action.equals("/delete")) {
             delete(manager, request, response);
+
         } else if (action.equals("/create")) {
             create(manager, request, response);
+
         } else if (action.equals("/createDatabase")) {
             createDatabase(manager, request, response);
+
         } else if (action.equals("/deleteDatabase")) {
             deleteDatabase(manager, request, response);
+
         } else if (action.equals("/table")) {
             table(manager, request, response);
+
         } else if (action.equals("/update")) {
             update(manager, request, response);
         }
@@ -237,7 +256,7 @@ public class MainServlet extends HttpServlet {
         try {
             request.getRequestDispatcher("error.jsp").forward(request, response);
         } catch (ServletException | IOException e1) {
-            // do nothing
+            e.printStackTrace();
         }
     }
 }
