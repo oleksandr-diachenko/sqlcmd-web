@@ -14,7 +14,8 @@ public interface Service {
 
     List<String> commandList();
 
-    DatabaseManager connect(String database, String user, String password) throws SQLException, ClassNotFoundException;
+    DatabaseManager connect(String database, String user, String password)
+            throws SQLException, ClassNotFoundException;
 
     Set<String> list(DatabaseManager manager) throws SQLException;
 
@@ -30,7 +31,9 @@ public interface Service {
 
     void deleteBase(DatabaseManager manager, String databaseName) throws SQLException;
 
-    void update(DatabaseManager manager, String tableName, String keyName, String keyValue, Map<String, Object> columnData) throws SQLException;
+    void update(DatabaseManager manager, String tableName, String keyName,
+                String keyValue, Map<String, Object> columnData) throws SQLException;
 
-    void table(DatabaseManager manager, String tableName, String keyName, Map<String, Object> columnData) throws SQLException;
+    void table(DatabaseManager manager, String tableName, String keyName,
+               Map<String, Object> columnData) throws SQLException;
 }
