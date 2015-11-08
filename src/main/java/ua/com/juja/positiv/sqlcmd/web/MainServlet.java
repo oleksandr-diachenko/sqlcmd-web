@@ -70,7 +70,9 @@ public class MainServlet extends HttpServlet {
         } else if (action.equals("/create")) {
             String tableName = "car"; //TODO убрать хардкод название таблицы
             try {
-                request.setAttribute("columnCount", getColumnCount(manager, tableName));
+                List<String> tableData = service.find(manager, tableName);
+                int columnCount = Integer.parseInt(tableData.get(0));
+                request.setAttribute("columnCount", columnCount);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -199,8 +201,7 @@ public class MainServlet extends HttpServlet {
                         HttpServletResponse response) {
         try {
             String tableName = "car"; //TODO убрать хардкод название таблицы
-
-            int columnCount = request.getIntHeader("columnCount");
+            int columnCount = getColumnCount(manager, tableName);
             request.getRequestDispatcher("create.jsp").include(request, response);
             Map<String, Object> data = new HashMap<>();
             for (int index = 1; index <= columnCount; index++) {
