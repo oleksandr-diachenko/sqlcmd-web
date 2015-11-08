@@ -136,6 +136,11 @@ public class MainServlet extends HttpServlet {
         }
     }
 
+    private String getAction(HttpServletRequest request) {
+        String requestURI = request.getRequestURI();
+        return requestURI.substring(request.getContextPath().length(), requestURI.length());
+    }
+
     private void table(DatabaseManager manager, HttpServletRequest request,
                        HttpServletResponse response) {
         String tableName = request.getParameter("tableName");
@@ -160,9 +165,10 @@ public class MainServlet extends HttpServlet {
             String tableName = "car"; //TODO убрать хардкод название таблицы
             String keyName = request.getParameter("keyName");
             String keyValue = request.getParameter("keyValue");
+            int columnCount = Integer.parseInt(request.getParameter("columnCount"));
 
             Map<String, Object> data = new HashMap<>();
-            for (int index = 1; index < getColumnCount(manager, tableName); index++) {
+            for (int index = 1; index < columnCount; index++) {
                 data.put(request.getParameter("columnName" + index),
                         request.getParameter("columnValue" + index));
             }
@@ -199,8 +205,7 @@ public class MainServlet extends HttpServlet {
                         HttpServletResponse response) {
         try {
             String tableName = "car"; //TODO убрать хардкод название таблицы
-
-            int columnCount = request.getIntHeader("columnCount");
+            int columnCount = Integer.parseInt(request.getParameter("columnCount"));
             request.getRequestDispatcher("create.jsp").include(request, response);
             Map<String, Object> data = new HashMap<>();
             for (int index = 1; index <= columnCount; index++) {
@@ -275,11 +280,6 @@ public class MainServlet extends HttpServlet {
         } catch (SQLException | ClassNotFoundException | IOException e) {
             error(request, response, e);
         }
-    }
-
-    private String getAction(HttpServletRequest request) {
-        String requestURI = request.getRequestURI();
-        return requestURI.substring(request.getContextPath().length(), requestURI.length());
     }
 
     private void error(HttpServletRequest request, HttpServletResponse response, Exception e) {
