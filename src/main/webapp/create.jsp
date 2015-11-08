@@ -8,13 +8,8 @@
     <form action="create" method="post">
       <table>
         <tr>
-          <td>Table name</td>
-          <td><label>
-            <input type="text" name="tableName"/>
-          </label></td>
-        </tr>
 
-        <c:forEach begin="1" end="4" varStatus="loop">
+        <c:forEach begin="1" end="${columnCount}" varStatus="loop">
           <tr>
             <td>Column name${loop.count}</td>
             <td><label>

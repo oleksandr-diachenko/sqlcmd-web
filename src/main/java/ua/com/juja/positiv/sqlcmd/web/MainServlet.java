@@ -68,7 +68,13 @@ public class MainServlet extends HttpServlet {
             request.getRequestDispatcher("delete.jsp").forward(request, response);
 
         } else if (action.equals("/create")) {
-            request.getRequestDispatcher("create.jsp").forward(request, response);
+            String tableName = "car"; //TODO убрать хардкод название таблицы
+            try {
+                request.setAttribute("columnCount", getColumnCount(manager, tableName));
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+                request.getRequestDispatcher("create.jsp").forward(request, response);
 
         } else if (action.equals("/createDatabase")) {
             request.getRequestDispatcher("createDatabase.jsp").forward(request, response);
@@ -77,11 +83,22 @@ public class MainServlet extends HttpServlet {
             request.getRequestDispatcher("deleteDatabase.jsp").forward(request, response);
 
         } else if (action.equals("/update")) {
-            request.getRequestDispatcher("update.jsp").forward(request, response);
+            try {
+                String tableName = "car"; //TODO убрать хардкод название таблицы
+                request.setAttribute("columnCount", getColumnCount(manager, tableName));
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+                request.getRequestDispatcher("update.jsp").forward(request, response);
 
         } else {
             request.getRequestDispatcher("error.jsp").forward(request, response);
         }
+    }
+
+    private int getColumnCount(DatabaseManager manager, String tableName) throws SQLException {
+        List<String> tableData = service.find(manager, tableName);
+        return Integer.parseInt(tableData.get(0));
     }
 
     @Override
@@ -140,13 +157,12 @@ public class MainServlet extends HttpServlet {
     private void update(DatabaseManager manager, HttpServletRequest request,
                         HttpServletResponse response) {
         try {
-            String tableName = request.getParameter("tableName");
-            request.getRequestDispatcher("update.jsp").include(request, response);
+            String tableName = "car"; //TODO убрать хардкод название таблицы
             String keyName = request.getParameter("keyName");
             String keyValue = request.getParameter("keyValue");
 
             Map<String, Object> data = new HashMap<>();
-            for (int index = 1; index < 4; index++) { //TODO убрать magic number
+            for (int index = 1; index < getColumnCount(manager, tableName); index++) {
                 data.put(request.getParameter("columnName" + index),
                         request.getParameter("columnValue" + index));
             }
@@ -182,10 +198,12 @@ public class MainServlet extends HttpServlet {
     private void create(DatabaseManager manager, HttpServletRequest request,
                         HttpServletResponse response) {
         try {
-            String tableName = request.getParameter("tableName");
+            String tableName = "car"; //TODO убрать хардкод название таблицы
+
+            int columnCount = request.getIntHeader("columnCount");
             request.getRequestDispatcher("create.jsp").include(request, response);
             Map<String, Object> data = new HashMap<>();
-            for (int index = 1; index <= 4; index++) {//TODO убрать magic number
+            for (int index = 1; index <= columnCount; index++) {
                 data.put(request.getParameter("columnName" + index),
                         request.getParameter("columnValue" + index));
             }
