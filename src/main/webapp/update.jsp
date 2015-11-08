@@ -8,11 +8,6 @@
     <form action="update" method="post">
       <table>
         <tr>
-          <td>Table name</td>
-          <td><input type="text" name="tableName"/></td>
-        </tr>
-
-        <tr>
           <td>Primary key name</td>
           <td><input type="text" name="keyName"/></td>
 
@@ -20,7 +15,7 @@
           <td><input type="text" name="keyValue"/></td>
         </tr>
 
-        <c:forEach begin="1" end="3" varStatus="loop">
+        <c:forEach begin="1" end="${columnCount - 1}" varStatus="loop">
           <tr>
             <td>Column name${loop.count}</td>
             <td><input type="text" name="columnName${loop.count}"/></td>
