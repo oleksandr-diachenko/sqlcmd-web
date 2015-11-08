@@ -69,12 +69,8 @@ public class MainServlet extends HttpServlet {
 
         } else if (action.equals("/create")) {
             String tableName = "car"; //TODO убрать хардкод название таблицы
-            try {
-                request.setAttribute("columnCount", getColumnCount(manager, tableName));
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-                request.getRequestDispatcher("create.jsp").forward(request, response);
+            setAttributeColumnCount(request, manager, tableName);
+            request.getRequestDispatcher("create.jsp").forward(request, response);
 
         } else if (action.equals("/createDatabase")) {
             request.getRequestDispatcher("createDatabase.jsp").forward(request, response);
@@ -83,16 +79,20 @@ public class MainServlet extends HttpServlet {
             request.getRequestDispatcher("deleteDatabase.jsp").forward(request, response);
 
         } else if (action.equals("/update")) {
-            try {
-                String tableName = "car"; //TODO убрать хардкод название таблицы
-                request.setAttribute("columnCount", getColumnCount(manager, tableName));
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-                request.getRequestDispatcher("update.jsp").forward(request, response);
+            String tableName = "car"; //TODO убрать хардкод название таблицы
+            setAttributeColumnCount(request, manager, tableName);
+            request.getRequestDispatcher("update.jsp").forward(request, response);
 
         } else {
             request.getRequestDispatcher("error.jsp").forward(request, response);
+        }
+    }
+
+    private void setAttributeColumnCount(HttpServletRequest request, DatabaseManager manager, String tableName) {
+        try {
+            request.setAttribute("columnCount", getColumnCount(manager, tableName));
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
@@ -165,9 +165,8 @@ public class MainServlet extends HttpServlet {
             String tableName = "car"; //TODO убрать хардкод название таблицы
             String keyName = request.getParameter("keyName");
             String keyValue = request.getParameter("keyValue");
-            int columnCount = Integer.parseInt(request.getParameter("columnCount"));
-
             Map<String, Object> data = new HashMap<>();
+            int columnCount = Integer.parseInt(request.getParameter("columnCount"));
             for (int index = 1; index < columnCount; index++) {
                 data.put(request.getParameter("columnName" + index),
                         request.getParameter("columnValue" + index));
@@ -205,9 +204,8 @@ public class MainServlet extends HttpServlet {
                         HttpServletResponse response) {
         try {
             String tableName = "car"; //TODO убрать хардкод название таблицы
-            int columnCount = Integer.parseInt(request.getParameter("columnCount"));
-            request.getRequestDispatcher("create.jsp").include(request, response);
             Map<String, Object> data = new HashMap<>();
+            int columnCount = Integer.parseInt(request.getParameter("columnCount"));
             for (int index = 1; index <= columnCount; index++) {
                 data.put(request.getParameter("columnName" + index),
                         request.getParameter("columnValue" + index));
