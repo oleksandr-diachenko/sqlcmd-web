@@ -7,8 +7,8 @@
   <body>
     <form action="create" method="post">
       <table>
+        <input type="hidden" name="columnCount" value="${columnCount}" />
         <tr>
-
         <c:forEach begin="1" end="${columnCount}" varStatus="loop">
           <tr>
             <td>Column name${loop.count}</td>
