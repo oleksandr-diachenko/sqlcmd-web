@@ -70,12 +70,11 @@ public class MainServlet extends HttpServlet {
         } else if (action.equals("/create")) {
             String tableName = "car"; //TODO убрать хардкод название таблицы
             try {
-                int columnCount = getColumnCount(manager, tableName);
-                request.setAttribute("columnCount", columnCount);
-                request.getRequestDispatcher("create.jsp").forward(request, response);
+                request.setAttribute("columnCount", getColumnCount(manager, tableName));
             } catch (SQLException e) {
                 e.printStackTrace();
             }
+                request.getRequestDispatcher("create.jsp").forward(request, response);
 
         } else if (action.equals("/createDatabase")) {
             request.getRequestDispatcher("createDatabase.jsp").forward(request, response);
@@ -86,12 +85,11 @@ public class MainServlet extends HttpServlet {
         } else if (action.equals("/update")) {
             try {
                 String tableName = "car"; //TODO убрать хардкод название таблицы
-                int columnCount = getColumnCount(manager, tableName);
-                request.setAttribute("columnCount", columnCount);
-                request.getRequestDispatcher("update.jsp").forward(request, response);
+                request.setAttribute("columnCount", getColumnCount(manager, tableName));
             } catch (SQLException e) {
                 e.printStackTrace();
             }
+                request.getRequestDispatcher("update.jsp").forward(request, response);
 
         } else {
             request.getRequestDispatcher("error.jsp").forward(request, response);
@@ -160,12 +158,11 @@ public class MainServlet extends HttpServlet {
                         HttpServletResponse response) {
         try {
             String tableName = "car"; //TODO убрать хардкод название таблицы
-            int columnCount = getColumnCount(manager, tableName);
             String keyName = request.getParameter("keyName");
             String keyValue = request.getParameter("keyValue");
 
             Map<String, Object> data = new HashMap<>();
-            for (int index = 1; index < columnCount; index++) {
+            for (int index = 1; index < getColumnCount(manager, tableName); index++) {
                 data.put(request.getParameter("columnName" + index),
                         request.getParameter("columnValue" + index));
             }
@@ -202,8 +199,8 @@ public class MainServlet extends HttpServlet {
                         HttpServletResponse response) {
         try {
             String tableName = "car"; //TODO убрать хардкод название таблицы
-            int columnCount = getColumnCount(manager, tableName);
 
+            int columnCount = request.getIntHeader("columnCount");
             request.getRequestDispatcher("create.jsp").include(request, response);
             Map<String, Object> data = new HashMap<>();
             for (int index = 1; index <= columnCount; index++) {
