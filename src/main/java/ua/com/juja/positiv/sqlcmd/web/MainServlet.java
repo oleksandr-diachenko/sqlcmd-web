@@ -68,18 +68,24 @@ public class MainServlet extends HttpServlet {
             request.getRequestDispatcher("delete.jsp").forward(request, response);
 
         } else if (action.equals("/create")) {
-            String tableName = "car"; //TODO убрать хардкод название таблицы
+            request.getRequestDispatcher("createTableName.jsp").forward(request, response);
+
+        } else if (action.equals("/createTableName")) {
+            String tableName = request.getParameter("tableName");
             setAttributeColumnCount(request, manager, tableName);
             request.getRequestDispatcher("create.jsp").forward(request, response);
 
-        } else if (action.equals("/createDatabase")) {
+        }else if (action.equals("/createDatabase")) {
             request.getRequestDispatcher("createDatabase.jsp").forward(request, response);
 
         } else if (action.equals("/deleteDatabase")) {
             request.getRequestDispatcher("deleteDatabase.jsp").forward(request, response);
 
         } else if (action.equals("/update")) {
-            String tableName = "car"; //TODO убрать хардкод название таблицы
+            request.getRequestDispatcher("updateTableName.jsp").forward(request, response);
+
+        } else if (action.equals("/updateTableName")) {
+            String tableName = request.getParameter("tableName");
             setAttributeColumnCount(request, manager, tableName);
             request.getRequestDispatcher("update.jsp").forward(request, response);
 
