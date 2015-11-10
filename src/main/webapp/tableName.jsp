@@ -5,7 +5,7 @@
   <title>sqlcmd</title>
 </head>
   <body>
-    <form action="" method="post">
+    <form action="${actionURL}" method="post">
       <table>
         <tr>
           <td>Table name</td>

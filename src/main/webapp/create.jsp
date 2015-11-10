@@ -8,15 +8,16 @@
     <form action="create" method="post">
       <table>
         <input type="hidden" name="columnCount" value="${columnCount}" />
+        <input type="hidden" name="tableName" value="${tableName}" />
         <tr>
         <c:forEach begin="1" end="${columnCount}" varStatus="loop">
           <tr>
-            <td>Column name${loop.count}</td>
+            <td>Column name ${loop.count}</td>
             <td><label>
               <input type="text" name="columnName${loop.count}"/>
             </label></td>
 
-            <td>Column value${loop.count}</td>
+            <td>Column value ${loop.count}</td>
             <td><label>
               <input type="text" name="columnValue${loop.count}"/>
             </label></td>
