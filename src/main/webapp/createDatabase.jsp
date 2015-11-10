@@ -8,7 +8,7 @@
 <form action="createDatabase" method="post">
   <table>
     <tr>
-      <td>Table name</td>
+      <td>Database name</td>
       <td><input type="text" name="databaseName"/></td>
     </tr>
 
