@@ -263,7 +263,7 @@ public class MainServlet extends HttpServlet {
         try {
             List<String> tableData = service.find(manager, tableName);
             request.setAttribute("tableData", tableData);
-            request.setAttribute("columnCount", tableData.get(0)); //TODO отпралять матрицу
+            request.setAttribute("columnCount", tableData.get(0));
             request.getRequestDispatcher("find.jsp").forward(request, response);
         } catch (ServletException | SQLException | IOException e) {
             error(request, response, e);
