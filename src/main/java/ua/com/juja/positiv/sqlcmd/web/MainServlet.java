@@ -126,7 +126,8 @@ public class MainServlet extends HttpServlet {
         }
     }
 
-    private void forward(HttpServletRequest request, HttpServletResponse response, DatabaseManager manager, String page) {
+    private void forward(HttpServletRequest request, HttpServletResponse response,
+                         DatabaseManager manager, String page) {
         String tableName = request.getParameter("tableName");
         try {
             request.setAttribute("columnCount", getColumnCount(manager, tableName));
