@@ -49,9 +49,6 @@ public class MainServlet extends HttpServlet {
         } else if (action.equals("/help")) {
             request.getRequestDispatcher("help.jsp").forward(request, response);
 
-        } else if (action.equals("/table")) {
-            request.getRequestDispatcher("table.jsp").forward(request, response);
-
         } else if (action.equals("/list")) {
             list(manager, request, response);
 
@@ -120,9 +117,6 @@ public class MainServlet extends HttpServlet {
         } else if (action.equals("/deleteDatabase")) {
             deleteDatabase(manager, request, response);
 
-        } else if (action.equals("/table")) {
-            table(manager, request, response);
-
         } else if (action.equals("/updateRecord")) {
             String tableName = getTableName(request);
             setColumnCount(request, manager, tableName);
@@ -166,24 +160,6 @@ public class MainServlet extends HttpServlet {
     private String getAction(HttpServletRequest request) {
         String requestURI = request.getRequestURI();
         return requestURI.substring(request.getContextPath().length(), requestURI.length());
-    }
-
-    private void table(DatabaseManager manager, HttpServletRequest request,
-                       HttpServletResponse response) {
-        String tableName = getTableName(request);
-        String keyName = request.getParameter("keyName");
-
-        Map<String, Object> data = new HashMap<>();
-        for (int index = 1; index < 4; index++) { //TODO убрать меджик намбер
-            data.put(request.getParameter("columnName" + index),
-                    request.getParameter("columnType" + index));
-        }
-        try {
-            service.table(manager, tableName, keyName, data);
-            request.getRequestDispatcher("success.jsp").forward(request, response);
-        } catch (ServletException | SQLException | IOException e) {
-            error(request, response, e);
-        }
     }
 
     private void update(DatabaseManager manager, HttpServletRequest request,
