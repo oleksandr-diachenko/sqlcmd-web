@@ -34,6 +34,4 @@ public interface Service {
     void update(DatabaseManager manager, String tableName, String keyName,
                 String keyValue, Map<String, Object> columnData) throws SQLException;
 
-    void table(DatabaseManager manager, String tableName, String keyName,
-               Map<String, Object> columnData) throws SQLException;
 }
