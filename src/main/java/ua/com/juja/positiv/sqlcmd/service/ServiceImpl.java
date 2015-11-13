@@ -16,7 +16,7 @@ public class ServiceImpl implements Service{
 
     @Override
     public List<String> commandList() {
-        return Arrays.asList("help", "connect", "table", "list", "find", "update", "clear",
+        return Arrays.asList("help", "connect", "list", "find", "update", "clear",
                 "create", "delete", "createDatabase", "deleteDatabase");
     }
 
