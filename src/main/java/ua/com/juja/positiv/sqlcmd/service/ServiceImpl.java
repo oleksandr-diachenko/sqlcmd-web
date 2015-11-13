@@ -17,18 +17,21 @@ import java.util.Set;
 @Component
 public class ServiceImpl implements Service{
 
-    @Autowired
-    DatabaseManager manager;
+    List<String> commands;
+
+    public void setCommands(List<String> commands) {
+        this.commands = commands;
+    }
 
     @Override
     public List<String> commandList() {
-        return Arrays.asList("help", "connect", "table", "list", "find", "update", "clear",
-                "create", "delete", "createDatabase", "deleteDatabase");
+        return commands;
     }
 
     @Override
     public DatabaseManager connect(String database, String user, String password)
             throws SQLException, ClassNotFoundException {
+        DatabaseManager manager = new JDBCDatabaseManager();
         manager.connect(database, user, password);
         return manager;
     }

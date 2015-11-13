@@ -9,4 +9,23 @@
 
     <context:annotation-config/>
     <context:component-scan base-package="ua.com.juja.positiv.sqlcmd"/>
+    <bean id="service" class="ua.com.juja.positiv.sqlcmd.service.ServiceImpl"/>
+
+    <bean id="commands" class="ua.com.juja.positiv.sqlcmd.service.ServiceImpl">
+        <property name="commands">
+            <list>
+                <value>help</value>
+                <value>connect</value>
+                <value>table</value>
+                <value>list</value>
+                <value>find</value>
+                <value>update</value>
+                <value>clear</value>
+                <value>create</value>
+                <value>delete</value>
+                <value>createDatabase</value>
+                <value>deleteDatabase</value>
+            </list>
+        </property>
+    </bean>
 </beans>
