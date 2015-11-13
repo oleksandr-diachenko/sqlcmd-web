@@ -1,9 +1,12 @@
 package ua.com.juja.positiv.sqlcmd.web;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 import ua.com.juja.positiv.sqlcmd.databasemanager.DatabaseManager;
 import ua.com.juja.positiv.sqlcmd.service.Service;
 import ua.com.juja.positiv.sqlcmd.service.ServiceImpl;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -17,12 +20,14 @@ import java.util.*;
  */
 public class MainServlet extends HttpServlet {
 
+    @Autowired
     private Service service;
 
     @Override
-    public void init() throws ServletException {
+    public void init(ServletConfig config) throws ServletException {
         super.init();
-        service = new ServiceImpl();
+        SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this,
+                config.getServletContext());
     }
 
     @Override
@@ -286,6 +291,7 @@ public class MainServlet extends HttpServlet {
     private void error(HttpServletRequest request, HttpServletResponse response, Exception e) {
         request.setAttribute("message", e.getMessage());
         try {
+            e.printStackTrace();
             request.getRequestDispatcher("error.jsp").forward(request, response);
         } catch (ServletException | IOException e1) {
             e.printStackTrace();
