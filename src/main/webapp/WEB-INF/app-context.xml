@@ -10,7 +10,7 @@
     <context:annotation-config/>
     <context:component-scan base-package="ua.com.juja.positiv.sqlcmd"/>
     <bean id="service" class="ua.com.juja.positiv.sqlcmd.service.ServiceImpl">
-        <constructor-arg type="ua.com.juja.positiv.sqlcmd.databasemanager.DatabaseManager" ref="manager"/>
+        <constructor-arg type="ua.com.juja.positiv.sqlcmd.service.DatabaseManagerFactory" ref="factory"/>
         <constructor-arg type="java.util.List">
             <list>
                 <value>help</value>
@@ -27,5 +27,5 @@
             </list>
         </constructor-arg>
     </bean>
-    <bean id="manager" class="ua.com.juja.positiv.sqlcmd.databasemanager.JDBCDatabaseManager"/>
+    <bean id="factory" class="ua.com.juja.positiv.sqlcmd.service.DatabaseManagerFactory"/>
 </beans>

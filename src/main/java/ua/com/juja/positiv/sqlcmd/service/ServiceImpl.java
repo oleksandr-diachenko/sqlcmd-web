@@ -10,14 +10,15 @@ import java.util.Set;
 /**
  * Created by POSITIV on 31.10.2015.
  */
-public class ServiceImpl implements Service{
 
-    private DatabaseManager manager;
+public class ServiceImpl implements Service {
+
     private List<String> commands;
+    private DatabaseManagerFactory factory;
 
-    public ServiceImpl(DatabaseManager manager, List<String> commands){
-        this.manager = manager;
+    public ServiceImpl(List<String> commands, DatabaseManagerFactory factory) {
         this.commands = commands;
+        this.factory = factory;
     }
 
     @Override
@@ -28,6 +29,7 @@ public class ServiceImpl implements Service{
     @Override
     public DatabaseManager connect(String database, String user, String password)
             throws SQLException, ClassNotFoundException {
+        DatabaseManager manager = factory.createDatabaseManager();
         manager.connect(database, user, password);
         return manager;
     }
