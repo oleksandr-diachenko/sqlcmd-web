@@ -10,7 +10,6 @@ import java.util.Set;
 /**
  * Created by POSITIV on 31.10.2015.
  */
-
 public class ServiceImpl implements Service {
 
     private List<String> commands;

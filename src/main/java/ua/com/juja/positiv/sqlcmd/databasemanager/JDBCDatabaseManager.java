@@ -1,14 +1,11 @@
 package ua.com.juja.positiv.sqlcmd.databasemanager;
 
-import org.springframework.stereotype.Component;
-
 import java.sql.*;
 import java.util.*;
 
 /**
  * Created by POSITIV on 16.09.2015.
  */
-@Component
 public class JDBCDatabaseManager implements DatabaseManager {
 
     public static final String JDBC_POSTGRESQL_URL = "jdbc:postgresql://localhost:5432/";
