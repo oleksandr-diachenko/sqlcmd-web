@@ -1,10 +1,8 @@
 package ua.com.juja.positiv.sqlcmd.service;
 
 import ua.com.juja.positiv.sqlcmd.databasemanager.DatabaseManager;
-import ua.com.juja.positiv.sqlcmd.databasemanager.JDBCDatabaseManager;
 
 import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -14,16 +12,22 @@ import java.util.Set;
  */
 public class ServiceImpl implements Service{
 
+    private DatabaseManager manager;
+    private List<String> commands;
+
+    public ServiceImpl(DatabaseManager manager, List<String> commands){
+        this.manager = manager;
+        this.commands = commands;
+    }
+
     @Override
     public List<String> commandList() {
-        return Arrays.asList("help", "connect", "table", "list", "find", "update", "clear",
-                "create", "delete", "createDatabase", "deleteDatabase");
+        return commands;
     }
 
     @Override
     public DatabaseManager connect(String database, String user, String password)
             throws SQLException, ClassNotFoundException {
-        DatabaseManager manager = new JDBCDatabaseManager();
         manager.connect(database, user, password);
         return manager;
     }

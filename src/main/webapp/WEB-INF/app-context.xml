@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                            http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                            http://www.springframework.org/schema/context
+                            http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+    <context:annotation-config/>
+    <context:component-scan base-package="ua.com.juja.positiv.sqlcmd"/>
+    <bean id="service" class="ua.com.juja.positiv.sqlcmd.service.ServiceImpl">
+        <constructor-arg type="ua.com.juja.positiv.sqlcmd.databasemanager.DatabaseManager" ref="manager"/>
+        <constructor-arg type="java.util.List">
+            <list>
+                <value>help</value>
+                <value>connect</value>
+                <value>table</value>
+                <value>list</value>
+                <value>find</value>
+                <value>update</value>
+                <value>clear</value>
+                <value>create</value>
+                <value>delete</value>
+                <value>createDatabase</value>
+                <value>deleteDatabase</value>
+            </list>
+        </constructor-arg>
+    </bean>
+    <bean id="manager" class="ua.com.juja.positiv.sqlcmd.databasemanager.JDBCDatabaseManager"/>
+</beans>
