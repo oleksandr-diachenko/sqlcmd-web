@@ -9,10 +9,9 @@
 
     <context:annotation-config/>
     <context:component-scan base-package="ua.com.juja.positiv.sqlcmd"/>
-    <bean id="service" class="ua.com.juja.positiv.sqlcmd.service.ServiceImpl"/>
-
-    <bean id="commands" class="ua.com.juja.positiv.sqlcmd.service.ServiceImpl">
-        <property name="commands">
+    <bean id="service" class="ua.com.juja.positiv.sqlcmd.service.ServiceImpl">
+        <constructor-arg type="ua.com.juja.positiv.sqlcmd.databasemanager.DatabaseManager" ref="manager"/>
+        <constructor-arg type="java.util.List">
             <list>
                 <value>help</value>
                 <value>connect</value>
@@ -26,6 +25,7 @@
                 <value>createDatabase</value>
                 <value>deleteDatabase</value>
             </list>
-        </property>
+        </constructor-arg>
     </bean>
+    <bean id="manager" class="ua.com.juja.positiv.sqlcmd.databasemanager.JDBCDatabaseManager"/>
 </beans>
