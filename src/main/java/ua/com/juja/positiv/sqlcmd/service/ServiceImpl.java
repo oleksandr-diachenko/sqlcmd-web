@@ -24,7 +24,7 @@ public class ServiceImpl implements Service{
     public List<String> commandList() {
         return commands;
     }
-
+    
     @Override
     public DatabaseManager connect(String database, String user, String password)
             throws SQLException, ClassNotFoundException {
