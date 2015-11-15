@@ -27,5 +27,5 @@
             </list>
         </constructor-arg>
     </bean>
-    <bean id="factory" class="ua.com.juja.positiv.sqlcmd.service.DatabaseManagerFactory"/>
+    <bean id="factory" class="ua.com.juja.positiv.sqlcmd.service.DatabaseManagerFactoryImpl"/>
 </beans>
