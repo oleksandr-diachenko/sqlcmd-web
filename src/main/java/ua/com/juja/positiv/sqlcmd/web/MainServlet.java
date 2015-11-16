@@ -54,8 +54,15 @@ public class MainServlet extends HttpServlet {
         } else if (action.equals("/help")) {
             request.getRequestDispatcher("help.jsp").forward(request, response);
 
-        } else if (action.equals("/table")) {
+        } else if (action.equals("/createTable")) {
+            String tableName = request.getParameter("tableName");
+            int columnCount = Integer.parseInt(request.getParameter("columnCount"));
+            request.setAttribute("tableName", tableName);
+            request.setAttribute("columnCount", columnCount);
             request.getRequestDispatcher("table.jsp").forward(request, response);
+
+        } else if (action.equals("/table")) {
+            request.getRequestDispatcher("createTable.jsp").forward(request, response);
 
         } else if (action.equals("/list")) {
             list(manager, request, response);
@@ -155,10 +162,11 @@ public class MainServlet extends HttpServlet {
     private void table(DatabaseManager manager, HttpServletRequest request,
                        HttpServletResponse response) {
         String tableName = request.getParameter("tableName");
+        int columnCount = Integer.parseInt(request.getParameter("columnCount"));
         String keyName = request.getParameter("keyName");
 
         Map<String, Object> data = new HashMap<>();
-        for (int index = 1; index < 4; index++) { //TODO убрать меджик намбер
+        for (int index = 1; index < columnCount; index++) {
             data.put(request.getParameter("columnName" + index),
                     request.getParameter("columnType" + index));
         }
@@ -267,8 +275,16 @@ public class MainServlet extends HttpServlet {
         String tableName = request.getParameter("tableName");
         try {
             List<String> tableData = service.find(manager, tableName);
-            request.setAttribute("tableData", tableData);
-            request.setAttribute("columnCount", tableData.get(0));
+            List<List<String>> table = new ArrayList<>(tableData.size() - 1);
+            int columnCount = Integer.parseInt(tableData.get(0));
+            for (int current = 1; current < tableData.size();) {
+                List<String> row = new ArrayList<>(columnCount);
+                for (int rowIndex = 0; rowIndex < columnCount; rowIndex++) {
+                    row.add(tableData.get(current++));
+                }
+                table.add(row);
+            }
+            request.setAttribute("table", table);
             request.getRequestDispatcher("find.jsp").forward(request, response);
         } catch (ServletException | SQLException | IOException e) {
             error(request, response, e);

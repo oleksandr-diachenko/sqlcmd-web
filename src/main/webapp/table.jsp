@@ -7,17 +7,15 @@
   <body>
     <form action="table" method="post">
       <table>
-        <tr>
-          <td>Table name</td>
-          <td><input type="text" name="tableName"/></td>
-        </tr>
+          <input type="hidden" name="tableName" value="${tableName}" />
+          <input type="hidden" name="columnCount" value="${columnCount}" />
 
         <tr>
           <td>Primary key name</td>
           <td><input type="text" name="keyName"/></td>
         </tr>
 
-        <c:forEach begin="1" end="4" varStatus="loop">
+        <c:forEach begin="1" end="${columnCount - 1}" varStatus="loop">
           <tr>
             <td>Column name${loop.count}</td>
             <td><input type="text" name="columnName${loop.count}"/></td>
