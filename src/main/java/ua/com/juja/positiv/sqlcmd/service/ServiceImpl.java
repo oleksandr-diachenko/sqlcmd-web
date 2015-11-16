@@ -75,4 +75,10 @@ public class ServiceImpl implements Service {
                        String keyValue, Map<String, Object> columnData) throws SQLException {
         manager.update(tableName, keyName, keyValue, columnData);
     }
+
+    @Override
+    public void table(DatabaseManager manager, String tableName, String keyName,
+                      Map<String, Object> columnParameter) throws SQLException {
+        manager.table(tableName, keyName, columnParameter);
+    }
 }

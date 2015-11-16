@@ -2,6 +2,7 @@ package ua.com.juja.positiv.sqlcmd.service;
 
 import ua.com.juja.positiv.sqlcmd.databasemanager.DatabaseManager;
 
+import javax.xml.crypto.Data;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
@@ -33,5 +34,8 @@ public interface Service {
 
     void update(DatabaseManager manager, String tableName, String keyName,
                 String keyValue, Map<String, Object> columnData) throws SQLException;
+
+    void table(DatabaseManager manager, String tableName, String keyName,
+               Map<String, Object> columnParameter) throws SQLException;;
 
 }

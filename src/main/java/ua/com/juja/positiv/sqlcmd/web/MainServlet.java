@@ -53,8 +53,6 @@ public class MainServlet extends HttpServlet {
         } else if (action.equals("/help")) {
             request.getRequestDispatcher("help.jsp").forward(request, response);
 
-<<<<<<< HEAD
-=======
         } else if (action.equals("/createTable")) {
             String tableName = request.getParameter("tableName");
             int columnCount = Integer.parseInt(request.getParameter("columnCount"));
@@ -65,7 +63,6 @@ public class MainServlet extends HttpServlet {
         } else if (action.equals("/table")) {
             request.getRequestDispatcher("createTable.jsp").forward(request, response);
 
->>>>>>> dev
         } else if (action.equals("/list")) {
             list(manager, request, response);
 
@@ -128,6 +125,9 @@ public class MainServlet extends HttpServlet {
         } else if (action.equals("/deleteDatabase")) {
             deleteDatabase(manager, request, response);
 
+        } else if (action.equals("/table")) {
+            table(manager, request, response);
+
         } else if (action.equals("/updateRecord")) {
             String page = "update.jsp";
             forward(request, response, manager, page);
@@ -158,8 +158,6 @@ public class MainServlet extends HttpServlet {
         return requestURI.substring(request.getContextPath().length(), requestURI.length());
     }
 
-<<<<<<< HEAD
-=======
     private void table(DatabaseManager manager, HttpServletRequest request,
                        HttpServletResponse response) {
         String tableName = request.getParameter("tableName");
@@ -179,7 +177,6 @@ public class MainServlet extends HttpServlet {
         }
     }
 
->>>>>>> dev
     private void update(DatabaseManager manager, HttpServletRequest request,
                         HttpServletResponse response) {
         String tableName = request.getParameter("tableName");
@@ -262,7 +259,7 @@ public class MainServlet extends HttpServlet {
     }
 
     private void list(DatabaseManager manager, HttpServletRequest request,
-                             HttpServletResponse response) {
+                      HttpServletResponse response) {
         try {
             Set<String> tableList = service.list(manager);
             request.setAttribute("tables", tableList);
