@@ -54,6 +54,16 @@ public class MainServlet extends HttpServlet {
         } else if (action.equals("/help")) {
             request.getRequestDispatcher("help.jsp").forward(request, response);
 
+        } else if (action.equals("/createTable")) {
+            String tableName = request.getParameter("tableName");
+            int columnCount = Integer.parseInt(request.getParameter("columnCount"));
+            request.setAttribute("tableName", tableName);
+            request.setAttribute("columnCount", columnCount);
+            request.getRequestDispatcher("table.jsp").forward(request, response);
+
+        } else if (action.equals("/table")) {
+            request.getRequestDispatcher("createTable.jsp").forward(request, response);
+
         } else if (action.equals("/list")) {
             list(manager, request, response);
 
@@ -116,6 +126,9 @@ public class MainServlet extends HttpServlet {
         } else if (action.equals("/deleteDatabase")) {
             deleteDatabase(manager, request, response);
 
+        } else if (action.equals("/table")) {
+            table(manager, request, response);
+
         } else if (action.equals("/updateRecord")) {
             String page = "update.jsp";
             forward(request, response, manager, page);
@@ -144,6 +157,25 @@ public class MainServlet extends HttpServlet {
     private String getAction(HttpServletRequest request) {
         String requestURI = request.getRequestURI();
         return requestURI.substring(request.getContextPath().length(), requestURI.length());
+    }
+
+    private void table(DatabaseManager manager, HttpServletRequest request,
+                       HttpServletResponse response) {
+        String tableName = request.getParameter("tableName");
+        int columnCount = Integer.parseInt(request.getParameter("columnCount"));
+        String keyName = request.getParameter("keyName");
+
+        Map<String, Object> data = new HashMap<>();
+        for (int index = 1; index < columnCount; index++) {
+            data.put(request.getParameter("columnName" + index),
+                    request.getParameter("columnType" + index));
+        }
+        try {
+            service.table(manager, tableName, keyName, data);
+            request.getRequestDispatcher("success.jsp").forward(request, response);
+        } catch (ServletException | SQLException | IOException e) {
+            error(request, response, e);
+        }
     }
 
     private void update(DatabaseManager manager, HttpServletRequest request,
@@ -228,7 +260,7 @@ public class MainServlet extends HttpServlet {
     }
 
     private void list(DatabaseManager manager, HttpServletRequest request,
-                             HttpServletResponse response) {
+                      HttpServletResponse response) {
         try {
             Set<String> tableList = service.list(manager);
             request.setAttribute("tables", tableList);
@@ -243,8 +275,16 @@ public class MainServlet extends HttpServlet {
         String tableName = request.getParameter("tableName");
         try {
             List<String> tableData = service.find(manager, tableName);
-            request.setAttribute("tableData", tableData);
-            request.setAttribute("columnCount", tableData.get(0));
+            List<List<String>> table = new ArrayList<>(tableData.size() - 1);
+            int columnCount = Integer.parseInt(tableData.get(0));
+            for (int current = 1; current < tableData.size();) {
+                List<String> row = new ArrayList<>(columnCount);
+                for (int rowIndex = 0; rowIndex < columnCount; rowIndex++) {
+                    row.add(tableData.get(current++));
+                }
+                table.add(row);
+            }
+            request.setAttribute("table", table);
             request.getRequestDispatcher("find.jsp").forward(request, response);
         } catch (ServletException | SQLException | IOException e) {
             error(request, response, e);
