@@ -267,19 +267,16 @@ public class MainServlet extends HttpServlet {
         String tableName = request.getParameter("tableName");
         try {
             List<String> tableData = service.find(manager, tableName);
-            List<List<String>> data = new LinkedList<>();
+            List<List<String>> data = new ArrayList<>(tableData.size() - 1);
             int columnCount = Integer.parseInt(tableData.get(0));
-            int current = 1;
-            for (int index = 0; index < tableData.size() - 1; index += columnCount) {
-                List<String> row = new LinkedList<>();
-                for (int i = 1; i <= columnCount; i++) {
-                    row.add(tableData.get(current));
-                    current++;
+            for (int current = 1; current < tableData.size();) {
+                List<String> row = new ArrayList<>(columnCount);
+                for (int rowIndex = 0; rowIndex < columnCount; rowIndex++) {
+                    row.add(tableData.get(current++));
                 }
                 data.add(row);
             }
             request.setAttribute("data", data);
-            request.setAttribute("columnCount", tableData.get(0));
             request.getRequestDispatcher("find.jsp").forward(request, response);
         } catch (ServletException | SQLException | IOException e) {
             error(request, response, e);
