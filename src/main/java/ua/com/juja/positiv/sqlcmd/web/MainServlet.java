@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 import ua.com.juja.positiv.sqlcmd.databasemanager.DatabaseManager;
 import ua.com.juja.positiv.sqlcmd.service.Service;
-import ua.com.juja.positiv.sqlcmd.service.ServiceImpl;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -165,13 +164,13 @@ public class MainServlet extends HttpServlet {
         int columnCount = Integer.parseInt(request.getParameter("columnCount"));
         String keyName = request.getParameter("keyName");
 
-        Map<String, Object> data = new HashMap<>();
+        Map<String, Object> columnParameters = new HashMap<>();
         for (int index = 1; index < columnCount; index++) {
-            data.put(request.getParameter("columnName" + index),
+            columnParameters.put(request.getParameter("columnName" + index),
                     request.getParameter("columnType" + index));
         }
         try {
-            service.table(manager, tableName, keyName, data);
+            service.table(manager, tableName, keyName, columnParameters);
             request.getRequestDispatcher("success.jsp").forward(request, response);
         } catch (ServletException | SQLException | IOException e) {
             error(request, response, e);
