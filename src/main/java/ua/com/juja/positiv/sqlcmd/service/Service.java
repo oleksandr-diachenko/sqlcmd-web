@@ -35,5 +35,5 @@ public interface Service {
                 String keyValue, Map<String, Object> columnData) throws SQLException;
 
     void table(DatabaseManager manager, String tableName, String keyName,
-               Map<String, Object> columnData) throws SQLException;
+               Map<String, Object> columnParameters) throws SQLException;
 }
