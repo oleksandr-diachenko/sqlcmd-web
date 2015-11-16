@@ -165,13 +165,13 @@ public class MainServlet extends HttpServlet {
         int columnCount = Integer.parseInt(request.getParameter("columnCount"));
         String keyName = request.getParameter("keyName");
 
-        Map<String, Object> data = new HashMap<>();
+        Map<String, Object> columnParameters = new HashMap<>();
         for (int index = 1; index < columnCount; index++) {
-            data.put(request.getParameter("columnName" + index),
+            columnParameters.put(request.getParameter("columnName" + index),
                     request.getParameter("columnType" + index));
         }
         try {
-            service.table(manager, tableName, keyName, data);
+            service.table(manager, tableName, keyName, columnParameters);
             request.getRequestDispatcher("success.jsp").forward(request, response);
         } catch (ServletException | SQLException | IOException e) {
             error(request, response, e);
