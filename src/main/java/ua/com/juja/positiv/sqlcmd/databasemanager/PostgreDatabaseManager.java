@@ -27,9 +27,15 @@ public class PostgreDatabaseManager implements DatabaseManager {
     @Override
     public void createTable(String tableName, String keyName, Map<String, Object> columnParameters) throws SQLException {
         Statement stmt = connection.createStatement();
-        stmt.executeUpdate("CREATE TABLE " + tableName +
-                "(" + keyName + " INT  PRIMARY KEY NOT NULL" +
-                getParameters(columnParameters) + ")");
+        StringBuilder url = new StringBuilder();
+        url.append("CREATE TABLE ")
+                .append(tableName)
+                .append("(")
+                .append(keyName)
+                .append(" INT  PRIMARY KEY NOT NULL").
+                append(getParameters(columnParameters))
+                .append(")");
+        stmt.executeUpdate(url.toString());
         stmt.close();
     }
 
@@ -83,34 +89,52 @@ public class PostgreDatabaseManager implements DatabaseManager {
     @Override
     public void createRecord(String tableName, Map<String, Object> columnData) throws SQLException {
         Statement stmt = connection.createStatement();
-        stmt.executeUpdate("INSERT INTO " + tableName + " (" + getColumnNames(columnData) + ")" +
-                " VALUES (" + getColumnValues(columnData) + ")");
+        StringBuilder url = new StringBuilder();
+        url.append("INSERT INTO ")
+                .append(tableName)
+                .append(" (")
+                .append(getColumnNames(columnData))
+                .append(")")
+                .append(" VALUES (")
+                .append(getColumnValues(columnData))
+                .append(")");
+        stmt.executeUpdate(url.toString());
         stmt.close();
     }
 
     private String getColumnNames(Map<String, Object> columnData) {
-        String keys = "";
+        StringBuilder columnNames = new StringBuilder();
         for (Map.Entry<String, Object> pair : columnData.entrySet()) {
-            keys += pair.getKey() + ", ";
+            columnNames.append(pair.getKey()).append(", ");
         }
-        return keys.substring(0, keys.length() - 2);
+        return columnNames.substring(0, columnNames.length() - 2);
     }
 
     private String getColumnValues(Map<String, Object> columnData) {
-        String values = "";
+        StringBuilder columnValues = new StringBuilder();
         for (Map.Entry<String, Object> pair : columnData.entrySet()) {
-            values += "'" + pair.getValue() + "', ";
+            columnValues.append("'").append(pair.getValue()).append("', ");
         }
-        return values.substring(0, values.length() - 2);
+        return columnValues.substring(0, columnValues.length() - 2);
     }
 
     @Override
     public void updateRecord(String tableName, String keyName, String keyValue, Map<String, Object> columnData) throws SQLException {
         Statement stmt = connection.createStatement();
         for (Map.Entry<String, Object> pair : columnData.entrySet()) {
-            stmt.executeUpdate("UPDATE " + tableName +
-                    " SET " + pair.getKey() + " = '" + pair.getValue() +
-                    "' WHERE " + keyName + " = '" + keyValue + "'");
+            StringBuilder url = new StringBuilder();
+            url.append("UPDATE ")
+                    .append(tableName)
+                    .append(" SET ")
+                    .append(pair.getKey())
+                    .append(" = '")
+                    .append(pair.getValue())
+                    .append("' WHERE ")
+                    .append(keyName)
+                    .append(" = '")
+                    .append(keyValue)
+                    .append("'");
+            stmt.executeUpdate(url.toString());
         }
         stmt.close();
     }
