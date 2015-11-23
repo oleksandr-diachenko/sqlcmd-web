@@ -105,7 +105,8 @@ public class PostgreDatabaseManager implements DatabaseManager {
     private String getColumnNames(Map<String, Object> columnData) {
         StringBuilder columnNames = new StringBuilder();
         for (Map.Entry<String, Object> pair : columnData.entrySet()) {
-            columnNames.append(pair.getKey()).append(", ");
+            columnNames.append(pair.getKey())
+                    .append(", ");
         }
         return columnNames.substring(0, columnNames.length() - 2);
     }
@@ -113,7 +114,9 @@ public class PostgreDatabaseManager implements DatabaseManager {
     private String getColumnValues(Map<String, Object> columnData) {
         StringBuilder columnValues = new StringBuilder();
         for (Map.Entry<String, Object> pair : columnData.entrySet()) {
-            columnValues.append("'").append(pair.getValue()).append("', ");
+            columnValues.append("'")
+                    .append(pair.getValue())
+                    .append("', ");
         }
         return columnValues.substring(0, columnValues.length() - 2);
     }
