@@ -1,5 +1,7 @@
 package ua.com.juja.positiv.sqlcmd.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import ua.com.juja.positiv.sqlcmd.databasemanager.DatabaseManager;
 
 import java.sql.SQLException;
@@ -10,25 +12,22 @@ import java.util.Set;
 /**
  * Created by POSITIV on 31.10.2015.
  */
-public class ServiceImpl implements Service {
+@Component
+public abstract class ServiceImpl implements Service {
 
     private List<String> commands;
-    private DatabaseManagerFactory factory;
-
-    public ServiceImpl(List<String> commands, DatabaseManagerFactory factory) {
-        this.commands = commands;
-        this.factory = factory;
-    }
 
     @Override
     public List<String> commandList() {
         return commands;
     }
+
+    public abstract DatabaseManager getManager();
     
     @Override
     public DatabaseManager connect(String database, String user, String password)
             throws SQLException, ClassNotFoundException {
-        DatabaseManager manager = factory.createDatabaseManager();
+        DatabaseManager manager = getManager();
         manager.connect(database, user, password);
         return manager;
     }
@@ -80,5 +79,9 @@ public class ServiceImpl implements Service {
     public void table(DatabaseManager manager, String tableName, String keyName,
                       Map<String, Object> columnParameter) throws SQLException {
         manager.table(tableName, keyName, columnParameter);
+    }
+
+    public void setCommands(List<String> commands) {
+        this.commands = commands;
     }
 }
