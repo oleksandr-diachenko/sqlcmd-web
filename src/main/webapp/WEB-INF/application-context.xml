@@ -12,7 +12,6 @@
     <bean id="service" class="ua.com.juja.positiv.sqlcmd.service.ServiceImpl">
         <property name="commands">
             <list>
-                <value>help</value>
                 <value>connect</value>
                 <value>table</value>
                 <value>list</value>
@@ -25,6 +24,6 @@
                 <value>deleteDatabase</value>
             </list>
         </property>
-        <lookup-method name="getManager" bean="JDBCDatabaseManager"/>
+        <lookup-method name="getManager" bean="postgreDatabaseManager"/>
     </bean>
 </beans>

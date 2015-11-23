@@ -19,7 +19,7 @@ public class DatabaseManagerTest {
 
     DatabaseLogin login = new DatabaseLogin();
     DatabasePreparation preparation = new DatabasePreparation();
-    DatabaseManager manager = new JDBCDatabaseManager();
+    DatabaseManager manager = new PostgreDatabaseManager();
 
     @Before
     public void run() throws SQLException, ClassNotFoundException {
@@ -30,7 +30,7 @@ public class DatabaseManagerTest {
     @Test
     public void testDelete_WithCorrectData() throws SQLException {
         preparation.run();
-        manager.delete("car", "id", "3");
+        manager.deleteRecord("car", "id", "3");
 
         List<String> tableData = manager.getTableData("car");
         assertEquals("[4, id, name, color, year, " +
@@ -40,7 +40,7 @@ public class DatabaseManagerTest {
 
     @Test(expected = SQLException.class)
     public void testDelete_WithIncorrectData_TableName() throws SQLException {
-        manager.delete("qwe", "id", "3");
+        manager.deleteRecord("qwe", "id", "3");
     }
 
     @Test
@@ -81,7 +81,7 @@ public class DatabaseManagerTest {
         columnData.put("name", "mercedes");
         columnData.put("color", "white");
         columnData.put("year", "2008");
-        manager.update("car", "id", "3", columnData);
+        manager.updateRecord("car", "id", "3", columnData);
 
         List<String> tableData = manager.getTableData("car");
         assertEquals("[4, id, name, color, year, " +
@@ -95,7 +95,7 @@ public class DatabaseManagerTest {
         preparation.run();
         Map<String, Object> columnData = new LinkedHashMap<>();
         columnData.put("name", "mercedes");
-        manager.update("car", "id", "3", columnData);
+        manager.updateRecord("car", "id", "3", columnData);
 
         List<String> tableData = manager.getTableData("car");
         assertEquals("[4, id, name, color, year, " +
@@ -108,13 +108,13 @@ public class DatabaseManagerTest {
     public void testUpdate_WithIncorrectData_TableName() throws SQLException {
         Map<String, Object> columnData = new LinkedHashMap<>();
         columnData.put("name", "mercedes");
-        manager.update("qwe", "id", "3", columnData);
+        manager.updateRecord("qwe", "id", "3", columnData);
     }
 
     @Test
     public void testClear_WithCorrectData() throws SQLException {
         preparation.run();
-        manager.clear("car");
+        manager.clearTable("car");
 
         List<String> tableData = manager.getTableData("car");
         assertEquals("[4, id, name, color, year]", tableData.toString());
@@ -122,7 +122,7 @@ public class DatabaseManagerTest {
 
     @Test(expected = SQLException.class)
     public void testClear_WithIncorrectData_TableName() throws SQLException {
-        manager.clear("qwe");
+        manager.clearTable("qwe");
     }
 
     @Test
@@ -133,7 +133,7 @@ public class DatabaseManagerTest {
         data.put("name", "ferrari");
         data.put("color", "red");
         data.put("year", "6");
-        manager.create("car", data);
+        manager.createRecord("car", data);
 
         List<String> tableData = manager.getTableData("car");
         assertEquals("[4, id, name, color, year, " +
@@ -148,7 +148,7 @@ public class DatabaseManagerTest {
         preparation.run();
         Map<String, Object> data = new HashMap<>();
         data.put("id", "4");
-        manager.create("car", data);
+        manager.createRecord("car", data);
 
         List<String> tableData = manager.getTableData("car");
         assertEquals("[4, id, name, color, year, " +
@@ -161,14 +161,14 @@ public class DatabaseManagerTest {
     @Test(expected = StringIndexOutOfBoundsException.class)
     public void testCreate_WithIncorrectData_Length() throws SQLException {
         Map<String, Object> map = new HashMap<>();
-        manager.create("qwe", map);
+        manager.createRecord("qwe", map);
     }
 
     @Test(expected = SQLException.class)
     public void testCreate_WithIncorrectData_TableName() throws SQLException {
         Map<String, Object> data = new HashMap<>();
         data.put("id", "2");
-        manager.create("qwe", data);
+        manager.createRecord("qwe", data);
     }
 
     @Test
@@ -178,17 +178,17 @@ public class DatabaseManagerTest {
         data.put("name", "text");
         data.put("population", "int");
         data.put("county", "text");
-        manager.table("city", "id", data);
+        manager.createTable("city", "id", data);
 
         Set<String> tableNames = manager.getTableNames();
         assertEquals("[car, city, client]", tableNames.toString());
-        manager.drop("city");
+        manager.dropTable("city");
     }
 
     @Test(expected = SQLException.class)
     public void testTable_WithIncorrectData_Type() throws SQLException {
         Map<String, Object> data = new HashMap<>();
         data.put("name", "");
-        manager.table("city", "id", data);
+        manager.createTable("city", "id", data);
     }
 }

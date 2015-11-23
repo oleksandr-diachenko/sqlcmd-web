@@ -18,24 +18,5 @@ public interface Service {
     DatabaseManager connect(String database, String user, String password)
             throws SQLException, ClassNotFoundException;
 
-    Set<String> list(DatabaseManager manager) throws SQLException;
-
-    List<String> find(DatabaseManager manager, String tableName) throws SQLException;
-
-    void clear(DatabaseManager manager, String tableName) throws SQLException;
-
-    void delete(DatabaseManager manager, String tableName, String keyName, String keyValue) throws SQLException;
-
-    void create(DatabaseManager manager, String tableName, Map<String, Object> columnData) throws SQLException;
-
-    void createBase(DatabaseManager manager, String databaseName) throws SQLException;
-
-    void deleteBase(DatabaseManager manager, String databaseName) throws SQLException;
-
-    void update(DatabaseManager manager, String tableName, String keyName,
-                String keyValue, Map<String, Object> columnData) throws SQLException;
-
-    void table(DatabaseManager manager, String tableName, String keyName,
-               Map<String, Object> columnParameter) throws SQLException;;
-
+    List<List<String>> getTableData(DatabaseManager manager, String tableName) throws SQLException;
 }

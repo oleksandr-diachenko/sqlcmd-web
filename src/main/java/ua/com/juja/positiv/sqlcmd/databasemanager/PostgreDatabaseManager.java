@@ -11,7 +11,7 @@ import java.util.*;
  */
 @Component
 @Scope(value = "prototype")
-public class JDBCDatabaseManager implements DatabaseManager {
+public class PostgreDatabaseManager implements DatabaseManager {
 
     public static final String JDBC_POSTGRESQL_URL = "jdbc:postgresql://localhost:5432/";
     private Connection connection;
@@ -25,7 +25,7 @@ public class JDBCDatabaseManager implements DatabaseManager {
     }
 
     @Override
-    public void table(String tableName, String keyName, Map<String, Object> columnParameters) throws SQLException {
+    public void createTable(String tableName, String keyName, Map<String, Object> columnParameters) throws SQLException {
         Statement stmt = connection.createStatement();
         stmt.executeUpdate("CREATE TABLE " + tableName +
                 "(" + keyName + " INT  PRIMARY KEY NOT NULL" +
@@ -81,7 +81,7 @@ public class JDBCDatabaseManager implements DatabaseManager {
     }
 
     @Override
-    public void create(String tableName, Map<String, Object> columnData) throws SQLException {
+    public void createRecord(String tableName, Map<String, Object> columnData) throws SQLException {
         Statement stmt = connection.createStatement();
         stmt.executeUpdate("INSERT INTO " + tableName + " (" + getColumnNames(columnData) + ")" +
                 " VALUES (" + getColumnValues(columnData) + ")");
@@ -105,7 +105,7 @@ public class JDBCDatabaseManager implements DatabaseManager {
     }
 
     @Override
-    public void update(String tableName, String keyName, String keyValue, Map<String, Object> columnData) throws SQLException {
+    public void updateRecord(String tableName, String keyName, String keyValue, Map<String, Object> columnData) throws SQLException {
         Statement stmt = connection.createStatement();
         for (Map.Entry<String, Object> pair : columnData.entrySet()) {
             stmt.executeUpdate("UPDATE " + tableName +
@@ -116,21 +116,21 @@ public class JDBCDatabaseManager implements DatabaseManager {
     }
 
     @Override
-    public void delete(String tableName, String keyName, String keyValue) throws SQLException {
+    public void deleteRecord(String tableName, String keyName, String keyValue) throws SQLException {
         Statement stmt = connection.createStatement();
         stmt.executeUpdate("DELETE FROM " + tableName + " WHERE " + keyName + " = '" + keyValue + "'");
         stmt.close();
     }
 
     @Override
-    public void clear(String tableName) throws SQLException {
+    public void clearTable(String tableName) throws SQLException {
         Statement stmt = connection.createStatement();
         stmt.executeUpdate("DELETE FROM " + tableName);
         stmt.close();
     }
 
     @Override
-    public void drop(String tableName) throws SQLException {
+    public void dropTable(String tableName) throws SQLException {
         Statement stmt = connection.createStatement();
         stmt.executeUpdate("DROP TABLE " + tableName);
         stmt.close();

@@ -11,8 +11,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.sql.SQLException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by POSITIV on 30.10.2015.
@@ -35,62 +36,60 @@ public class MainServlet extends HttpServlet {
         String action = getAction(request);
 
         if (action.equals("/connect")) {
-            request.getRequestDispatcher("connect.jsp").forward(request, response);
+            goTo("connect", request, response);
             return;
         }
 
         DatabaseManager manager = (DatabaseManager) request.getSession().getAttribute("manager");
 
         if (manager == null) {
-            response.sendRedirect(response.encodeRedirectURL("connect"));
+            redirect("connect", request, response);
             return;
         }
 
-        if (action.equals("/menu") || action.equals("/")) {
-            request.setAttribute("items", service.commandList());
-            request.getRequestDispatcher("menu.jsp").forward(request, response);
+        try {
+            if (action.equals("/menu") || action.equals("/")) {
+                setAttribute("items", service.commandList(), request);
+                goTo("menu", request, response);
 
-        } else if (action.equals("/help")) {
-            request.getRequestDispatcher("help.jsp").forward(request, response);
+            } else if (action.equals("/createTable")) {
+                setColumnCountAndTableName(request);
+                goTo("table", request, response);
 
-        } else if (action.equals("/createTable")) {
-            String tableName = request.getParameter("tableName");
-            int columnCount = Integer.parseInt(request.getParameter("columnCount"));
-            request.setAttribute("tableName", tableName);
-            request.setAttribute("columnCount", columnCount);
-            request.getRequestDispatcher("table.jsp").forward(request, response);
+            } else if (action.equals("/table")) {
+                goTo("createTable", request, response);
 
-        } else if (action.equals("/table")) {
-            request.getRequestDispatcher("createTable.jsp").forward(request, response);
+            } else if (action.equals("/list")) {
+                list(manager, request, response);
 
-        } else if (action.equals("/list")) {
-            list(manager, request, response);
+            } else if (action.equals("/find")) {
+                goTo("tableName", request, response);
 
-        } else if (action.equals("/find")) {
-            request.getRequestDispatcher("tableName.jsp").forward(request, response);
+            } else if (action.equals("/clear")) {
+                goTo("clear", request, response);
 
-        } else if (action.equals("/clear")) {
-            request.getRequestDispatcher("clear.jsp").forward(request, response);
+            } else if (action.equals("/delete")) {
+                goTo("delete", request, response);
 
-        } else if (action.equals("/delete")) {
-            request.getRequestDispatcher("delete.jsp").forward(request, response);
+            } else if (action.equals("/create")) {
+                setAttribute("actionURL", "createRecord", request);
+                goTo("tableName", request, response);
 
-        } else if (action.equals("/create")) {
-            request.setAttribute("actionURL", "createRecord");
-            request.getRequestDispatcher("tableName.jsp").forward(request, response);
+            } else if (action.equals("/createDatabase")) {
+                goTo("createDatabase", request, response);
 
-        } else if (action.equals("/createDatabase")) {
-            request.getRequestDispatcher("createDatabase.jsp").forward(request, response);
+            } else if (action.equals("/deleteDatabase")) {
+                goTo("deleteDatabase", request, response);
 
-        } else if (action.equals("/deleteDatabase")) {
-            request.getRequestDispatcher("deleteDatabase.jsp").forward(request, response);
+            } else if (action.equals("/update")) {
+                setAttribute("actionURL", "updateRecord", request);
+                goTo("tableName", request, response);
 
-        } else if (action.equals("/update")) {
-            request.setAttribute("actionURL", "updateRecord");
-            request.getRequestDispatcher("tableName.jsp").forward(request, response);
-
-        } else {
-            request.getRequestDispatcher("error.jsp").forward(request, response);
+            } else {
+                goTo("error", request, response);
+            }
+        } catch (Exception e) {
+            error(request, response, e);
         }
     }
 
@@ -100,56 +99,71 @@ public class MainServlet extends HttpServlet {
 
         DatabaseManager manager = (DatabaseManager) request.getSession().getAttribute("manager");
 
-        if (action.equals("/connect")) {
-            connect(request, response);
-
-        } else if (action.equals("/find")) {
-            find(manager, request, response);
-
-        } else if (action.equals("/clear")) {
-            clear(manager, request, response);
-
-        } else if (action.equals("/delete")) {
-            delete(manager, request, response);
-
-        } else if (action.equals("/createRecord")) {
-            String page = "create.jsp";
-            forward(request, response, manager, page);
-
-        } else if (action.equals("/create")) {
-            create(manager, request, response);
-
-        } else if (action.equals("/createDatabase")) {
-            createDatabase(manager, request, response);
-
-        } else if (action.equals("/deleteDatabase")) {
-            deleteDatabase(manager, request, response);
-
-        } else if (action.equals("/table")) {
-            table(manager, request, response);
-
-        } else if (action.equals("/updateRecord")) {
-            String page = "update.jsp";
-            forward(request, response, manager, page);
-
-        } else if (action.equals("/update")) {
-            update(manager, request, response);
-        }
-    }
-
-    private void forward(HttpServletRequest request, HttpServletResponse response,
-                         DatabaseManager manager, String page) {
-        String tableName = request.getParameter("tableName");
         try {
-            request.setAttribute("columnCount", getColumnCount(manager, tableName));
-            request.setAttribute("tableName", tableName);
-            request.getRequestDispatcher(page).forward(request, response);
-        } catch (ServletException | IOException | SQLException e) {
+            if (action.equals("/connect")) {
+                connect(request, response);
+
+            } else if (action.equals("/find")) {
+                find(manager, request, response);
+
+            } else if (action.equals("/clear")) {
+                clear(manager, request, response);
+
+            } else if (action.equals("/delete")) {
+                delete(manager, request, response);
+
+            } else if (action.equals("/createRecord")) {
+                setColumnCountAndTableName(request, manager);
+                goTo("create", request, response);
+
+            } else if (action.equals("/create")) {
+                create(manager, request, response);
+
+            } else if (action.equals("/createDatabase")) {
+                createDatabase(manager, request, response);
+
+            } else if (action.equals("/deleteDatabase")) {
+                deleteDatabase(manager, request, response);
+
+            } else if (action.equals("/table")) {
+                table(manager, request, response);
+
+            } else if (action.equals("/updateRecord")) {
+                setColumnCountAndTableName(request, manager);
+                goTo("update", request, response);
+
+            } else if (action.equals("/update")) {
+                update(manager, request, response);
+            }
+        } catch (Exception e) {
             error(request, response, e);
         }
     }
 
-    private int getColumnCount(DatabaseManager manager, String tableName) throws SQLException {
+    private void setColumnCountAndTableName(HttpServletRequest request, DatabaseManager manager) throws Exception {
+        String tableName = getParameter("tableName", request);
+        int columnCount = getColumnCount(manager, tableName);
+        setAttribute("columnCount", columnCount, request);
+        setAttribute("tableName", tableName, request);
+    }
+
+
+    private void setColumnCountAndTableName(HttpServletRequest request) {
+        String tableName = getParameter("tableName", request);
+        int columnCount = Integer.parseInt(getParameter("columnCount", request));
+        setAttribute("tableName", tableName, request);
+        setAttribute("columnCount", columnCount, request);
+    }
+
+    private void setAttribute(String attributeName, Object attributeValue, HttpServletRequest request) {
+        request.setAttribute(attributeName, attributeValue);
+    }
+
+    private String getParameter(String parameterName, HttpServletRequest request) {
+        return request.getParameter(parameterName);
+    }
+
+    private int getColumnCount(DatabaseManager manager, String tableName) throws Exception {
         return Integer.parseInt(manager.getTableData(tableName).get(0));
     }
 
@@ -158,158 +172,123 @@ public class MainServlet extends HttpServlet {
         return requestURI.substring(request.getContextPath().length(), requestURI.length());
     }
 
+    private void error(HttpServletRequest request, HttpServletResponse response, Exception e) {
+        setAttribute("message", e.getMessage(), request);
+        try {
+            goTo("error", request, response);
+        } catch (Exception e1) {
+            e1.printStackTrace();
+        }
+    }
+
+    private void goTo(String jsp, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        try {
+            request.getRequestDispatcher(jsp + ".jsp").forward(request, response);
+        } catch (Exception e) {
+            error(request, response, e);
+        }
+    }
+
+    private void redirect(String url, HttpServletRequest request, HttpServletResponse response) {
+        try {
+            response.sendRedirect(response.encodeRedirectURL(url));
+        } catch (Exception e) {
+            error(request, response, e);
+        }
+    }
+
     private void table(DatabaseManager manager, HttpServletRequest request,
-                       HttpServletResponse response) {
-        String tableName = request.getParameter("tableName");
-        int columnCount = Integer.parseInt(request.getParameter("columnCount"));
-        String keyName = request.getParameter("keyName");
+                       HttpServletResponse response) throws Exception {
+        String tableName = getParameter("tableName", request);
+        int columnCount = Integer.parseInt(getParameter("columnCount", request));
+        String keyName = getParameter("keyName", request);
 
         Map<String, Object> data = new HashMap<>();
         for (int index = 1; index < columnCount; index++) {
-            data.put(request.getParameter("columnName" + index),
-                    request.getParameter("columnType" + index));
+            data.put(getParameter("columnName" + index, request),
+                    getParameter("columnType" + index, request));
         }
-        try {
-            service.table(manager, tableName, keyName, data);
-            request.getRequestDispatcher("success.jsp").forward(request, response);
-        } catch (ServletException | SQLException | IOException e) {
-            error(request, response, e);
-        }
+        manager.createTable(tableName, keyName, data);
+        goTo("success", request, response);
     }
 
     private void update(DatabaseManager manager, HttpServletRequest request,
-                        HttpServletResponse response) {
-        String tableName = request.getParameter("tableName");
+                        HttpServletResponse response) throws Exception {
+        String tableName = getParameter("tableName", request);
         Map<String, Object> data = new HashMap<>();
-        try {
-            for (int index = 1; index < getColumnCount(manager, tableName); index++) {
-                data.put(request.getParameter("columnName" + index),
-                        request.getParameter("columnValue" + index));
-            }
-
-            String keyName = request.getParameter("keyName");
-            String keyValue = request.getParameter("keyValue");
-            service.update(manager, tableName, keyName, keyValue, data);
-            request.getRequestDispatcher("success.jsp").forward(request, response);
-        } catch (ServletException | SQLException | IOException e) {
-            error(request, response, e);
+        for (int index = 1; index < getColumnCount(manager, tableName); index++) {
+            data.put(getParameter("columnName" + index, request),
+                    getParameter("columnValue" + index, request));
         }
+
+        String keyName = getParameter("keyName", request);
+        String keyValue = getParameter("keyValue", request);
+        manager.updateRecord(tableName, keyName, keyValue, data);
+        goTo("success", request, response);
     }
 
     private void deleteDatabase(DatabaseManager manager, HttpServletRequest request,
-                                HttpServletResponse response) {
-        String databaseName = request.getParameter("databaseName");
-        try {
-            service.deleteBase(manager, databaseName);
-            request.getRequestDispatcher("success.jsp").forward(request, response);
-        } catch (ServletException | SQLException | IOException e) {
-            error(request, response, e);
-        }
+                                HttpServletResponse response) throws Exception {
+        String databaseName = getParameter("databaseName", request);
+        manager.dropBase(databaseName);
+        goTo("success", request, response);
     }
 
     private void createDatabase(DatabaseManager manager, HttpServletRequest request,
-                                HttpServletResponse response) {
-        String databaseName = request.getParameter("databaseName");
-        try {
-            service.createBase(manager, databaseName);
-            request.getRequestDispatcher("success.jsp").forward(request, response);
-        } catch (ServletException | SQLException | IOException e) {
-            error(request, response, e);
-        }
+                                HttpServletResponse response) throws Exception {
+        String databaseName = getParameter("databaseName", request);
+        manager.createBase(databaseName);
+        goTo("success", request, response);
     }
 
     private void create(DatabaseManager manager, HttpServletRequest request,
-                        HttpServletResponse response) {
-        String tableName = request.getParameter("tableName");
+                        HttpServletResponse response) throws Exception {
+        String tableName = getParameter("tableName", request);
         Map<String, Object> data = new HashMap<>();
-        try {
-            for (int index = 1; index <= getColumnCount(manager, tableName); index++) {
-                data.put(request.getParameter("columnName" + index),
-                        request.getParameter("columnValue" + index));
-            }
-            service.create(manager, tableName, data);
-            request.getRequestDispatcher("success.jsp").forward(request, response);
-        } catch (ServletException | SQLException | IOException e) {
-            error(request, response, e);
+        for (int index = 1; index <= getColumnCount(manager, tableName); index++) {
+            data.put(getParameter("columnName" + index, request),
+                    getParameter("columnValue" + index, request));
         }
+        manager.createRecord(tableName, data);
+        goTo("success", request, response);
     }
 
     private void delete(DatabaseManager manager, HttpServletRequest request,
-                        HttpServletResponse response) {
-        String tableName = request.getParameter("tableName");
-        String keyName = request.getParameter("keyName");
-        String keyValue = request.getParameter("keyValue");
-        try {
-            service.delete(manager, tableName, keyName, keyValue);
-            request.getRequestDispatcher("success.jsp").forward(request, response);
-        } catch (ServletException | SQLException | IOException e) {
-            error(request, response, e);
-        }
+                        HttpServletResponse response) throws Exception {
+        String tableName = getParameter("tableName", request);
+        String keyName = getParameter("keyName", request);
+        String keyValue = getParameter("keyValue", request);
+        manager.deleteRecord(tableName, keyName, keyValue);
+        goTo("success", request, response);
     }
 
     private void clear(DatabaseManager manager, HttpServletRequest request,
-                       HttpServletResponse response) {
-        String tableName = request.getParameter("tableName");
-        try {
-            service.clear(manager, tableName);
-            request.getRequestDispatcher("success.jsp").forward(request, response);
-        } catch (ServletException | SQLException | IOException e) {
-            error(request, response, e);
-        }
+                       HttpServletResponse response) throws Exception {
+        String tableName = getParameter("tableName", request);
+        manager.clearTable(tableName);
+        goTo("success", request, response);
     }
 
     private void list(DatabaseManager manager, HttpServletRequest request,
-                      HttpServletResponse response) {
-        try {
-            Set<String> tableList = service.list(manager);
-            request.setAttribute("tables", tableList);
-            request.getRequestDispatcher("list.jsp").forward(request, response);
-        } catch (ServletException | SQLException | IOException e) {
-            error(request, response, e);
-        }
+                      HttpServletResponse response) throws Exception {
+        Set<String> tableList = manager.getTableNames();
+        setAttribute("tables", tableList, request);
+        goTo("list", request, response);
     }
 
     private void find(DatabaseManager manager, HttpServletRequest request,
-                      HttpServletResponse response) {
-        String tableName = request.getParameter("tableName");
-        try {
-            List<String> tableData = service.find(manager, tableName);
-            List<List<String>> table = new ArrayList<>(tableData.size() - 1);
-            int columnCount = Integer.parseInt(tableData.get(0));
-            for (int current = 1; current < tableData.size();) {
-                List<String> row = new ArrayList<>(columnCount);
-                for (int rowIndex = 0; rowIndex < columnCount; rowIndex++) {
-                    row.add(tableData.get(current++));
-                }
-                table.add(row);
-            }
-            request.setAttribute("table", table);
-            request.getRequestDispatcher("find.jsp").forward(request, response);
-        } catch (ServletException | SQLException | IOException e) {
-            error(request, response, e);
-        }
+                      HttpServletResponse response) throws Exception {
+        String tableName = getParameter("tableName", request);
+        setAttribute("table", service.getTableData(manager, tableName), request);
+        goTo("find", request, response);
     }
 
-    private void connect(HttpServletRequest request, HttpServletResponse response) {
-        String database = request.getParameter("database");
-        String user = request.getParameter("user");
-        String password = request.getParameter("password");
-        try {
-            DatabaseManager manager = service.connect(database, user, password);
-            request.getSession().setAttribute("manager", manager);
-            response.sendRedirect(response.encodeRedirectURL("menu"));
-        } catch (SQLException | ClassNotFoundException | IOException e) {
-            error(request, response, e);
-        }
-    }
-
-    private void error(HttpServletRequest request, HttpServletResponse response, Exception e) {
-        request.setAttribute("message", e.getMessage());
-        try {
-            e.printStackTrace();
-            request.getRequestDispatcher("error.jsp").forward(request, response);
-        } catch (ServletException | IOException e1) {
-            e.printStackTrace();
-        }
+    private void connect(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        String database = getParameter("database", request);
+        String user = getParameter("user", request);
+        String password = getParameter("password", request);
+        DatabaseManager manager = service.connect(database, user, password);
+        request.getSession().setAttribute("manager", manager);
+        redirect("menu", request, response);
     }
 }
