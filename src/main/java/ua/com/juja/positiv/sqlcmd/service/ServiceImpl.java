@@ -1,84 +1,51 @@
 package ua.com.juja.positiv.sqlcmd.service;
 
+import org.springframework.stereotype.Component;
 import ua.com.juja.positiv.sqlcmd.databasemanager.DatabaseManager;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Created by POSITIV on 31.10.2015.
  */
-public class ServiceImpl implements Service {
+@Component
+public abstract class ServiceImpl implements Service {
 
     private List<String> commands;
-    private DatabaseManagerFactory factory;
-
-    public ServiceImpl(List<String> commands, DatabaseManagerFactory factory) {
-        this.commands = commands;
-        this.factory = factory;
-    }
 
     @Override
     public List<String> commandList() {
         return commands;
     }
-    
+
+    public abstract DatabaseManager getManager();
+
     @Override
     public DatabaseManager connect(String database, String user, String password)
             throws SQLException, ClassNotFoundException {
-        DatabaseManager manager = factory.createDatabaseManager();
+        DatabaseManager manager = getManager();
         manager.connect(database, user, password);
         return manager;
     }
 
     @Override
-    public Set<String> list(DatabaseManager manager) throws SQLException {
-        return manager.getTableNames();
+    public List<List<String>> getTableData(DatabaseManager manager, String tableName) throws SQLException {
+        List<String> tableData = manager.getTableData(tableName);
+        List<List<String>> table = new ArrayList<>(tableData.size() - 1);
+        int columnCount = Integer.parseInt(tableData.get(0));
+        for (int current = 1; current < tableData.size(); ) {
+            List<String> row = new ArrayList<>(columnCount);
+            for (int rowIndex = 0; rowIndex < columnCount; rowIndex++) {
+                row.add(tableData.get(current++));
+            }
+            table.add(row);
+        }
+        return table;
     }
 
-    @Override
-    public List<String> find(DatabaseManager manager, String tableName) throws SQLException {
-        return manager.getTableData(tableName);
-    }
-
-    @Override
-    public void clear(DatabaseManager manager, String tableName) throws SQLException {
-        manager.clear(tableName);
-    }
-
-    @Override
-    public void delete(DatabaseManager manager, String tableName, String keyName, String keyValue)
-            throws SQLException {
-        manager.delete(tableName, keyName, keyValue);
-    }
-
-    @Override
-    public void create(DatabaseManager manager, String tableName, Map<String, Object> columnData)
-            throws SQLException {
-        manager.create(tableName, columnData);
-    }
-
-    @Override
-    public void createBase(DatabaseManager manager, String databaseName) throws SQLException {
-        manager.createBase(databaseName);
-    }
-
-    @Override
-    public void deleteBase(DatabaseManager manager, String databaseName) throws SQLException {
-        manager.dropBase(databaseName);
-    }
-
-    @Override
-    public void update(DatabaseManager manager, String tableName, String keyName,
-                       String keyValue, Map<String, Object> columnParameters) throws SQLException {
-        manager.update(tableName, keyName, keyValue, columnParameters);
-    }
-
-    @Override
-    public void table(DatabaseManager manager, String tableName, String keyName,
-                      Map<String, Object> columnParameter) throws SQLException {
-        manager.table(tableName, keyName, columnParameter);
+    public void setCommands(List<String> commands) {
+        this.commands = commands;
     }
 }

@@ -17,8 +17,6 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <org.springframework.version>4.1.6.RELEASE</org.springframework.version>
     </properties>
-
-
     <dependencies>
         <dependency>
             <groupId>org.springframework</groupId>

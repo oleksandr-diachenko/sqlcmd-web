@@ -24,17 +24,17 @@ public interface DatabaseManager {
      */
     List<String> getTableData(String tableName) throws SQLException;
 
-    void table(String tableName, String keyName, Map<String, Object> columnParameters) throws SQLException;
+    void createTable(String tableName, String keyName, Map<String, Object> columnParameters) throws SQLException;
 
-    void create(String tableName, Map<String, Object> columnData) throws SQLException;
+    void createRecord(String tableName, Map<String, Object> columnData) throws SQLException;
 
-    void update(String tableName, String keyName, String keyValue, Map<String, Object> columnData) throws SQLException;
+    void updateRecord(String tableName, String keyName, String keyValue, Map<String, Object> columnData) throws SQLException;
 
-    void delete(String tableName, String keyName, String keyValue) throws SQLException;
+    void deleteRecord(String tableName, String keyName, String keyValue) throws SQLException;
 
-    void clear(String tableName) throws SQLException;
+    void clearTable(String tableName) throws SQLException;
 
-    void drop(String tableName) throws SQLException;
+    void dropTable(String tableName) throws SQLException;
 
     void createBase(String database) throws SQLException;
 
