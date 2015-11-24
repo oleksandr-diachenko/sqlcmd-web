@@ -25,9 +25,10 @@ public class PostgreDatabaseManager implements DatabaseManager {
     }
 
     @Override
-    public void createTable(String tableName, String keyName, Map<String, Object> columnParameters) throws SQLException {
+    public void createTable(String tableName, String keyName, Map<String, Object> columnParameters)
+            throws SQLException {
         Statement stmt = connection.createStatement();
-        StringBuilder url = new StringBuilder();
+        StringBuilder url = new StringBuilder(7);
         url.append("CREATE TABLE ")
                 .append(tableName)
                 .append("(")
@@ -40,11 +41,11 @@ public class PostgreDatabaseManager implements DatabaseManager {
     }
 
     private String getParameters(Map<String, Object> columnParameters) {
-        String result = "";
+        StringBuilder url = new StringBuilder(4);
         for (Map.Entry<String, Object> pair : columnParameters.entrySet()) {
-            result += ", " + pair.getKey() + " " + pair.getValue();
+            url.append(", ").append(pair.getKey()).append(" ").append(pair.getValue());
         }
-        return result;
+        return url.toString();
     }
 
     @Override
@@ -63,7 +64,9 @@ public class PostgreDatabaseManager implements DatabaseManager {
     @Override
     public List<String> getTableData(String tableName) throws SQLException {
         Statement stmt = connection.createStatement();
-        ResultSet resultSet = stmt.executeQuery("SELECT * FROM " + tableName);
+        StringBuilder url = new StringBuilder(2);
+        url.append("SELECT * FROM ").append(tableName);
+        ResultSet resultSet = stmt.executeQuery(url.toString());
         ResultSetMetaData rsmd = resultSet.getMetaData();
 
         List<String> tableData = new ArrayList<>();
@@ -89,7 +92,7 @@ public class PostgreDatabaseManager implements DatabaseManager {
     @Override
     public void createRecord(String tableName, Map<String, Object> columnData) throws SQLException {
         Statement stmt = connection.createStatement();
-        StringBuilder url = new StringBuilder();
+        StringBuilder url = new StringBuilder(8);
         url.append("INSERT INTO ")
                 .append(tableName)
                 .append(" (")
@@ -103,29 +106,27 @@ public class PostgreDatabaseManager implements DatabaseManager {
     }
 
     private String getColumnNames(Map<String, Object> columnData) {
-        StringBuilder columnNames = new StringBuilder();
+        StringBuilder columnNames = new StringBuilder(2);
         for (Map.Entry<String, Object> pair : columnData.entrySet()) {
-            columnNames.append(pair.getKey())
-                    .append(", ");
+            columnNames.append(pair.getKey()).append(", ");
         }
         return columnNames.substring(0, columnNames.length() - 2);
     }
 
     private String getColumnValues(Map<String, Object> columnData) {
-        StringBuilder columnValues = new StringBuilder();
+        StringBuilder columnValues = new StringBuilder(3);
         for (Map.Entry<String, Object> pair : columnData.entrySet()) {
-            columnValues.append("'")
-                    .append(pair.getValue())
-                    .append("', ");
+            columnValues.append("'").append(pair.getValue()).append("', ");
         }
         return columnValues.substring(0, columnValues.length() - 2);
     }
 
     @Override
-    public void updateRecord(String tableName, String keyName, String keyValue, Map<String, Object> columnData) throws SQLException {
+    public void updateRecord(String tableName, String keyName, String keyValue, Map<String, Object> columnData)
+            throws SQLException {
         Statement stmt = connection.createStatement();
         for (Map.Entry<String, Object> pair : columnData.entrySet()) {
-            StringBuilder url = new StringBuilder();
+            StringBuilder url = new StringBuilder(11);
             url.append("UPDATE ")
                     .append(tableName)
                     .append(" SET ")
@@ -145,35 +146,51 @@ public class PostgreDatabaseManager implements DatabaseManager {
     @Override
     public void deleteRecord(String tableName, String keyName, String keyValue) throws SQLException {
         Statement stmt = connection.createStatement();
-        stmt.executeUpdate("DELETE FROM " + tableName + " WHERE " + keyName + " = '" + keyValue + "'");
+        StringBuilder url = new StringBuilder(7);
+        url.append("DELETE FROM ")
+                .append(tableName)
+                .append(" WHERE ")
+                .append(keyName)
+                .append(" = '")
+                .append(keyValue)
+                .append("'");
+        stmt.executeUpdate(url.toString());
         stmt.close();
     }
 
     @Override
     public void clearTable(String tableName) throws SQLException {
         Statement stmt = connection.createStatement();
-        stmt.executeUpdate("DELETE FROM " + tableName);
+        StringBuilder url = new StringBuilder(2);
+        url.append("DELETE FROM ").append(tableName);
+        stmt.executeUpdate(url.toString());
         stmt.close();
     }
 
     @Override
     public void dropTable(String tableName) throws SQLException {
         Statement stmt = connection.createStatement();
-        stmt.executeUpdate("DROP TABLE " + tableName);
+        StringBuilder url = new StringBuilder(2);
+        url.append("DROP TABLE ").append(tableName);
+        stmt.executeUpdate(url.toString());
         stmt.close();
     }
 
     @Override
     public void createBase(String database) throws SQLException {
         Statement stmt = connection.createStatement();
-        stmt.executeUpdate("CREATE DATABASE " + database);
+        StringBuilder url = new StringBuilder(2);
+        url.append("CREATE DATABASE ").append(database);
+        stmt.executeUpdate(url.toString());
         stmt.close();
     }
 
     @Override
     public void dropBase(String database) throws SQLException {
         Statement stmt = connection.createStatement();
-        stmt.executeUpdate("DROP DATABASE " + database);
+        StringBuilder url = new StringBuilder(2);
+        url.append("DROP DATABASE ").append(database);
+        stmt.executeUpdate(url.toString());
         stmt.close();
     }
 }
