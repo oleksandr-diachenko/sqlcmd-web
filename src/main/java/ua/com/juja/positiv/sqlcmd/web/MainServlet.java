@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -188,11 +187,7 @@ public class MainServlet extends HttpServlet {
 
     private void goTo(String jsp, HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        try {
-            request.getRequestDispatcher(jsp + ".jsp").forward(request, response);
-        } catch (Exception e) {
-            error(request, response, e);
-        }
+        request.getRequestDispatcher(jsp + ".jsp").forward(request, response);
     }
 
     private void redirect(String url, HttpServletRequest request, HttpServletResponse response) {
@@ -288,13 +283,17 @@ public class MainServlet extends HttpServlet {
         goTo("table-data", request, response);
     }
 
-    private void connect(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        DatabaseManager manager = service.connect(
-                getParameter("database", request),
-                getParameter("user", request),
-                getParameter("password", request));
-        request.getSession().setAttribute("manager", manager);
-        redirect("menu", request, response);
+    private void connect(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            DatabaseManager manager = service.connect(
+                    getParameter("database", request),
+                    getParameter("user", request),
+                    getParameter("password", request));
+            request.getSession().setAttribute("manager", manager);
+            redirect("menu", request, response);
+        } catch (Exception e) {
+            error(request, response, e);
+        }
     }
 
     private Map<String, Object> getData(String key, String value,

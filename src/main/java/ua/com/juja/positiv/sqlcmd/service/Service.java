@@ -13,8 +13,8 @@ public interface Service {
     List<String> commandList();
 
     DatabaseManager connect(String database, String user, String password)
-            throws SQLException, ClassNotFoundException;
+            throws Exception;
 
-    List<List<String>> getTableData(DatabaseManager manager, String tableName) throws SQLException;
+    List<List<String>> getTableData(DatabaseManager manager, String tableName) throws Exception;
 
 }
