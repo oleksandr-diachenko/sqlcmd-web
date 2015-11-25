@@ -1,6 +1,7 @@
 package ua.com.juja.positiv.sqlcmd.integretion;
 
 import org.junit.*;
+import ua.com.juja.positiv.sqlcmd.DatabaseLogin;
 import ua.com.juja.positiv.sqlcmd.DatabasePreparation;
 
 import java.util.Random;
@@ -13,16 +14,18 @@ import static net.sourceforge.jwebunit.junit.JWebUnit.*;
 
 public class WebTest {
 
+    DatabaseLogin login = new DatabaseLogin();
     DatabasePreparation preparation = new DatabasePreparation();
 
     @Before
     public void prepare() {
         setBaseUrl("http://localhost:8080/sqlcmd");
         beginAt("/connect");
-        setTextField("database", "sqlcmd");
-        setTextField("user", "postgres");
-        setTextField("password", "postgres");
+        setTextField("database", login.getDatabase());
+        setTextField("user", login.getUser());
+        setTextField("password", login.getPassword());
         submit();
+        preparation.run();
     }
 
     @Test
@@ -41,7 +44,6 @@ public class WebTest {
 
     @Test
     public void testTableNames(){
-        preparation.run();
         clickLinkWithText("table-names");
         assertTableEquals("",
                 new String[][] {
@@ -54,7 +56,6 @@ public class WebTest {
 
     @Test
     public void testTableData(){
-        preparation.run();
         clickLinkWithText("table-data");
         assertTextPresent("Table name");
         setTextField("tableName", "car");
@@ -71,7 +72,6 @@ public class WebTest {
 
     @Test
     public void testCreateTable(){
-        preparation.run();
         String tableName = "test"+ Math.abs(new Random(100000).nextInt());
         clickLinkWithText("create-table");
 
