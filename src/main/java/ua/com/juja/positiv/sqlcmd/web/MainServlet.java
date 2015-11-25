@@ -52,38 +52,34 @@ public class MainServlet extends HttpServlet {
                 setAttribute("items", service.commandList(), request);
                 goTo("menu", request, response);
 
-            } else if (action.equals("/createTable")) {
-                setColumnCountAndTableName(request);
+            } else if (action.equals("/create-table")) {
                 goTo("table", request, response);
 
-            } else if (action.equals("/table")) {
-                goTo("createTable", request, response);
+            } else if (action.equals("/table-names")) {
+                getTableNames(manager, request, response);
 
-            } else if (action.equals("/list")) {
-                list(manager, request, response);
+            } else if (action.equals("/table-data")) {
+                goTo("table-name", request, response);
 
-            } else if (action.equals("/find")) {
-                goTo("tableName", request, response);
+            } else if (action.equals("/clear-table")) {
+                goTo("clear-table", request, response);
 
-            } else if (action.equals("/clear")) {
-                goTo("clear", request, response);
+            } else if (action.equals("/delete-record")) {
+                goTo("delete-record", request, response);
 
-            } else if (action.equals("/delete")) {
-                goTo("delete", request, response);
+            } else if (action.equals("/create-record")) {
+                setAttribute("actionURL", "create", request);
+                goTo("table-name", request, response);
 
-            } else if (action.equals("/create")) {
-                setAttribute("actionURL", "createRecord", request);
-                goTo("tableName", request, response);
+            } else if (action.equals("/create-database")) {
+                goTo("create-database", request, response);
 
-            } else if (action.equals("/createDatabase")) {
-                goTo("createDatabase", request, response);
+            } else if (action.equals("/delete-database")) {
+                goTo("delete-database", request, response);
 
-            } else if (action.equals("/deleteDatabase")) {
-                goTo("deleteDatabase", request, response);
-
-            } else if (action.equals("/update")) {
-                setAttribute("actionURL", "updateRecord", request);
-                goTo("tableName", request, response);
+            } else if (action.equals("/update-record")) {
+                setAttribute("actionURL", "update", request);
+                goTo("table-name", request, response);
 
             } else {
                 goTo("error", request, response);
@@ -103,44 +99,52 @@ public class MainServlet extends HttpServlet {
             if (action.equals("/connect")) {
                 connect(request, response);
 
-            } else if (action.equals("/find")) {
-                find(manager, request, response);
+            } else if (action.equals("/table-data")) {
+                getTableData(manager, request, response);
 
-            } else if (action.equals("/clear")) {
-                clear(manager, request, response);
+            } else if (action.equals("/clear-table")) {
+                clearTable(manager, request, response);
 
-            } else if (action.equals("/delete")) {
-                delete(manager, request, response);
-
-            } else if (action.equals("/createRecord")) {
-                setColumnCountAndTableName(request, manager);
-                goTo("create", request, response);
+            } else if (action.equals("/delete-record")) {
+                deleteRecord(manager, request, response);
 
             } else if (action.equals("/create")) {
-                create(manager, request, response);
+                setColumnCountAndTableName(request, manager);
+                goTo("create-record", request, response);
 
-            } else if (action.equals("/createDatabase")) {
+            } else if (action.equals("/create-record")) {
+                createRecord(manager, request, response);
+
+            } else if (action.equals("/create-database")) {
                 createDatabase(manager, request, response);
 
-            } else if (action.equals("/deleteDatabase")) {
+            } else if (action.equals("/delete-database")) {
                 deleteDatabase(manager, request, response);
 
-            } else if (action.equals("/table")) {
-                table(manager, request, response);
+            } else if (action.equals("/column-parameters")) {
+                String tableName = getParameter("tableName", request);
+                int columnCount = Integer.parseInt(getParameter("columnCount", request));
+                setAttribute("tableName", tableName, request);
+                setAttribute("columnCount", columnCount, request);
+                goTo("create-table", request, response);
 
-            } else if (action.equals("/updateRecord")) {
-                setColumnCountAndTableName(request, manager);
-                goTo("update", request, response);
+            } else if (action.equals("/table")) {
+                createTable(manager, request, response);
 
             } else if (action.equals("/update")) {
-                update(manager, request, response);
+                setColumnCountAndTableName(request, manager);
+                goTo("update-record", request, response);
+
+            } else if (action.equals("/update-record")) {
+                updateRecord(manager, request, response);
             }
         } catch (Exception e) {
             error(request, response, e);
         }
     }
 
-    private void setColumnCountAndTableName(HttpServletRequest request, DatabaseManager manager) throws Exception {
+    private void setColumnCountAndTableName(HttpServletRequest request, DatabaseManager manager)
+            throws Exception {
         String tableName = getParameter("tableName", request);
         int columnCount = getColumnCount(manager, tableName);
         setAttribute("columnCount", columnCount, request);
@@ -181,7 +185,8 @@ public class MainServlet extends HttpServlet {
         }
     }
 
-    private void goTo(String jsp, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    private void goTo(String jsp, HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         try {
             request.getRequestDispatcher(jsp + ".jsp").forward(request, response);
         } catch (Exception e) {
@@ -197,28 +202,30 @@ public class MainServlet extends HttpServlet {
         }
     }
 
-    private void table(DatabaseManager manager, HttpServletRequest request,
-                       HttpServletResponse response) throws Exception {
+    private void createTable(DatabaseManager manager, HttpServletRequest request,
+                             HttpServletResponse response) throws Exception {
         String tableName = getParameter("tableName", request);
         int columnCount = Integer.parseInt(getParameter("columnCount", request));
         String keyName = getParameter("keyName", request);
 
         Map<String, Object> data = new HashMap<>();
-        for (int index = 1; index < columnCount; index++) {
-            data.put(getParameter("columnName" + index, request),
-                    getParameter("columnType" + index, request));
+        for (int index = 0; index < columnCount - 1; index++) {
+            int columnIndex = index + 1;
+            data.put(getParameter("columnName" + columnIndex, request),
+                    getParameter("columnType" + columnIndex, request));
         }
         manager.createTable(tableName, keyName, data);
         goTo("success", request, response);
     }
 
-    private void update(DatabaseManager manager, HttpServletRequest request,
-                        HttpServletResponse response) throws Exception {
+    private void updateRecord(DatabaseManager manager, HttpServletRequest request,
+                              HttpServletResponse response) throws Exception {
         String tableName = getParameter("tableName", request);
         Map<String, Object> data = new HashMap<>();
-        for (int index = 1; index < getColumnCount(manager, tableName); index++) {
-            data.put(getParameter("columnName" + index, request),
-                    getParameter("columnValue" + index, request));
+        for (int index = 0; index < getColumnCount(manager, tableName) - 1; index++) {
+            int columnIndex = index + 1;
+            data.put(getParameter("columnName" + columnIndex, request),
+                    getParameter("columnValue" + columnIndex, request));
         }
 
         String keyName = getParameter("keyName", request);
@@ -241,20 +248,21 @@ public class MainServlet extends HttpServlet {
         goTo("success", request, response);
     }
 
-    private void create(DatabaseManager manager, HttpServletRequest request,
-                        HttpServletResponse response) throws Exception {
+    private void createRecord(DatabaseManager manager, HttpServletRequest request,
+                              HttpServletResponse response) throws Exception {
         String tableName = getParameter("tableName", request);
         Map<String, Object> data = new HashMap<>();
-        for (int index = 1; index <= getColumnCount(manager, tableName); index++) {
-            data.put(getParameter("columnName" + index, request),
-                    getParameter("columnValue" + index, request));
+        for (int index = 0; index < getColumnCount(manager, tableName); index++) {
+            int columnIndex = index + 1;
+            data.put(getParameter("columnName" + columnIndex, request),
+                    getParameter("columnValue" + columnIndex, request));
         }
         manager.createRecord(tableName, data);
         goTo("success", request, response);
     }
 
-    private void delete(DatabaseManager manager, HttpServletRequest request,
-                        HttpServletResponse response) throws Exception {
+    private void deleteRecord(DatabaseManager manager, HttpServletRequest request,
+                              HttpServletResponse response) throws Exception {
         String tableName = getParameter("tableName", request);
         String keyName = getParameter("keyName", request);
         String keyValue = getParameter("keyValue", request);
@@ -262,25 +270,25 @@ public class MainServlet extends HttpServlet {
         goTo("success", request, response);
     }
 
-    private void clear(DatabaseManager manager, HttpServletRequest request,
-                       HttpServletResponse response) throws Exception {
+    private void clearTable(DatabaseManager manager, HttpServletRequest request,
+                            HttpServletResponse response) throws Exception {
         String tableName = getParameter("tableName", request);
         manager.clearTable(tableName);
         goTo("success", request, response);
     }
 
-    private void list(DatabaseManager manager, HttpServletRequest request,
-                      HttpServletResponse response) throws Exception {
+    private void getTableNames(DatabaseManager manager, HttpServletRequest request,
+                               HttpServletResponse response) throws Exception {
         Set<String> tableList = manager.getTableNames();
         setAttribute("tables", tableList, request);
-        goTo("list", request, response);
+        goTo("table-names", request, response);
     }
 
-    private void find(DatabaseManager manager, HttpServletRequest request,
-                      HttpServletResponse response) throws Exception {
+    private void getTableData(DatabaseManager manager, HttpServletRequest request,
+                              HttpServletResponse response) throws Exception {
         String tableName = getParameter("tableName", request);
         setAttribute("table", service.getTableData(manager, tableName), request);
-        goTo("find", request, response);
+        goTo("table-data", request, response);
     }
 
     private void connect(HttpServletRequest request, HttpServletResponse response) throws Exception {

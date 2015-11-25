@@ -4,32 +4,28 @@
 <head>
   <title>sqlcmd</title>
 </head>
-  <body>
-    <form action="table" method="post">
-      <table>
-          <input type="hidden" name="tableName" value="${tableName}" />
-          <input type="hidden" name="columnCount" value="${columnCount}" />
+<body>
+<form action="columnParameters" method="post">
+  <table>
+    <tr>
+      <td>Table name</td>
+      <td><label>
+        <input type="text" name="tableName"/>
+      </label></td>
+    </tr>
 
-        <tr>
-          <td>Primary key name</td>
-          <td><input type="text" name="keyName"/></td>
-        </tr>
+    <tr>
+      <td>Column count</td>
+      <td><label>
+        <input type="number" name="columnCount"/>
+      </label></td>
+    </tr>
 
-        <c:forEach begin="1" end="${columnCount - 1}" varStatus="loop">
-          <tr>
-            <td>Column name${loop.count}</td>
-            <td><input type="text" name="columnName${loop.count}"/></td>
-
-            <td>Column type${loop.count}</td>
-            <td><input type="text" name="columnType${loop.count}"/></td>
-          </tr>
-        </c:forEach>
-
-        <tr>
-          <td></td>
-          <td><input type="submit" value="create"/></td>
-        </tr>
-      </table>
-    </form>
-  </body>
+    <tr>
+      <td></td>
+      <td><input type="submit" value="OK"/></td>
+    </tr>
+  </table>
+</form>
+</body>
 </html>

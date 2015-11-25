@@ -13,15 +13,15 @@
         <property name="commands">
             <list>
                 <value>connect</value>
-                <value>table</value>
-                <value>list</value>
-                <value>find</value>
-                <value>update</value>
-                <value>clear</value>
-                <value>create</value>
-                <value>delete</value>
-                <value>createDatabase</value>
-                <value>deleteDatabase</value>
+                <value>create-table</value>
+                <value>table-names</value>
+                <value>table-data</value>
+                <value>update-record</value>
+                <value>clear-table</value>
+                <value>create-record</value>
+                <value>delete-record</value>
+                <value>create-database</value>
+                <value>delete-database</value>
             </list>
         </property>
         <lookup-method name="getManager" bean="postgreDatabaseManager"/>
