@@ -5,7 +5,7 @@
     <title></title>
 </head>
     <body>
-        <img src="<c:url value="http://www.communityroundtable.com/wp-content/uploads/2015/04/success.jpg" />" alt="TestDisplay"/><br>
+      <b>Success!</b><br>
         <tr><td><b>To menu <a href="menu">menu</a></b></td></tr>
     </body>
 </html>

@@ -5,7 +5,7 @@
   <title>sqlcmd</title>
 </head>
 <body>
-<form action="columnParameters" method="post">
+<form action="column-parameters" method="post">
   <table>
     <tr>
       <td>Table name</td>

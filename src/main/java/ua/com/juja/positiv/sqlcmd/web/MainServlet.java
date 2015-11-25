@@ -147,7 +147,7 @@ public class MainServlet extends HttpServlet {
 
 
     private void setColumnCountAndTableName(HttpServletRequest request) {
-        setAttribute("tableName", getParameter("tableName", request), request);
+        setAttribute("tableName",  getParameter("tableName", request), request);
         setAttribute("columnCount", getParameter("columnCount", request), request);
     }
 
@@ -196,10 +196,11 @@ public class MainServlet extends HttpServlet {
 
     private void createTable(DatabaseManager manager, HttpServletRequest request,
                              HttpServletResponse response) throws Exception {
+        int columnCount = Integer.parseInt(getParameter("columnCount", request));
         Map<String, Object> data = getData(
                 "columnName",
                 "columnType",
-                Integer.parseInt(getParameter("columnCount", request)) + 1,
+                columnCount - 1,
                 request);
 
         manager.createTable(getParameter("tableName", request), getParameter("keyName", request), data);
