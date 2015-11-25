@@ -5,16 +5,16 @@
     <title>sqlcmd</title>
 </head>
 <body>
-<form action="clear-table" method="post">
+<form action="${actionURL}" method="post">
     <table>
         <tr>
-            <td>Table name</td>
-            <td><input type="text" name="tableName"/></td>
+            <td>Database name</td>
+            <td><input type="text" name="databaseName"/></td>
         </tr>
 
         <tr>
             <td></td>
-            <td><input type="submit" value="clear"/></td>
+            <td><input type="submit" value="create"/></td>
         </tr>
     </table>
 </form>

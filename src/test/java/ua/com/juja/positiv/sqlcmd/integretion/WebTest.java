@@ -27,6 +27,12 @@ public class WebTest {
         submit();
     }
 
+    private void success() {
+        assertTextPresent("Success!");
+        assertTextPresent("To menu menu");
+        assertLinkPresentWithText("menu");
+    }
+
     @Test
     public void testMenu() {
         assertLinkPresentWithText("connect");
@@ -42,12 +48,12 @@ public class WebTest {
     }
 
     @Test
-    public void testTableNames(){
+    public void testTableNames() {
         preparation.run();
         clickLinkWithText("table-names");
 
         assertTableEquals("",
-                new String[][] {
+                new String[][]{
                         {"", "Tables"},
                         {"1", "car"},
                         {"2", "client"}});
@@ -56,7 +62,7 @@ public class WebTest {
     }
 
     @Test
-    public void testTableData(){
+    public void testTableData() {
         preparation.run();
         clickLinkWithText("table-data");
 
@@ -65,7 +71,7 @@ public class WebTest {
         submit();
 
         assertTableEquals("",
-                new String[][] {
+                new String[][]{
                         {"id", "name", "color", "year"},
                         {"1", "ferrari", "red", "2002"},
                         {"2", "porsche", "black", "1964"},
@@ -75,7 +81,7 @@ public class WebTest {
     }
 
     @Test
-    public void testCreateTable(){
+    public void testCreateTable() {
         String tableName = "test";
         clickLinkWithText("create-table");
 
@@ -99,7 +105,7 @@ public class WebTest {
     }
 
     @Test
-    public void testClearTable(){
+    public void testClearTable() {
         preparation.run();
         clickLinkWithText("clear-table");
 
@@ -107,13 +113,11 @@ public class WebTest {
         setTextField("tableName", "car");
         submit();
 
-        assertTextPresent("Success!");
-        assertTextPresent("To menu menu");
-        assertLinkPresentWithText("menu");
+        success();
     }
 
     @Test
-    public void testDeleteTable(){
+    public void testDeleteTable() {
         preparation.run();
         clickLinkWithText("delete-table");
 
@@ -121,13 +125,11 @@ public class WebTest {
         setTextField("tableName", "car");
         submit();
 
-        assertTextPresent("Success!");
-        assertTextPresent("To menu menu");
-        assertLinkPresentWithText("menu");
+        success();
     }
 
     @Test
-    public void testDeleteRecord(){
+    public void testDeleteRecord() {
         preparation.run();
         clickLinkWithText("delete-record");
 
@@ -139,13 +141,11 @@ public class WebTest {
         setTextField("keyValue", "1");
         submit();
 
-        assertTextPresent("Success!");
-        assertTextPresent("To menu menu");
-        assertLinkPresentWithText("menu");
+        success();
     }
 
     @Test
-    public void testCreateRecord(){
+    public void testCreateRecord() {
         preparation.run();
         clickLinkWithText("create-record");
 
@@ -171,13 +171,11 @@ public class WebTest {
         setTextField("columnValue4", "1");
         submit();
 
-        assertTextPresent("Success!");
-        assertTextPresent("To menu menu");
-        assertLinkPresentWithText("menu");
+        success();
     }
 
     @Test
-    public void testUpdateRecord(){
+    public void testUpdateRecord() {
         preparation.run();
         clickLinkWithText("update-record");
 
@@ -203,13 +201,11 @@ public class WebTest {
         setTextField("columnValue3", "1");
         submit();
 
-        assertTextPresent("Success!");
-        assertTextPresent("To menu menu");
-        assertLinkPresentWithText("menu");
+        success();
     }
 
     @Test
-    public void testCreateAndDeleteDatabase(){
+    public void testCreateAndDeleteDatabase() {
         String database = "test" + Math.abs(new Random(10000).nextInt());
         clickLinkWithText("create-database");
 
@@ -217,9 +213,7 @@ public class WebTest {
         setTextField("databaseName", database);
         submit();
 
-        assertTextPresent("Success!");
-        assertTextPresent("To menu menu");
-        assertLinkPresentWithText("menu");
+        success();
 
         clickLinkWithText("menu");
         clickLinkWithText("delete-database");
@@ -228,8 +222,6 @@ public class WebTest {
         setTextField("databaseName", database);
         submit();
 
-        assertTextPresent("Success!");
-        assertTextPresent("To menu menu");
-        assertLinkPresentWithText("menu");
+        success();
     }
 }
