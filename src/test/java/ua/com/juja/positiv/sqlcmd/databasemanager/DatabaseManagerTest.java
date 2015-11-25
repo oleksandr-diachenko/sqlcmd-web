@@ -5,6 +5,7 @@ import org.junit.Test;
 import ua.com.juja.positiv.sqlcmd.DatabaseLogin;
 import ua.com.juja.positiv.sqlcmd.DatabasePreparation;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.*;
 

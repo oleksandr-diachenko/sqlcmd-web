@@ -5,7 +5,7 @@
   <title>sqlcmd</title>
 </head>
 <body>
-<form action="deleteDatabase" method="post">
+<form action="delete-database" method="post">
   <table>
     <tr>
       <td>Database name</td>
@@ -14,7 +14,7 @@
 
     <tr>
       <td></td>
-      <td><input type="submit" value="deleteDatabase"/></td>
+      <td><input type="submit" value="delete"/></td>
     </tr>
   </table>
 </form>
