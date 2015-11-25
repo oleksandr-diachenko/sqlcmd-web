@@ -213,7 +213,7 @@ public class MainServlet extends HttpServlet {
         Map<String, Object> data = getData(
                 "columnName",
                 "columnValue",
-                getColumnCount(manager, tableName) + 1,
+                getColumnCount(manager, tableName) - 1,
                 request);
 
         manager.updateRecord(tableName, getParameter("keyName", request), getParameter("keyValue", request), data);

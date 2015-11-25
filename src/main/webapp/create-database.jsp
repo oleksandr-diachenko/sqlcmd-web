@@ -5,7 +5,7 @@
   <title>sqlcmd</title>
 </head>
 <body>
-<form action="createDatabase" method="post">
+<form action="create-database" method="post">
   <table>
     <tr>
       <td>Database name</td>
@@ -14,7 +14,7 @@
 
     <tr>
       <td></td>
-      <td><input type="submit" value="createDatabase"/></td>
+      <td><input type="submit" value="create"/></td>
     </tr>
   </table>
 </form>

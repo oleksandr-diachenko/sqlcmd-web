@@ -25,7 +25,6 @@ public class WebTest {
         setTextField("user", login.getUser());
         setTextField("password", login.getPassword());
         submit();
-        preparation.run();
     }
 
     @Test
@@ -44,7 +43,9 @@ public class WebTest {
 
     @Test
     public void testTableNames(){
+        preparation.run();
         clickLinkWithText("table-names");
+
         assertTableEquals("",
                 new String[][] {
                         {"", "Tables"},
@@ -56,10 +57,13 @@ public class WebTest {
 
     @Test
     public void testTableData(){
+        preparation.run();
         clickLinkWithText("table-data");
+
         assertTextPresent("Table name");
         setTextField("tableName", "car");
         submit();
+
         assertTableEquals("",
                 new String[][] {
                         {"id", "name", "color", "year"},
@@ -82,11 +86,132 @@ public class WebTest {
         submit();
 
         assertTextPresent("Primary key name");
-        assertTextPresent("Column name1");
-        assertTextPresent("Column type1");
+        assertTextPresent("Column name 1");
+        assertTextPresent("Column type 1");
         setTextField("keyName", "id");
         setTextField("columnName1", "test");
         setTextField("columnType1", "text");
+        submit();
+
+        assertTextPresent("Success!");
+        assertTextPresent("To menu menu");
+        assertLinkPresentWithText("menu");
+    }
+
+    @Test
+    public void testClearTable(){
+        preparation.run();
+        clickLinkWithText("clear-table");
+
+        assertTextPresent("Table name");
+        setTextField("tableName", "car");
+        submit();
+
+        assertTextPresent("Success!");
+        assertTextPresent("To menu menu");
+        assertLinkPresentWithText("menu");
+    }
+
+    @Test
+    public void testDeleteRecord(){
+        preparation.run();
+        clickLinkWithText("delete-record");
+
+        assertTextPresent("Table name");
+        assertTextPresent("Primary key name");
+        assertTextPresent("Primary key value");
+        setTextField("tableName", "car");
+        setTextField("keyName", "id");
+        setTextField("keyValue", "1");
+        submit();
+
+        assertTextPresent("Success!");
+        assertTextPresent("To menu menu");
+        assertLinkPresentWithText("menu");
+    }
+
+    @Test
+    public void testCreateRecord(){
+        preparation.run();
+        clickLinkWithText("create-record");
+
+        assertTextPresent("Table name");
+        setTextField("tableName", "car");
+        submit();
+
+        assertTextPresent("Column name 1");
+        assertTextPresent("Column name 2");
+        assertTextPresent("Column name 3");
+        assertTextPresent("Column name 4");
+        assertTextPresent("Column value 1");
+        assertTextPresent("Column value 2");
+        assertTextPresent("Column value 3");
+        assertTextPresent("Column value 4");
+        setTextField("columnName1", "id");
+        setTextField("columnName2", "name");
+        setTextField("columnName3", "color");
+        setTextField("columnName4", "year");
+        setTextField("columnValue1", "5");
+        setTextField("columnValue2", "testName");
+        setTextField("columnValue3", "testColor");
+        setTextField("columnValue4", "1");
+        submit();
+
+        assertTextPresent("Success!");
+        assertTextPresent("To menu menu");
+        assertLinkPresentWithText("menu");
+    }
+
+    @Test
+    public void testUpdateRecord(){
+        preparation.run();
+        clickLinkWithText("update-record");
+
+        assertTextPresent("Table name");
+        setTextField("tableName", "car");
+        submit();
+
+        assertTextPresent("Primary key name");
+        assertTextPresent("Primary key value");
+        assertTextPresent("Column name 1");
+        assertTextPresent("Column name 2");
+        assertTextPresent("Column name 3");
+        assertTextPresent("Column value 1");
+        assertTextPresent("Column value 2");
+        assertTextPresent("Column value 3");
+        setTextField("keyName", "id");
+        setTextField("keyValue", "1");
+        setTextField("columnName1", "name");
+        setTextField("columnName2", "color");
+        setTextField("columnName3", "year");
+        setTextField("columnValue1", "testName");
+        setTextField("columnValue2", "testColor");
+        setTextField("columnValue3", "1");
+        submit();
+
+        assertTextPresent("Success!");
+        assertTextPresent("To menu menu");
+        assertLinkPresentWithText("menu");
+    }
+
+    @Test
+    public void testCreateAndDeleteDatabase(){
+        String database = "test" + Math.abs(new Random(10000).nextInt());
+        clickLinkWithText("create-database");
+
+        assertTextPresent("Database name");
+        setTextField("databaseName", database);
+        submit();
+
+        assertTextPresent("Success!");
+        assertTextPresent("To menu menu");
+        assertLinkPresentWithText("menu");
+
+        clickLinkWithText("menu");
+        clickLinkWithText("delete-database");
+
+        assertTextPresent("Database name");
+        setTextField("databaseName", database);
         submit();
 
         assertTextPresent("Success!");
