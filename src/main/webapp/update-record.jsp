@@ -5,7 +5,7 @@
   <title>sqlcmd</title>
 </head>
   <body>
-    <form action="update" method="post">
+    <form action="updateRecord" method="post">
       <table>
         <input type="hidden" name="columnCount" value="${columnCount}" />
         <input type="hidden" name="tableName" value="${tableName}" />

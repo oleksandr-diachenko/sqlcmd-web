@@ -5,7 +5,7 @@
   <title>sqlcmd</title>
 </head>
   <body>
-    <form action="clear" method="post">
+    <form action="clear-table" method="post">
       <table>
         <tr>
           <td>Table name</td>

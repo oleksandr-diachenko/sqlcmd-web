@@ -15,8 +15,6 @@ import static org.junit.Assert.assertEquals;
  */
 public class DatabaseManagerTest {
 
-    //---===ОСТОРОЖНО! Тесты очищают текущую базу!===----
-
     DatabaseLogin login = new DatabaseLogin();
     DatabasePreparation preparation = new DatabasePreparation();
     DatabaseManager manager = new PostgreDatabaseManager();
@@ -24,7 +22,6 @@ public class DatabaseManagerTest {
     @Before
     public void run() throws SQLException, ClassNotFoundException {
         manager.connect(login.getDatabase(), login.getUser(), login.getPassword());
-
     }
 
     @Test
@@ -190,5 +187,12 @@ public class DatabaseManagerTest {
         Map<String, Object> data = new HashMap<>();
         data.put("name", "");
         manager.createTable("city", "id", data);
+    }
+
+    @Test
+    public void testCreateAndDeleteDatabase_WithCorrectData() throws SQLException {
+        String database = "test" + Math.abs(new Random(100000).nextInt());
+        manager.createBase(database);
+        manager.dropBase(database);
     }
 }

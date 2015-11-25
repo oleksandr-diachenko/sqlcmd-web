@@ -5,9 +5,15 @@
     <head>
         <title>sqlcmd</title>
     </head>
-    <body>
-        <c:forEach items="${items}" var="item">
-           <b> <a href="${item}">${item}</a></b><br>
-        </c:forEach>
-    </body>
+    <table border="1">
+        <body>
+            <c:forEach items="${items}" var="item">
+                <tr>
+                    <td>
+                        <b> <a href="${item}">${item}</a></b><br>
+                    </td>
+                </tr>
+            </c:forEach>
+        </body>
+    </table>
 </html>
