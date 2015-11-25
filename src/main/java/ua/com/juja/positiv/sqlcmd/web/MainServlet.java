@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Created by POSITIV on 30.10.2015.
@@ -122,10 +121,7 @@ public class MainServlet extends HttpServlet {
                 deleteDatabase(manager, request, response);
 
             } else if (action.equals("/column-parameters")) {
-                String tableName = getParameter("tableName", request);
-                int columnCount = Integer.parseInt(getParameter("columnCount", request));
-                setAttribute("tableName", tableName, request);
-                setAttribute("columnCount", columnCount, request);
+                setColumnCountAndTableName(request);
                 goTo("create-table", request, response);
 
             } else if (action.equals("/table")) {
@@ -145,18 +141,14 @@ public class MainServlet extends HttpServlet {
 
     private void setColumnCountAndTableName(HttpServletRequest request, DatabaseManager manager)
             throws Exception {
-        String tableName = getParameter("tableName", request);
-        int columnCount = getColumnCount(manager, tableName);
-        setAttribute("columnCount", columnCount, request);
-        setAttribute("tableName", tableName, request);
+        setAttribute("columnCount", getColumnCount(manager, getParameter("tableName", request)), request);
+        setAttribute("tableName", getParameter("tableName", request), request);
     }
 
 
     private void setColumnCountAndTableName(HttpServletRequest request) {
-        String tableName = getParameter("tableName", request);
-        int columnCount = Integer.parseInt(getParameter("columnCount", request));
-        setAttribute("tableName", tableName, request);
-        setAttribute("columnCount", columnCount, request);
+        setAttribute("tableName", getParameter("tableName", request), request);
+        setAttribute("columnCount", getParameter("columnCount", request), request);
     }
 
     private void setAttribute(String attributeName, Object attributeValue, HttpServletRequest request) {
@@ -204,83 +196,72 @@ public class MainServlet extends HttpServlet {
 
     private void createTable(DatabaseManager manager, HttpServletRequest request,
                              HttpServletResponse response) throws Exception {
-        String tableName = getParameter("tableName", request);
-        int columnCount = Integer.parseInt(getParameter("columnCount", request));
-        String keyName = getParameter("keyName", request);
+        Map<String, Object> data = getData(
+                "columnName",
+                "columnType",
+                Integer.parseInt(getParameter("columnCount", request)) + 1,
+                request);
 
-        Map<String, Object> data = new HashMap<>();
-        for (int index = 0; index < columnCount - 1; index++) {
-            int columnIndex = index + 1;
-            data.put(getParameter("columnName" + columnIndex, request),
-                    getParameter("columnType" + columnIndex, request));
-        }
-        manager.createTable(tableName, keyName, data);
+        manager.createTable(getParameter("tableName", request), getParameter("keyName", request), data);
         goTo("success", request, response);
     }
 
     private void updateRecord(DatabaseManager manager, HttpServletRequest request,
                               HttpServletResponse response) throws Exception {
         String tableName = getParameter("tableName", request);
-        Map<String, Object> data = new HashMap<>();
-        for (int index = 0; index < getColumnCount(manager, tableName) - 1; index++) {
-            int columnIndex = index + 1;
-            data.put(getParameter("columnName" + columnIndex, request),
-                    getParameter("columnValue" + columnIndex, request));
-        }
+        Map<String, Object> data = getData(
+                "columnName",
+                "columnValue",
+                getColumnCount(manager, tableName) + 1,
+                request);
 
-        String keyName = getParameter("keyName", request);
-        String keyValue = getParameter("keyValue", request);
-        manager.updateRecord(tableName, keyName, keyValue, data);
-        goTo("success", request, response);
-    }
-
-    private void deleteDatabase(DatabaseManager manager, HttpServletRequest request,
-                                HttpServletResponse response) throws Exception {
-        String databaseName = getParameter("databaseName", request);
-        manager.dropBase(databaseName);
-        goTo("success", request, response);
-    }
-
-    private void createDatabase(DatabaseManager manager, HttpServletRequest request,
-                                HttpServletResponse response) throws Exception {
-        String databaseName = getParameter("databaseName", request);
-        manager.createBase(databaseName);
+        manager.updateRecord(tableName, getParameter("keyName", request), getParameter("keyValue", request), data);
         goTo("success", request, response);
     }
 
     private void createRecord(DatabaseManager manager, HttpServletRequest request,
                               HttpServletResponse response) throws Exception {
         String tableName = getParameter("tableName", request);
-        Map<String, Object> data = new HashMap<>();
-        for (int index = 0; index < getColumnCount(manager, tableName); index++) {
-            int columnIndex = index + 1;
-            data.put(getParameter("columnName" + columnIndex, request),
-                    getParameter("columnValue" + columnIndex, request));
-        }
+        Map<String, Object> data = getData(
+                "columnName",
+                "columnValue",
+                getColumnCount(manager, tableName),
+                request);
+
         manager.createRecord(tableName, data);
+        goTo("success", request, response);
+    }
+
+    private void deleteDatabase(DatabaseManager manager, HttpServletRequest request,
+                                HttpServletResponse response) throws Exception {
+        manager.dropBase(getParameter("databaseName", request));
+        goTo("success", request, response);
+    }
+
+    private void createDatabase(DatabaseManager manager, HttpServletRequest request,
+                                HttpServletResponse response) throws Exception {
+        manager.createBase(getParameter("databaseName", request));
         goTo("success", request, response);
     }
 
     private void deleteRecord(DatabaseManager manager, HttpServletRequest request,
                               HttpServletResponse response) throws Exception {
-        String tableName = getParameter("tableName", request);
-        String keyName = getParameter("keyName", request);
-        String keyValue = getParameter("keyValue", request);
-        manager.deleteRecord(tableName, keyName, keyValue);
+        manager.deleteRecord(
+                getParameter("tableName", request),
+                getParameter("keyName", request),
+                getParameter("keyValue", request));
         goTo("success", request, response);
     }
 
     private void clearTable(DatabaseManager manager, HttpServletRequest request,
                             HttpServletResponse response) throws Exception {
-        String tableName = getParameter("tableName", request);
-        manager.clearTable(tableName);
+        manager.clearTable(getParameter("tableName", request));
         goTo("success", request, response);
     }
 
     private void getTableNames(DatabaseManager manager, HttpServletRequest request,
                                HttpServletResponse response) throws Exception {
-        Set<String> tableList = manager.getTableNames();
-        setAttribute("tables", tableList, request);
+        setAttribute("tables", manager.getTableNames(), request);
         goTo("table-names", request, response);
     }
 
@@ -292,11 +273,22 @@ public class MainServlet extends HttpServlet {
     }
 
     private void connect(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        String database = getParameter("database", request);
-        String user = getParameter("user", request);
-        String password = getParameter("password", request);
-        DatabaseManager manager = service.connect(database, user, password);
+        DatabaseManager manager = service.connect(
+                getParameter("database", request),
+                getParameter("user", request),
+                getParameter("password", request));
         request.getSession().setAttribute("manager", manager);
         redirect("menu", request, response);
+    }
+
+    private Map<String, Object> getData(String key, String value,
+                                        int columnCount, HttpServletRequest request) {
+        Map<String, Object> data = new HashMap<>();
+        for (int index = 0; index < columnCount; index++) {
+            int columnIndex = index + 1;
+            data.put(getParameter(key + columnIndex, request),
+                    getParameter(value + columnIndex, request));
+        }
+        return data;
     }
 }
