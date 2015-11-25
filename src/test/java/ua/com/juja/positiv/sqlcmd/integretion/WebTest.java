@@ -76,7 +76,7 @@ public class WebTest {
 
     @Test
     public void testCreateTable(){
-        String tableName = "test"+ Math.abs(new Random(100000).nextInt());
+        String tableName = "test";
         clickLinkWithText("create-table");
 
         assertTextPresent("Table name");
@@ -102,6 +102,20 @@ public class WebTest {
     public void testClearTable(){
         preparation.run();
         clickLinkWithText("clear-table");
+
+        assertTextPresent("Table name");
+        setTextField("tableName", "car");
+        submit();
+
+        assertTextPresent("Success!");
+        assertTextPresent("To menu menu");
+        assertLinkPresentWithText("menu");
+    }
+
+    @Test
+    public void testDeleteTable(){
+        preparation.run();
+        clickLinkWithText("delete-table");
 
         assertTextPresent("Table name");
         setTextField("tableName", "car");
