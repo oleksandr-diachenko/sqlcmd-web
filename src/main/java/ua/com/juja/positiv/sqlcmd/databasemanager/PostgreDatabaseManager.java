@@ -29,7 +29,7 @@ public class PostgreDatabaseManager implements DatabaseManager {
             throws SQLException {
         Statement stmt = connection.createStatement();
         StringBuilder url = new StringBuilder(7);
-        url.append("CREATE TABLE ")
+        url.append("CREATE TABLE public.")
                 .append(tableName)
                 .append("(")
                 .append(keyName)
@@ -65,7 +65,7 @@ public class PostgreDatabaseManager implements DatabaseManager {
     public List<String> getTableData(String tableName) throws SQLException {
         Statement stmt = connection.createStatement();
         StringBuilder url = new StringBuilder(2);
-        url.append("SELECT * FROM ").append(tableName);
+        url.append("SELECT * FROM public.").append(tableName);
         ResultSet resultSet = stmt.executeQuery(url.toString());
         ResultSetMetaData rsmd = resultSet.getMetaData();
 
@@ -93,7 +93,7 @@ public class PostgreDatabaseManager implements DatabaseManager {
     public void createRecord(String tableName, Map<String, Object> columnData) throws SQLException {
         Statement stmt = connection.createStatement();
         StringBuilder url = new StringBuilder(8);
-        url.append("INSERT INTO ")
+        url.append("INSERT INTO public.")
                 .append(tableName)
                 .append(" (")
                 .append(getColumnNames(columnData))
@@ -127,7 +127,7 @@ public class PostgreDatabaseManager implements DatabaseManager {
         Statement stmt = connection.createStatement();
         for (Map.Entry<String, Object> pair : columnData.entrySet()) {
             StringBuilder url = new StringBuilder(11);
-            url.append("UPDATE ")
+            url.append("UPDATE public.")
                     .append(tableName)
                     .append(" SET ")
                     .append(pair.getKey())
@@ -147,7 +147,7 @@ public class PostgreDatabaseManager implements DatabaseManager {
     public void deleteRecord(String tableName, String keyName, String keyValue) throws SQLException {
         Statement stmt = connection.createStatement();
         StringBuilder url = new StringBuilder(7);
-        url.append("DELETE FROM ")
+        url.append("DELETE FROM public.")
                 .append(tableName)
                 .append(" WHERE ")
                 .append(keyName)
@@ -162,7 +162,7 @@ public class PostgreDatabaseManager implements DatabaseManager {
     public void clearTable(String tableName) throws SQLException {
         Statement stmt = connection.createStatement();
         StringBuilder url = new StringBuilder(2);
-        url.append("DELETE FROM ").append(tableName);
+        url.append("DELETE FROM public.").append(tableName);
         stmt.executeUpdate(url.toString());
         stmt.close();
     }
@@ -171,7 +171,7 @@ public class PostgreDatabaseManager implements DatabaseManager {
     public void dropTable(String tableName) throws SQLException {
         Statement stmt = connection.createStatement();
         StringBuilder url = new StringBuilder(2);
-        url.append("DROP TABLE ").append(tableName);
+        url.append("DROP TABLE public.").append(tableName);
         stmt.executeUpdate(url.toString());
         stmt.close();
     }
