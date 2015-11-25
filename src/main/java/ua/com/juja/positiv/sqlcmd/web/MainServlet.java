@@ -53,7 +53,7 @@ public class MainServlet extends HttpServlet {
                 goTo("menu", request, response);
 
             } else if (action.equals("/create-table")) {
-                goTo("table", request, response);
+                goTo("table-name-column-count", request, response);
 
             } else if (action.equals("/table-names")) {
                 getTableNames(manager, request, response);
@@ -71,18 +71,20 @@ public class MainServlet extends HttpServlet {
                 goTo("delete-table", request, response);
 
             } else if (action.equals("/create-record")) {
-                setAttribute("actionURL", "create", request);
+                setAttribute("actionURL", "create-record", request);
+                goTo("table-name", request, response);
+
+            } else if (action.equals("/update-record")) {
+                setAttribute("actionURL", "update-record", request);
                 goTo("table-name", request, response);
 
             } else if (action.equals("/create-database")) {
-                goTo("create-database", request, response);
+                setAttribute("actionURL", "create-database", request);
+                goTo("database-name", request, response);
 
             } else if (action.equals("/delete-database")) {
-                goTo("delete-database", request, response);
-
-            } else if (action.equals("/update-record")) {
-                setAttribute("actionURL", "update", request);
-                goTo("table-name", request, response);
+                setAttribute("actionURL", "delete-database", request);
+                goTo("database-name", request, response);
 
             } else {
                 goTo("error", request, response);
@@ -111,15 +113,15 @@ public class MainServlet extends HttpServlet {
             } else if (action.equals("/delete-record")) {
                 deleteRecord(manager, request, response);
 
-            } else if (action.equals("/create")) {
+            } else if (action.equals("/create-record")) {
                 setColumnCountAndTableName(request, manager);
                 goTo("create-record", request, response);
 
-            } else if (action.equals("/create-record")) {
-                createRecord(manager, request, response);
-
             } else if (action.equals("/create-database")) {
                 createDatabase(manager, request, response);
+
+            } else if (action.equals("/create")) {
+                createRecord(manager, request, response);
 
             } else if (action.equals("/delete-database")) {
                 deleteDatabase(manager, request, response);
@@ -131,14 +133,14 @@ public class MainServlet extends HttpServlet {
                 setColumnCountAndTableName(request);
                 goTo("create-table", request, response);
 
-            } else if (action.equals("/table")) {
+            } else if (action.equals("/create-table")) {
                 createTable(manager, request, response);
 
-            } else if (action.equals("/update")) {
+            } else if (action.equals("/update-record")) {
                 setColumnCountAndTableName(request, manager);
                 goTo("update-record", request, response);
 
-            } else if (action.equals("/update-record")) {
+            } else if (action.equals("/update")) {
                 updateRecord(manager, request, response);
             }
         } catch (Exception e) {
@@ -154,7 +156,7 @@ public class MainServlet extends HttpServlet {
 
 
     private void setColumnCountAndTableName(HttpServletRequest request) {
-        setAttribute("tableName",  getParameter("tableName", request), request);
+        setAttribute("tableName", getParameter("tableName", request), request);
         setAttribute("columnCount", getParameter("columnCount", request), request);
     }
 
