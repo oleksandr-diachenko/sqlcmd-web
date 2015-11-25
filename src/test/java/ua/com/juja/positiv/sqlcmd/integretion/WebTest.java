@@ -1,4 +1,4 @@
-package ua.com.juja.positiv.sqlcmd.web;
+package ua.com.juja.positiv.sqlcmd.integretion;
 
 import org.junit.*;
 import ua.com.juja.positiv.sqlcmd.DatabasePreparation;
