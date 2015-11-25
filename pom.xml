@@ -17,6 +17,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <org.springframework.version>4.1.6.RELEASE</org.springframework.version>
     </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -58,12 +59,14 @@
             <version>1.0.6</version>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <version>9.1-901-1.jdbc4</version>
         </dependency>
     </dependencies>
+
     <build>
         <finalName>sqlcmd</finalName>
         <plugins>
