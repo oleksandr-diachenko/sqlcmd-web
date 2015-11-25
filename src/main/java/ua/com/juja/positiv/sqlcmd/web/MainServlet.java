@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -66,6 +67,9 @@ public class MainServlet extends HttpServlet {
             } else if (action.equals("/delete-record")) {
                 goTo("delete-record", request, response);
 
+            } else if (action.equals("/delete-table")) {
+                goTo("delete-table", request, response);
+
             } else if (action.equals("/create-record")) {
                 setAttribute("actionURL", "create", request);
                 goTo("table-name", request, response);
@@ -119,6 +123,9 @@ public class MainServlet extends HttpServlet {
 
             } else if (action.equals("/delete-database")) {
                 deleteDatabase(manager, request, response);
+
+            } else if (action.equals("/delete-table")) {
+                deleteTable(manager, request, response);
 
             } else if (action.equals("/column-parameters")) {
                 setColumnCountAndTableName(request);
@@ -242,6 +249,12 @@ public class MainServlet extends HttpServlet {
     private void createDatabase(DatabaseManager manager, HttpServletRequest request,
                                 HttpServletResponse response) throws Exception {
         manager.createBase(getParameter("databaseName", request));
+        goTo("success", request, response);
+    }
+
+    private void deleteTable(DatabaseManager manager, HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
+        manager.dropTable(getParameter("tableName", request));
         goTo("success", request, response);
     }
 

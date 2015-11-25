@@ -20,6 +20,7 @@
                 <value>clear-table</value>
                 <value>create-record</value>
                 <value>delete-record</value>
+                <value>delete-table</value>
                 <value>create-database</value>
                 <value>delete-database</value>
             </list>
