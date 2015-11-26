@@ -81,6 +81,20 @@ public class WebTest {
     }
 
     @Test
+    public void testTableData_WithIncorrect_TableName() {
+        preparation.run();
+        clickLinkWithText("table-data");
+
+        assertTextPresent("Table name");
+        setTextField("tableName", "qwe");
+        submit();
+
+        assertTextPresent("Something going wrong.. Get table data error");
+        assertTextPresent("To menu menu");
+        assertLinkPresentWithText("menu");
+    }
+
+    @Test
     public void testCreateTable() {
         String tableName = "test";
         clickLinkWithText("create-table");
