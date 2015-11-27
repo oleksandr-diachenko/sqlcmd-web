@@ -2,8 +2,10 @@ package ua.com.juja.positiv.sqlcmd.web;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
+import ua.com.juja.positiv.sqlcmd.databasemanager.DatabaseException;
 import ua.com.juja.positiv.sqlcmd.databasemanager.DatabaseManager;
 import ua.com.juja.positiv.sqlcmd.service.Service;
+import ua.com.juja.positiv.sqlcmd.service.ServiceException;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -167,7 +169,7 @@ public class MainServlet extends HttpServlet {
         return request.getParameter(parameterName);
     }
 
-    private int getColumnCount(DatabaseManager manager, String tableName) throws Exception {
+    private int getColumnCount(DatabaseManager manager, String tableName) throws DatabaseException {
         return Integer.parseInt(manager.getTableData(tableName).get(0));
     }
 
@@ -178,16 +180,15 @@ public class MainServlet extends HttpServlet {
 
     private void error(HttpServletRequest request, HttpServletResponse response, Exception e) {
         setAttribute("message", e.getMessage(), request);
-        try {
-            goTo("error", request, response);
-        } catch (Exception e1) {
-            e1.printStackTrace();
-        }
+        goTo("error", request, response);
     }
 
-    private void goTo(String jsp, HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        request.getRequestDispatcher(jsp + ".jsp").forward(request, response);
+    private void goTo(String jsp, HttpServletRequest request, HttpServletResponse response) {
+        try {
+            request.getRequestDispatcher(jsp + ".jsp").forward(request, response);
+        } catch (Exception e) {
+            error(request, response, e);
+        }
     }
 
     private void redirect(String url, HttpServletRequest request, HttpServletResponse response) {
@@ -199,7 +200,7 @@ public class MainServlet extends HttpServlet {
     }
 
     private void createTable(DatabaseManager manager, HttpServletRequest request,
-                             HttpServletResponse response) throws Exception {
+                             HttpServletResponse response) {
         int columnCount = Integer.parseInt(getParameter("columnCount", request));
         Map<String, Object> data = getData(
                 "columnName",
@@ -207,80 +208,119 @@ public class MainServlet extends HttpServlet {
                 columnCount - 1,
                 request);
 
-        manager.createTable(getParameter("tableName", request), getParameter("keyName", request), data);
-        goTo("success", request, response);
+        try {
+            manager.createTable(getParameter("tableName", request), getParameter("keyName", request), data);
+            goTo("success", request, response);
+        } catch (DatabaseException e) {
+            error(request, response, e);
+        }
     }
 
     private void updateRecord(DatabaseManager manager, HttpServletRequest request,
-                              HttpServletResponse response) throws Exception {
+                              HttpServletResponse response) {
         String tableName = getParameter("tableName", request);
-        Map<String, Object> data = getData(
-                "columnName",
-                "columnValue",
-                getColumnCount(manager, tableName) - 1,
-                request);
+        try {
+            Map<String, Object> data = getData(
+                    "columnName",
+                    "columnValue",
+                    getColumnCount(manager, tableName) - 1,
+                    request);
 
-        manager.updateRecord(tableName, getParameter("keyName", request), getParameter("keyValue", request), data);
-        goTo("success", request, response);
+            manager.updateRecord(tableName, getParameter("keyName", request), getParameter("keyValue", request), data);
+            goTo("success", request, response);
+        } catch (DatabaseException e) {
+            error(request, response, e);
+        }
     }
 
     private void createRecord(DatabaseManager manager, HttpServletRequest request,
-                              HttpServletResponse response) throws Exception {
+                              HttpServletResponse response) {
         String tableName = getParameter("tableName", request);
-        Map<String, Object> data = getData(
-                "columnName",
-                "columnValue",
-                getColumnCount(manager, tableName),
-                request);
+        try {
+            Map<String, Object> data = getData(
+                    "columnName",
+                    "columnValue",
+                    getColumnCount(manager, tableName),
+                    request);
 
-        manager.createRecord(tableName, data);
-        goTo("success", request, response);
+                manager.createRecord(tableName, data);
+            goTo("success", request, response);
+        } catch (DatabaseException e) {
+            error(request, response, e);
+        }
     }
 
     private void deleteDatabase(DatabaseManager manager, HttpServletRequest request,
-                                HttpServletResponse response) throws Exception {
-        manager.dropBase(getParameter("databaseName", request));
-        goTo("success", request, response);
+                                HttpServletResponse response) {
+        try {
+            manager.dropBase(getParameter("databaseName", request));
+            goTo("success", request, response);
+        } catch (DatabaseException e) {
+            error(request, response, e);
+        }
     }
 
     private void createDatabase(DatabaseManager manager, HttpServletRequest request,
-                                HttpServletResponse response) throws Exception {
-        manager.createBase(getParameter("databaseName", request));
-        goTo("success", request, response);
+                                HttpServletResponse response) {
+        try {
+            manager.createBase(getParameter("databaseName", request));
+            goTo("success", request, response);
+        } catch (DatabaseException e) {
+            error(request, response, e);
+        }
     }
 
-    private void deleteTable(DatabaseManager manager, HttpServletRequest request, HttpServletResponse response)
-            throws Exception {
-        manager.dropTable(getParameter("tableName", request));
-        goTo("success", request, response);
+    private void deleteTable(DatabaseManager manager, HttpServletRequest request, HttpServletResponse response) {
+        try {
+            manager.dropTable(getParameter("tableName", request));
+            goTo("success", request, response);
+        } catch (DatabaseException e) {
+            error(request, response, e);
+        }
     }
 
     private void deleteRecord(DatabaseManager manager, HttpServletRequest request,
-                              HttpServletResponse response) throws Exception {
-        manager.deleteRecord(
-                getParameter("tableName", request),
-                getParameter("keyName", request),
-                getParameter("keyValue", request));
-        goTo("success", request, response);
+                              HttpServletResponse response) {
+        try {
+            manager.deleteRecord(
+                    getParameter("tableName", request),
+                    getParameter("keyName", request),
+                    getParameter("keyValue", request));
+            goTo("success", request, response);
+        } catch (DatabaseException e) {
+            error(request, response, e);
+        }
     }
 
     private void clearTable(DatabaseManager manager, HttpServletRequest request,
-                            HttpServletResponse response) throws Exception {
-        manager.clearTable(getParameter("tableName", request));
-        goTo("success", request, response);
+                            HttpServletResponse response) {
+        try {
+            manager.clearTable(getParameter("tableName", request));
+            goTo("success", request, response);
+        } catch (DatabaseException e) {
+            error(request, response, e);
+        }
     }
 
     private void getTableNames(DatabaseManager manager, HttpServletRequest request,
-                               HttpServletResponse response) throws Exception {
-        setAttribute("tables", manager.getTableNames(), request);
-        goTo("table-names", request, response);
+                               HttpServletResponse response) {
+        try {
+            setAttribute("tables", manager.getTableNames(), request);
+            goTo("table-names", request, response);
+        } catch (DatabaseException e) {
+            error(request, response, e);
+        }
     }
 
     private void getTableData(DatabaseManager manager, HttpServletRequest request,
-                              HttpServletResponse response) throws Exception {
+                              HttpServletResponse response) {
         String tableName = getParameter("tableName", request);
-        setAttribute("table", service.getTableData(manager, tableName), request);
-        goTo("table-data", request, response);
+        try {
+            setAttribute("table", service.getTableData(manager, tableName), request);
+            goTo("table-data", request, response);
+        } catch (ServiceException e) {
+            error(request, response, e);
+        }
     }
 
     private void connect(HttpServletRequest request, HttpServletResponse response) {

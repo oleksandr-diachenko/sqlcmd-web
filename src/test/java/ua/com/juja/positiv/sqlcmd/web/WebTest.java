@@ -1,4 +1,4 @@
-package ua.com.juja.positiv.sqlcmd.integretion;
+package ua.com.juja.positiv.sqlcmd.web;
 
 import org.junit.*;
 import ua.com.juja.positiv.sqlcmd.DatabaseLogin;
@@ -89,19 +89,20 @@ public class WebTest {
         setTextField("tableName", "qwe");
         submit();
 
-        assertTextPresent("Something going wrong.. Get table data error");
+        assertTextPresent("Something going wrong...");
+        assertTextPresent("Can't get table data. " +
+                "ERROR: relation \"public.qwe\" does not exist Позиция: 15");
         assertTextPresent("To menu menu");
         assertLinkPresentWithText("menu");
     }
 
     @Test
     public void testCreateTable() {
-        String tableName = "test";
         clickLinkWithText("create-table");
 
         assertTextPresent("Table name");
         assertTextPresent("Column count");
-        setTextField("tableName", tableName);
+        setTextField("tableName", "test");
         setTextField("columnCount", "2");
         submit();
 
@@ -220,11 +221,11 @@ public class WebTest {
 
     @Test
     public void testCreateAndDeleteDatabase() {
-        String database = "test" + Math.abs(new Random(10000).nextInt());
+
         clickLinkWithText("create-database");
 
         assertTextPresent("Database name");
-        setTextField("databaseName", database);
+        setTextField("databaseName", "test" + Math.abs(new Random(10000).nextInt()));
         submit();
 
         success();
@@ -233,7 +234,7 @@ public class WebTest {
         clickLinkWithText("delete-database");
 
         assertTextPresent("Database name");
-        setTextField("databaseName", database);
+        setTextField("databaseName", "test" + Math.abs(new Random(10000).nextInt()));
         submit();
 
         success();

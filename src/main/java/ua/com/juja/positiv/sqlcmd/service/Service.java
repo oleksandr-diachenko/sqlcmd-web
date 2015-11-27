@@ -2,7 +2,6 @@ package ua.com.juja.positiv.sqlcmd.service;
 
 import ua.com.juja.positiv.sqlcmd.databasemanager.DatabaseManager;
 
-import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -13,8 +12,8 @@ public interface Service {
     List<String> commandList();
 
     DatabaseManager connect(String database, String user, String password)
-            throws Exception;
+            throws ServiceException;
 
-    List<List<String>> getTableData(DatabaseManager manager, String tableName) throws Exception;
+    List<List<String>> getTableData(DatabaseManager manager, String tableName) throws ServiceException;
 
 }

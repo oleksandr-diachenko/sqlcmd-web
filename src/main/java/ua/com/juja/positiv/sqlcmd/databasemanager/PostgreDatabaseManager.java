@@ -17,17 +17,24 @@ public class PostgreDatabaseManager implements DatabaseManager {
     private Connection connection;
 
     @Override
-    public void connect(String database, String user, String password) throws SQLException, ClassNotFoundException {
-        Class.forName("org.postgresql.Driver");
-        connection = DriverManager.getConnection(
-                JDBC_POSTGRESQL_URL + database + "", "" + user + "",
-                "" + password + "");
+    public void connect(String database, String user, String password) throws DatabaseException {
+        try {
+            Class.forName("org.postgresql.Driver");
+        } catch (ClassNotFoundException e) {
+            throw new DatabaseException("Can't find driver jar. Add it to project. " + e.getMessage(), e);
+        }
+        try {
+            connection = DriverManager.getConnection(
+                    JDBC_POSTGRESQL_URL + database + "", "" + user + "",
+                    "" + password + "");
+        } catch (SQLException e) {
+            throw new DatabaseException("Can't connect to database. " + e.getMessage(), e);
+        }
     }
 
     @Override
     public void createTable(String tableName, String keyName, Map<String, Object> columnParameters)
-            throws SQLException {
-        Statement stmt = connection.createStatement();
+            throws DatabaseException {
         StringBuilder url = new StringBuilder(7);
         url.append("CREATE TABLE public.")
                 .append(tableName)
@@ -36,8 +43,11 @@ public class PostgreDatabaseManager implements DatabaseManager {
                 .append(" INT  PRIMARY KEY NOT NULL").
                 append(getParameters(columnParameters))
                 .append(")");
-        stmt.executeUpdate(url.toString());
-        stmt.close();
+        try (Statement stmt = connection.createStatement()) {
+            stmt.executeUpdate(url.toString());
+        } catch (SQLException e) {
+            throw new DatabaseException("Can't create table. " + e.getMessage(), e);
+        }
     }
 
     private String getParameters(Map<String, Object> columnParameters) {
@@ -49,60 +59,70 @@ public class PostgreDatabaseManager implements DatabaseManager {
     }
 
     @Override
-    public Set<String> getTableNames() throws SQLException {
-        DatabaseMetaData metaData = connection.getMetaData();
-        ResultSet resultSet = metaData.getTables(null, "public", "%", new String[]{"TABLE"});
-
-        Set<String> tableNames = new LinkedHashSet<>();
-        while (resultSet.next()) {
-            tableNames.add(resultSet.getString(3));
+    public Set<String> getTableNames() throws DatabaseException {
+        DatabaseMetaData metaData;
+        try {
+            metaData = connection.getMetaData();
+        } catch (SQLException e) {
+            throw new DatabaseException("Can't get table names. " + e.getMessage(), e);
         }
-        resultSet.close();
-        return tableNames;
+
+        try (ResultSet resultSet = metaData.getTables(null, "public", "%", new String[]{"TABLE"})) {
+            Set<String> tableNames = new LinkedHashSet<>();
+            while (resultSet.next()) {
+                tableNames.add(resultSet.getString(3));
+            }
+            return tableNames;
+        } catch (SQLException e) {
+            throw new DatabaseException("Can't get table names. " + e.getMessage(), e);
+        }
     }
 
     @Override
-    public List<String> getTableData(String tableName) throws SQLException {
-        Statement stmt = connection.createStatement();
+    public List<String> getTableData(String tableName) throws DatabaseException {
         StringBuilder url = new StringBuilder(2);
         url.append("SELECT * FROM public.").append(tableName);
-        ResultSet resultSet = stmt.executeQuery(url.toString());
-        ResultSetMetaData rsmd = resultSet.getMetaData();
+        try (Statement stmt = connection.createStatement();
+             ResultSet resultSet = stmt.executeQuery(url.toString())) {
+            ResultSetMetaData rsmd = resultSet.getMetaData();
 
-        List<String> tableData = new ArrayList<>();
-        tableData.add(String.valueOf(rsmd.getColumnCount()));
-        for (int indexColumn = 1; indexColumn <= rsmd.getColumnCount(); indexColumn++) {
-            tableData.add(resultSet.getMetaData().getColumnName(indexColumn));
-        }
+            List<String> tableData = new ArrayList<>();
+            tableData.add(String.valueOf(rsmd.getColumnCount()));
+            for (int indexColumn = 1; indexColumn <= rsmd.getColumnCount(); indexColumn++) {
+                tableData.add(resultSet.getMetaData().getColumnName(indexColumn));
+            }
 
-        while (resultSet.next()) {
-            for (int indexData = 1; indexData <= rsmd.getColumnCount(); indexData++) {
-                if (resultSet.getString(indexData) == null) {
-                    tableData.add("");
-                } else {
-                    tableData.add(resultSet.getString(indexData));
+            while (resultSet.next()) {
+                for (int indexData = 1; indexData <= rsmd.getColumnCount(); indexData++) {
+                    if (resultSet.getString(indexData) == null) {
+                        tableData.add("");
+                    } else {
+                        tableData.add(resultSet.getString(indexData));
+                    }
                 }
             }
+            return tableData;
+        } catch (SQLException e) {
+            throw new DatabaseException("Can't get table data. " + e.getMessage(), e);
         }
-        stmt.close();
-        resultSet.close();
-        return tableData;
     }
 
     @Override
-    public void createRecord(String tableName, Map<String, Object> columnData) throws SQLException {
-        Statement stmt = connection.createStatement();
-        StringBuilder url = new StringBuilder(8);
-        url.append("INSERT INTO public.")
-                .append(tableName)
-                .append(" (")
-                .append(getColumnNames(columnData))
-                .append(")")
-                .append(" VALUES (")
-                .append(getColumnValues(columnData))
-                .append(")");
-        stmt.executeUpdate(url.toString());
-        stmt.close();
+    public void createRecord(String tableName, Map<String, Object> columnData) throws DatabaseException {
+        try (Statement stmt = connection.createStatement()) {
+            StringBuilder url = new StringBuilder(8);
+            url.append("INSERT INTO public.")
+                    .append(tableName)
+                    .append(" (")
+                    .append(getColumnNames(columnData))
+                    .append(")")
+                    .append(" VALUES (")
+                    .append(getColumnValues(columnData))
+                    .append(")");
+            stmt.executeUpdate(url.toString());
+        } catch (SQLException e) {
+            throw new DatabaseException("Can't create record. " + e.getMessage(), e);
+        }
     }
 
     private String getColumnNames(Map<String, Object> columnData) {
@@ -123,29 +143,30 @@ public class PostgreDatabaseManager implements DatabaseManager {
 
     @Override
     public void updateRecord(String tableName, String keyName, String keyValue, Map<String, Object> columnData)
-            throws SQLException {
-        Statement stmt = connection.createStatement();
-        for (Map.Entry<String, Object> pair : columnData.entrySet()) {
-            StringBuilder url = new StringBuilder(11);
-            url.append("UPDATE public.")
-                    .append(tableName)
-                    .append(" SET ")
-                    .append(pair.getKey())
-                    .append(" = '")
-                    .append(pair.getValue())
-                    .append("' WHERE ")
-                    .append(keyName)
-                    .append(" = '")
-                    .append(keyValue)
-                    .append("'");
-            stmt.executeUpdate(url.toString());
+            throws DatabaseException {
+        try (Statement stmt = connection.createStatement()) {
+            for (Map.Entry<String, Object> pair : columnData.entrySet()) {
+                StringBuilder url = new StringBuilder(11);
+                url.append("UPDATE public.")
+                        .append(tableName)
+                        .append(" SET ")
+                        .append(pair.getKey())
+                        .append(" = '")
+                        .append(pair.getValue())
+                        .append("' WHERE ")
+                        .append(keyName)
+                        .append(" = '")
+                        .append(keyValue)
+                        .append("'");
+                stmt.executeUpdate(url.toString());
+            }
+        } catch (SQLException e) {
+            throw new DatabaseException("Can't update record. " + e.getMessage(), e);
         }
-        stmt.close();
     }
 
     @Override
-    public void deleteRecord(String tableName, String keyName, String keyValue) throws SQLException {
-        Statement stmt = connection.createStatement();
+    public void deleteRecord(String tableName, String keyName, String keyValue) throws DatabaseException {
         StringBuilder url = new StringBuilder(7);
         url.append("DELETE FROM public.")
                 .append(tableName)
@@ -154,43 +175,54 @@ public class PostgreDatabaseManager implements DatabaseManager {
                 .append(" = '")
                 .append(keyValue)
                 .append("'");
-        stmt.executeUpdate(url.toString());
-        stmt.close();
+        try (Statement stmt = connection.createStatement()) {
+            stmt.executeUpdate(url.toString());
+        } catch (SQLException e) {
+            throw new DatabaseException("Can't delete record. " + e.getMessage(), e);
+        }
     }
 
     @Override
-    public void clearTable(String tableName) throws SQLException {
-        Statement stmt = connection.createStatement();
+    public void clearTable(String tableName) throws DatabaseException {
         StringBuilder url = new StringBuilder(2);
         url.append("DELETE FROM public.").append(tableName);
-        stmt.executeUpdate(url.toString());
-        stmt.close();
+        try(Statement stmt = connection.createStatement()) {
+            stmt.executeUpdate(url.toString());
+        } catch (SQLException e) {
+            throw new DatabaseException("Can't clear table. " + e.getMessage(), e);
+        }
     }
 
     @Override
-    public void dropTable(String tableName) throws SQLException {
-        Statement stmt = connection.createStatement();
+    public void dropTable(String tableName) throws DatabaseException {
         StringBuilder url = new StringBuilder(2);
         url.append("DROP TABLE public.").append(tableName);
-        stmt.executeUpdate(url.toString());
-        stmt.close();
+        try(Statement stmt = connection.createStatement()) {
+            stmt.executeUpdate(url.toString());
+        } catch (SQLException e) {
+            throw new DatabaseException("Can't delete table. " + e.getMessage(), e);
+        }
     }
 
     @Override
-    public void createBase(String database) throws SQLException {
-        Statement stmt = connection.createStatement();
+    public void createBase(String database) throws DatabaseException {
         StringBuilder url = new StringBuilder(2);
         url.append("CREATE DATABASE ").append(database);
-        stmt.executeUpdate(url.toString());
-        stmt.close();
+        try(Statement stmt = connection.createStatement()) {
+            stmt.executeUpdate(url.toString());
+        } catch (SQLException e) {
+            throw new DatabaseException("Can't create database. " + e.getMessage(), e);
+        }
     }
 
     @Override
-    public void dropBase(String database) throws SQLException {
-        Statement stmt = connection.createStatement();
+    public void dropBase(String database) throws DatabaseException {
         StringBuilder url = new StringBuilder(2);
         url.append("DROP DATABASE ").append(database);
-        stmt.executeUpdate(url.toString());
-        stmt.close();
+        try(Statement stmt = connection.createStatement()) {
+            stmt.executeUpdate(url.toString());
+        } catch (SQLException e) {
+            throw new DatabaseException("Can't delete database. " + e.getMessage(), e);
+        }
     }
 }

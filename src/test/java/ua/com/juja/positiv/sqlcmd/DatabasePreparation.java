@@ -1,5 +1,6 @@
 package ua.com.juja.positiv.sqlcmd;
 
+import ua.com.juja.positiv.sqlcmd.databasemanager.DatabaseException;
 import ua.com.juja.positiv.sqlcmd.databasemanager.DatabaseManager;
 import ua.com.juja.positiv.sqlcmd.databasemanager.PostgreDatabaseManager;
 
@@ -22,16 +23,16 @@ public class DatabasePreparation {
             clearDatabase();
             createFirstTable();
             createSecondTable();
-        }catch (SQLException | ClassNotFoundException e){
+        } catch (DatabaseException e) {
             e.printStackTrace();
         }
     }
 
-    private void connectDatabase() throws SQLException, ClassNotFoundException {
+    private void connectDatabase() throws DatabaseException {
         manager.connect("sqlcmd", "postgres", "postgres");
     }
 
-    private void createFirstTable() throws SQLException {
+    private void createFirstTable() throws DatabaseException {
         Map<String, Object> tableCar = new LinkedHashMap<>();
         tableCar.put("name", "text");
         tableCar.put("color", "text");
@@ -60,12 +61,12 @@ public class DatabasePreparation {
         manager.createRecord("car", field3);
     }
 
-    private void createSecondTable() throws SQLException {
+    private void createSecondTable() throws DatabaseException {
         Map<String, Object> tableClient = new LinkedHashMap<>();
         manager.createTable("client", "id", tableClient);
     }
 
-    private void clearDatabase() throws SQLException {
+    private void clearDatabase() throws DatabaseException {
         Set<String> tables = manager.getTableNames();
         for (String table : tables) {
             manager.dropTable(table);

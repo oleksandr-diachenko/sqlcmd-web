@@ -10,9 +10,9 @@ import java.util.Set;
  */
 public interface DatabaseManager {
 
-    void connect(String database, String user, String command) throws SQLException, ClassNotFoundException;
+    void connect(String database, String user, String command) throws DatabaseException;
 
-    Set<String> getTableNames() throws SQLException;
+    Set<String> getTableNames() throws DatabaseException;
 
     /**
      * @param tableName .
@@ -20,23 +20,23 @@ public interface DatabaseManager {
      * List[0] = columnCount.
      * List[1, columnCount + 1] = columnName.
      * List[columnCount + 1, size] = columnData.
-     * @throws SQLException .
+     * @throws DatabaseException .
      */
-    List<String> getTableData(String tableName) throws SQLException;
+    List<String> getTableData(String tableName) throws DatabaseException;
 
-    void createTable(String tableName, String keyName, Map<String, Object> columnParameters) throws SQLException;
+    void createTable(String tableName, String keyName, Map<String, Object> columnParameters) throws DatabaseException;
 
-    void createRecord(String tableName, Map<String, Object> columnData) throws SQLException;
+    void createRecord(String tableName, Map<String, Object> columnData) throws DatabaseException;
 
-    void updateRecord(String tableName, String keyName, String keyValue, Map<String, Object> columnData) throws SQLException;
+    void updateRecord(String tableName, String keyName, String keyValue, Map<String, Object> columnData) throws DatabaseException;
 
-    void deleteRecord(String tableName, String keyName, String keyValue) throws SQLException;
+    void deleteRecord(String tableName, String keyName, String keyValue) throws DatabaseException;
 
-    void clearTable(String tableName) throws SQLException;
+    void clearTable(String tableName) throws DatabaseException;
 
-    void dropTable(String tableName) throws SQLException;
+    void dropTable(String tableName) throws DatabaseException;
 
-    void createBase(String database) throws SQLException;
+    void createBase(String database) throws DatabaseException;
 
-    void dropBase(String database) throws SQLException;
+    void dropBase(String database) throws DatabaseException;
 }
