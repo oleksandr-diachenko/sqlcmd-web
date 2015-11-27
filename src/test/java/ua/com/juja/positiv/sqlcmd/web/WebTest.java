@@ -1,12 +1,16 @@
 package ua.com.juja.positiv.sqlcmd.web;
 
+import net.sourceforge.jwebunit.api.IElement;
 import org.junit.*;
+import org.w3c.dom.Element;
 import ua.com.juja.positiv.sqlcmd.DatabaseLogin;
 import ua.com.juja.positiv.sqlcmd.DatabasePreparation;
 
-import java.util.Random;
+import java.util.*;
 
 import static net.sourceforge.jwebunit.junit.JWebUnit.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by POSITIV on 25.11.2015.
@@ -35,16 +39,15 @@ public class WebTest {
 
     @Test
     public void testMenu() {
-        assertLinkPresentWithText("connect");
-        assertLinkPresentWithText("create-table");
-        assertLinkPresentWithText("table-names");
-        assertLinkPresentWithText("table-data");
-        assertLinkPresentWithText("update-record");
-        assertLinkPresentWithText("clear-table");
-        assertLinkPresentWithText("create-record");
-        assertLinkPresentWithText("delete-record");
-        assertLinkPresentWithText("create-database");
-        assertLinkPresentWithText("delete-database");
+        List<String> commands = new LinkedList<>(Arrays.asList("connect", "create-table",
+                "table-names", "table-data", "update-record", "clear-table", "create-record",
+                "delete-record", "delete-table", "create-database", "delete-database"));
+        List<IElement> links = getElementsByXPath("//a");
+
+        assertTrue(commands.size() == links.size());
+        for(int index = 0; index < links.size(); index++){
+            assertEquals(commands.get(index), links.get(index).getTextContent());
+        }
     }
 
     @Test
