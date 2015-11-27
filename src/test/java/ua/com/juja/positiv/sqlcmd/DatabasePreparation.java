@@ -4,7 +4,6 @@ import ua.com.juja.positiv.sqlcmd.databasemanager.DatabaseException;
 import ua.com.juja.positiv.sqlcmd.databasemanager.DatabaseManager;
 import ua.com.juja.positiv.sqlcmd.databasemanager.PostgreDatabaseManager;
 
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;

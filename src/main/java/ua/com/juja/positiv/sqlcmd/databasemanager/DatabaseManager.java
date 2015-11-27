@@ -1,6 +1,5 @@
 package ua.com.juja.positiv.sqlcmd.databasemanager;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
