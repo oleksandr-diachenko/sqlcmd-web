@@ -20,15 +20,13 @@ public class PostgreDatabaseManager implements DatabaseManager {
     public void connect(String database, String user, String password) throws DatabaseException {
         try {
             Class.forName("org.postgresql.Driver");
-        } catch (ClassNotFoundException e) {
-            throw new DatabaseException("Can't find driver jar. Add it to project. " + e.getMessage(), e);
-        }
-        try {
             connection = DriverManager.getConnection(
                     JDBC_POSTGRESQL_URL + database + "", "" + user + "",
                     "" + password + "");
         } catch (SQLException e) {
             throw new DatabaseException("Can't connect to database. " + e.getMessage(), e);
+        } catch (ClassNotFoundException e) {
+            throw new DatabaseException("Can't find driver jar. Add it to project. " + e.getMessage(), e);
         }
     }
 
@@ -186,7 +184,7 @@ public class PostgreDatabaseManager implements DatabaseManager {
     public void clearTable(String tableName) throws DatabaseException {
         StringBuilder url = new StringBuilder(2);
         url.append("DELETE FROM public.").append(tableName);
-        try(Statement stmt = connection.createStatement()) {
+        try (Statement stmt = connection.createStatement()) {
             stmt.executeUpdate(url.toString());
         } catch (SQLException e) {
             throw new DatabaseException("Can't clear table. " + e.getMessage(), e);
@@ -197,7 +195,7 @@ public class PostgreDatabaseManager implements DatabaseManager {
     public void dropTable(String tableName) throws DatabaseException {
         StringBuilder url = new StringBuilder(2);
         url.append("DROP TABLE public.").append(tableName);
-        try(Statement stmt = connection.createStatement()) {
+        try (Statement stmt = connection.createStatement()) {
             stmt.executeUpdate(url.toString());
         } catch (SQLException e) {
             throw new DatabaseException("Can't delete table. " + e.getMessage(), e);
@@ -208,7 +206,7 @@ public class PostgreDatabaseManager implements DatabaseManager {
     public void createBase(String database) throws DatabaseException {
         StringBuilder url = new StringBuilder(2);
         url.append("CREATE DATABASE ").append(database);
-        try(Statement stmt = connection.createStatement()) {
+        try (Statement stmt = connection.createStatement()) {
             stmt.executeUpdate(url.toString());
         } catch (SQLException e) {
             throw new DatabaseException("Can't create database. " + e.getMessage(), e);
@@ -219,7 +217,7 @@ public class PostgreDatabaseManager implements DatabaseManager {
     public void dropBase(String database) throws DatabaseException {
         StringBuilder url = new StringBuilder(2);
         url.append("DROP DATABASE ").append(database);
-        try(Statement stmt = connection.createStatement()) {
+        try (Statement stmt = connection.createStatement()) {
             stmt.executeUpdate(url.toString());
         } catch (SQLException e) {
             throw new DatabaseException("Can't delete database. " + e.getMessage(), e);
