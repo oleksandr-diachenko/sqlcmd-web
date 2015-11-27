@@ -2,7 +2,6 @@ package ua.com.juja.positiv.sqlcmd.web;
 
 import net.sourceforge.jwebunit.api.IElement;
 import org.junit.*;
-import org.w3c.dom.Element;
 import ua.com.juja.positiv.sqlcmd.DatabaseLogin;
 import ua.com.juja.positiv.sqlcmd.DatabasePreparation;
 
@@ -45,7 +44,7 @@ public class WebTest {
         List<IElement> links = getElementsByXPath("//a");
 
         assertTrue(commands.size() == links.size());
-        for(int index = 0; index < links.size(); index++){
+        for (int index = 0; index < links.size(); index++) {
             assertEquals(commands.get(index), links.get(index).getTextContent());
         }
     }
@@ -224,7 +223,6 @@ public class WebTest {
 
     @Test
     public void testCreateAndDeleteDatabase() {
-
         clickLinkWithText("create-database");
 
         assertTextPresent("Database name");
