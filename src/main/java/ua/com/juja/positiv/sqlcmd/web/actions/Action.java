@@ -1,5 +1,7 @@
 package ua.com.juja.positiv.sqlcmd.web.actions;
 
+import ua.com.juja.positiv.sqlcmd.databasemanager.DatabaseException;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -14,5 +16,5 @@ public interface Action {
 
     void post(HttpServletRequest request, HttpServletResponse response);
 
-    void get(HttpServletRequest request, HttpServletResponse response);
+    void get(HttpServletRequest request, HttpServletResponse response) ;
 }

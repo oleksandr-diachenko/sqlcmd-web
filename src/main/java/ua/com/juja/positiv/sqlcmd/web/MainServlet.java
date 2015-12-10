@@ -33,8 +33,8 @@ public class MainServlet extends HttpServlet {
 
         actions = new LinkedList<>();
         actions.addAll(Arrays.asList(
-                new MenuAction(service),
                 new ConnectAction(service),
+                new MenuAction(service),
                 new ClearAction(service),
                 new CreateDatabaseAction(service),
                 new CreateRecordAction(service),
@@ -50,9 +50,7 @@ public class MainServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) {
         Action action = getAction(request, response);
         action.get(request, response);
     }
