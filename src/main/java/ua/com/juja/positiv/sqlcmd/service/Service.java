@@ -9,8 +9,6 @@ import java.util.List;
  */
 public interface Service {
 
-    List<String> commandList();
-
     DatabaseManager connect(String database, String user, String password)
             throws ServiceException;
 

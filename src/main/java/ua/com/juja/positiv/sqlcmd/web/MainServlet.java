@@ -6,6 +6,7 @@ import ua.com.juja.positiv.sqlcmd.databasemanager.DatabaseException;
 import ua.com.juja.positiv.sqlcmd.databasemanager.DatabaseManager;
 import ua.com.juja.positiv.sqlcmd.service.Service;
 import ua.com.juja.positiv.sqlcmd.service.ServiceException;
+import ua.com.juja.positiv.sqlcmd.web.actions.*;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -13,8 +14,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by POSITIV on 30.10.2015.
@@ -23,81 +23,43 @@ public class MainServlet extends HttpServlet {
 
     @Autowired
     private Service service;
+    private List<Action> actions;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init();
         SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this,
                 config.getServletContext());
+
+        actions = new LinkedList<>();
+        actions.addAll(Arrays.asList(
+                new MenuAction(service),
+                new ConnectAction(service),
+                new ClearAction(service),
+                new CreateDatabaseAction(service),
+                new CreateRecordAction(service),
+                new CreateTableAction(service),
+                new DeleteDatabaseAction(service),
+                new DeleteRecordAction(service),
+                new DeleteTableAction(service),
+                new TableNamesAction(service),
+                new UpdateRecordAction(service),
+                new TableDataAction(service),
+                new ErrorAction(service)
+                ));
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String action = getAction(request);
 
-        if (action.equals("/connect")) {
-            goTo("connect", request, response);
-            return;
-        }
-
-        DatabaseManager manager = (DatabaseManager) request.getSession().getAttribute("manager");
-
-        if (manager == null) {
-            redirect("connect", request, response);
-            return;
-        }
-
-        try {
-            if (action.equals("/menu") || action.equals("/")) {
-                setAttribute("items", service.commandList(), request);
-                goTo("menu", request, response);
-
-            } else if (action.equals("/create-table")) {
-                goTo("table-name-column-count", request, response);
-
-            } else if (action.equals("/table-names")) {
-                getTableNames(manager, request, response);
-
-            } else if (action.equals("/table-data")) {
-                goTo("table-name", request, response);
-
-            } else if (action.equals("/clear-table")) {
-                goTo("clear-table", request, response);
-
-            } else if (action.equals("/delete-record")) {
-                goTo("delete-record", request, response);
-
-            } else if (action.equals("/delete-table")) {
-                goTo("delete-table", request, response);
-
-            } else if (action.equals("/create-record")) {
-                setAttribute("actionURL", "create-record", request);
-                goTo("table-name", request, response);
-
-            } else if (action.equals("/update-record")) {
-                setAttribute("actionURL", "update-record", request);
-                goTo("table-name", request, response);
-
-            } else if (action.equals("/create-database")) {
-                setAttribute("actionURL", "create-database", request);
-                goTo("database-name", request, response);
-
-            } else if (action.equals("/delete-database")) {
-                setAttribute("actionURL", "delete-database", request);
-                goTo("database-name", request, response);
-
-            } else {
-                goTo("error", request, response);
-            }
-        } catch (Exception e) {
-            error(request, response, e);
-        }
+        Action action = getAction(request, response);
+        action.get(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) {
-        String action = getAction(request);
+        String action = getActionName(request);
 
         DatabaseManager manager = (DatabaseManager) request.getSession().getAttribute("manager");
 
@@ -173,9 +135,19 @@ public class MainServlet extends HttpServlet {
         return Integer.parseInt(manager.getTableData(tableName).get(0));
     }
 
-    private String getAction(HttpServletRequest request) {
+    private String getActionName(HttpServletRequest request) {
         String requestURI = request.getRequestURI();
         return requestURI.substring(request.getContextPath().length(), requestURI.length());
+    }
+
+    private Action getAction(HttpServletRequest request, HttpServletResponse response) {
+        String url = getActionName(request);
+        for(Action action : actions) {
+            if(action.canProcess(url)) {
+                return action;
+            }
+        }
+        return Action.NULL;
     }
 
     private void error(HttpServletRequest request, HttpServletResponse response, Exception e) {
