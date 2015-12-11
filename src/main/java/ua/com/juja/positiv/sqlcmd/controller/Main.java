@@ -137,7 +137,7 @@ public class Main {
                                  @RequestParam(value = "tableName") String tableName,
                                  @RequestParam(value = "columnCount") int columnCount,
                                  @RequestParam(value = "columnName1") String key,
-                                 @RequestParam(value = "columnValue1") String value) { //TODO сделать динамическую генерацию
+                                 @RequestParam(value = "columnValue1") String value) {
 
         Map<String, Object> data = new HashMap<>();
         for (int index = 0; index < columnCount; index++) {//TODO подумать над заполнением мапы
