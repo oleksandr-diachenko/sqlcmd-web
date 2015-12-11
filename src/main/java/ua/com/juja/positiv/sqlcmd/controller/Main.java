@@ -66,7 +66,8 @@ public class Main {
         }
     }
 
-    @RequestMapping(value = {"/table-data", "/clear-table", "/delete-table"}, method = RequestMethod.GET)
+    @RequestMapping(value = {"/table-data", "/clear-table", "/delete-table", "update-record"},
+            method = RequestMethod.GET)
     public String tableName() {
         return "table-name";
     }
@@ -84,7 +85,8 @@ public class Main {
     }
 
     @RequestMapping(value = "/clear-table", method = RequestMethod.POST)
-    public String clearingTable(Model model, HttpSession session, @RequestParam(value = "tableName") String tableName) {
+    public String clearingTable(Model model, HttpSession session,
+                                @RequestParam(value = "tableName") String tableName) {
         try {
             getManager(session).clearTable(tableName);
             return "success";
@@ -138,7 +140,7 @@ public class Main {
                                  @RequestParam(value = "columnValue1") String value) { //TODO сделать динамическую генерацию
 
         Map<String, Object> data = new HashMap<>();
-        for (int index = 0; index < columnCount; index++) {
+        for (int index = 0; index < columnCount; index++) {//TODO подумать над заполнением мапы
             data.put(key, value);
         }
         try {
@@ -151,7 +153,8 @@ public class Main {
     }
 
     @RequestMapping(value = "/delete-table", method = RequestMethod.POST)
-    public String deleteTable(HttpSession session, Model model, @RequestParam(value = "tableName") String tableName) {
+    public String deleteTable(HttpSession session, Model model,
+                              @RequestParam(value = "tableName") String tableName) {
         try {
             getManager(session).dropTable(tableName);
             return "success";
@@ -163,11 +166,12 @@ public class Main {
 
     @RequestMapping(value = {"/create-database", "/delete-database"}, method = RequestMethod.GET)
     public String databaseName() {
-            return "database-name";
+        return "database-name";
     }
 
-    @RequestMapping(value = "/delete-database", method = RequestMethod.GET)
-    public String deleteDatabase(HttpSession session, Model model, @RequestParam(value = "database") String database) {
+    @RequestMapping(value = "/delete-database", method = RequestMethod.POST)
+    public String deleteDatabase(HttpSession session, Model model,
+                                 @RequestParam(value = "database") String database) {
         try {
             getManager(session).dropBase(database);
             return "success";
@@ -177,10 +181,76 @@ public class Main {
         }
     }
 
-    @RequestMapping(value = "/create-database", method = RequestMethod.GET)
-    public String createDatabase(HttpSession session, Model model, @RequestParam(value = "database") String database) {
+    @RequestMapping(value = "/create-database", method = RequestMethod.POST)
+    public String createDatabase(HttpSession session, Model model,
+                                 @RequestParam(value = "database") String database) {
         try {
             getManager(session).createBase(database);
+            return "success";
+        } catch (DatabaseException e) {
+            model.addAttribute("message", e.getMessage());
+            return "error";
+        }
+    }
+
+    @RequestMapping(value = "/update-record", method = RequestMethod.POST)
+    public String updateRecord(HttpSession session, Model model,
+                               @RequestParam(value = "tableName") String tableName) {
+        model.addAttribute("columnCount", getColumnCount(session, tableName));
+        model.addAttribute("tableName", tableName);
+        return "update-record";
+    }
+
+    @RequestMapping(value = "/update", method = RequestMethod.POST)
+    public String updatingRecord(HttpSession session, Model model,
+                                 @RequestParam(value = "tableName") String tableName,
+                                 @RequestParam(value = "columnName1") String columnName,
+                                 @RequestParam(value = "columnValue1") String columnValue,
+                                 @RequestParam(value = "keyName") String keyName,
+                                 @RequestParam(value = "keyValue") String keyValue) {
+
+        Map<String, Object> data = new HashMap<>();
+        for (int index = 0; index < getColumnCount(session, tableName) - 1; index++) {//TODO подумать над заполнением мапы
+            int columnIndex = index + 1;
+            data.put(columnName, columnValue);
+        }
+        try {
+            getManager(session).updateRecord(tableName, keyName, keyValue, data);
+            return "success";
+        } catch (DatabaseException e) {
+            model.addAttribute("message", e.getMessage());
+            return "error";
+        }
+    }
+
+    @RequestMapping(value = "/create-table", method = RequestMethod.GET)
+    public String createTable() {
+        return "table-name-column-count";
+    }
+
+    @RequestMapping(value = "/column-parameters", method = RequestMethod.POST)
+    public String columnParameters(Model model,
+                                   @RequestParam(value = "tableName") String tableName,
+                                   @RequestParam(value = "columnCount") String columnCount) {
+        model.addAttribute("tableName", tableName);
+        model.addAttribute("columnCount", columnCount);
+        return "create-table";
+    }
+
+    @RequestMapping(value = "/create-table", method = RequestMethod.POST)
+    public String creatingTable(HttpSession session, Model model,
+                                @RequestParam(value = "tableName") String tableName,
+                                @RequestParam(value = "columnCount") int columnCount,
+                                @RequestParam(value = "columnName1") String columnName,
+                                @RequestParam(value = "columnType") String columnType,
+                                @RequestParam(value = "keyName") String keyName) {
+        Map<String, Object> data = new HashMap<>();
+        for (int index = 0; index < columnCount - 1; index++) { //TODO подумать над заполнением мапы
+            int columnIndex = index + 1;
+            data.put(columnName, columnType);
+        }
+        try {
+            getManager(session).createTable(tableName, keyName, data);
             return "success";
         } catch (DatabaseException e) {
             model.addAttribute("message", e.getMessage());
