@@ -1,4 +1,4 @@
-package ua.com.juja.positiv.sqlcmd.web;
+package ua.com.juja.positiv.sqlcmd.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
@@ -49,11 +49,7 @@ public class MainServlet extends HttpServlet {
         }
 
         try {
-            if (action.equals("/menu") || action.equals("/")) {
-                setAttribute("items", service.commandList(), request);
-                goTo("menu", request, response);
-
-            } else if (action.equals("/create-table")) {
+            if (action.equals("/create-table")) {
                 goTo("table-name-column-count", request, response);
 
             } else if (action.equals("/table-names")) {
