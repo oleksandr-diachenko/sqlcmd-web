@@ -52,36 +52,36 @@ public class MainServlet extends HttpServlet {
             if (action.equals("/create-table")) {
                 goTo("table-name-column-count", request, response);
 
-            } else if (action.equals("/table-names")) {
-                getTableNames(manager, request, response);
+//            } else if (action.equals("/table-names")) {
+//                getTableNames(manager, request, response);
 
-            } else if (action.equals("/table-data")) {
-                goTo("table-name", request, response);
+//            } else if (action.equals("/table-data")) {
+//                goTo("table-name", request, response);
 
-            } else if (action.equals("/clear-table")) {
-                goTo("clear-table", request, response);
+//            } else if (action.equals("/clear-table")) {
+//                goTo("clear-table", request, response);
 
-            } else if (action.equals("/delete-record")) {
-                goTo("delete-record", request, response);
+//            } else if (action.equals("/delete-record")) {
+//                goTo("delete-record", request, response);
 
-            } else if (action.equals("/delete-table")) {
-                goTo("delete-table", request, response);
+//            } else if (action.equals("/delete-table")) {
+//                goTo("delete-table", request, response);
 
-            } else if (action.equals("/create-record")) {
-                setAttribute("actionURL", "create-record", request);
-                goTo("table-name", request, response);
+//            } else if (action.equals("/create-record")) {
+//                setAttribute("actionURL", "create-record", request);
+//                goTo("table-name", request, response);
 
             } else if (action.equals("/update-record")) {
                 setAttribute("actionURL", "update-record", request);
                 goTo("table-name", request, response);
 
-            } else if (action.equals("/create-database")) {
-                setAttribute("actionURL", "create-database", request);
-                goTo("database-name", request, response);
-
-            } else if (action.equals("/delete-database")) {
-                setAttribute("actionURL", "delete-database", request);
-                goTo("database-name", request, response);
+//            } else if (action.equals("/create-database")) {
+//                setAttribute("actionURL", "create-database", request);
+//                goTo("database-name", request, response);
+//
+//            } else if (action.equals("/delete-database")) {
+//                setAttribute("actionURL", "delete-database", request);
+//                goTo("database-name", request, response);
 
             } else {
                 goTo("error", request, response);
@@ -100,31 +100,31 @@ public class MainServlet extends HttpServlet {
         try {
             if (action.equals("/connect")) {
                 connect(request, response);
+//
+//            } else if (action.equals("/table-data")) {
+//                getTableData(manager, request, response);
+//
+//            } else if (action.equals("/clear-table")) {
+//                clearTable(manager, request, response);
 
-            } else if (action.equals("/table-data")) {
-                getTableData(manager, request, response);
+//            if (action.equals("/delete-record")) {
+//                deleteRecord(manager, request, response);
 
-            } else if (action.equals("/clear-table")) {
-                clearTable(manager, request, response);
+//            } else if (action.equals("/create-record")) {
+//                setColumnCountAndTableName(request, manager);
+//                goTo("create-record", request, response);
 
-            } else if (action.equals("/delete-record")) {
-                deleteRecord(manager, request, response);
+//            } else if (action.equals("/create-database")) {
+//                createDatabase(manager, request, response);
 
-            } else if (action.equals("/create-record")) {
-                setColumnCountAndTableName(request, manager);
-                goTo("create-record", request, response);
+//            } else if (action.equals("/create")) {
+//                createRecord(manager, request, response);
+//
+//            } else if (action.equals("/delete-database")) {
+//                deleteDatabase(manager, request, response);
 
-            } else if (action.equals("/create-database")) {
-                createDatabase(manager, request, response);
-
-            } else if (action.equals("/create")) {
-                createRecord(manager, request, response);
-
-            } else if (action.equals("/delete-database")) {
-                deleteDatabase(manager, request, response);
-
-            } else if (action.equals("/delete-table")) {
-                deleteTable(manager, request, response);
+//            } else if (action.equals("/delete-table")) {
+//                deleteTable(manager, request, response);
 
             } else if (action.equals("/column-parameters")) {
                 setColumnCountAndTableName(request);
