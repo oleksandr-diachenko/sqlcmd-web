@@ -12,7 +12,6 @@ import ua.com.juja.positiv.sqlcmd.databasemanager.DatabaseManager;
 import ua.com.juja.positiv.sqlcmd.service.Service;
 import ua.com.juja.positiv.sqlcmd.service.ServiceException;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.List;
@@ -123,7 +122,7 @@ public class Main {
     }
 
     @RequestMapping(value = "/create-record", method = RequestMethod.POST)
-    public String getCreateRecordParameters(Model model, HttpSession session, HttpServletRequest request,
+    public String getCreateRecordParameters(Model model, HttpSession session,
                                             @RequestParam(value = "tableName") String tableName) {
         model.addAttribute("columnCount", getColumnCount(session, tableName));
         model.addAttribute("tableName", tableName);
