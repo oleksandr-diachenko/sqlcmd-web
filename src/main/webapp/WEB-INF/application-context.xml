@@ -10,21 +10,21 @@
     <context:annotation-config/>
     <context:component-scan base-package="ua.com.juja.positiv.sqlcmd"/>
     <bean id="service" class="ua.com.juja.positiv.sqlcmd.service.ServiceImpl">
-        <!--<property name="commands">-->
-            <!--<list>-->
-                <!--<value>connect</value>-->
-                <!--<value>create-table</value>-->
-                <!--<value>table-names</value>-->
-                <!--<value>table-data</value>-->
-                <!--<value>update-record</value>-->
-                <!--<value>clear-table</value>-->
-                <!--<value>create-record</value>-->
-                <!--<value>delete-record</value>-->
-                <!--<value>delete-table</value>-->
-                <!--<value>create-database</value>-->
-                <!--<value>delete-database</value>-->
-            <!--</list>-->
-        <!--</property>-->
+        <property name="commands">
+            <list>
+                <value>connect</value>
+                <value>create-table</value>
+                <value>table-names</value>
+                <value>table-data</value>
+                <value>update-record</value>
+                <value>clear-table</value>
+                <value>create-record</value>
+                <value>delete-record</value>
+                <value>delete-table</value>
+                <value>create-database</value>
+                <value>delete-database</value>
+            </list>
+        </property>
         <lookup-method name="getManager" bean="postgreDatabaseManager"/>
     </bean>
 </beans>

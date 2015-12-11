@@ -72,7 +72,8 @@ public class Main {
     }
 
     @RequestMapping(value = "/table-data", method = RequestMethod.POST)
-    public String find(Model model, HttpSession session, @RequestParam(value = "tableName") String tableName) {
+    public String find(Model model, HttpSession session,
+                       @RequestParam(value = "tableName") String tableName) {
         try {
             model.addAttribute("table", service.getTableData(getManager(session), tableName));
             return "table-data";

@@ -11,6 +11,8 @@ import java.util.List;
 @Component
 public interface Service {
 
+    List<String> commandList();
+
     DatabaseManager connect(String database, String user, String password)
             throws ServiceException;
 
