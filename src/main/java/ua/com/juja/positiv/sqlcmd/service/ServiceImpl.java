@@ -13,12 +13,6 @@ import java.util.List;
 @Component
 public abstract class ServiceImpl implements Service {
 
-    private List<String> commands;
-
-    @Override
-    public List<String> commandList() {
-        return commands;
-    }
 
     public abstract DatabaseManager getManager();
 
@@ -51,9 +45,5 @@ public abstract class ServiceImpl implements Service {
             table.add(row);
         }
         return table;
-    }
-
-    public void setCommands(List<String> commands) {
-        this.commands = commands;
     }
 }
