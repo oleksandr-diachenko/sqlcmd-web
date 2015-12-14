@@ -1,188 +1,263 @@
 package ua.com.juja.positiv.sqlcmd.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.context.support.SpringBeanAutowiringSupport;
-import ua.com.juja.positiv.sqlcmd.databasemanager.DatabaseException;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import ua.com.juja.positiv.sqlcmd.databasemanager.DatabaseManager;
 import ua.com.juja.positiv.sqlcmd.service.Service;
 import ua.com.juja.positiv.sqlcmd.service.ServiceException;
 
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import javax.servlet.http.HttpSession;
+import java.util.*;
 
 /**
- * Created by POSITIV on 30.10.2015.
+ * Created by POSITIV on 11.12.2015.
  */
-public class MainServlet extends HttpServlet {
+@Controller
+public class MainServlet {
 
     @Autowired
     private Service service;
 
-    @Override
-    public void init(ServletConfig config) throws ServletException {
-        super.init();
-        SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this,
-                config.getServletContext());
+    @RequestMapping(value = {"/menu", "/"}, method = RequestMethod.GET)
+    public String menu(ModelMap model) {
+        model.put("items", service.commandList());
+        return "menu";
     }
 
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        String action = getAction(request);
-
-        if (action.equals("/connect")) {
-            goTo("connect", request, response);
-            return;
+    @RequestMapping(value = "/connect", method = RequestMethod.GET)
+    public String connect(HttpSession session) {
+        if (getManager(session) == null) {
+            return "connect";
         }
+        return "redirect:menu";
+    }
 
-        DatabaseManager manager = (DatabaseManager) request.getSession().getAttribute("manager");
-
-        if (manager == null) {
-            redirect("connect", request, response);
-            return;
-        }
-
+    @RequestMapping(value = "/connect", method = RequestMethod.POST)
+    public String connecting(Model model, HttpSession session,
+                             @RequestParam(value = "database") String database,
+                             @RequestParam(value = "user") String user,
+                             @RequestParam(value = "password") String password) {
         try {
-            if (action.equals("/create-table")) {
-                goTo("table-name-column-count", request, response);
-
-            } else {
-                goTo("error", request, response);
-            }
+            DatabaseManager manager = service.connect(database, user, password);
+            session.setAttribute("manager", manager);
+            return "redirect:menu";
         } catch (Exception e) {
-            error(request, response, e);
+            model.addAttribute("message", e.getMessage());
+            return "error";
         }
     }
 
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) {
-        String action = getAction(request);
-
-        DatabaseManager manager = (DatabaseManager) request.getSession().getAttribute("manager");
-
+    @RequestMapping(value = "/table-names", method = RequestMethod.GET)
+    public String tableNames(Model model, HttpSession session) {
         try {
-            if (action.equals("/connect")) {
-                connect(request, response);
-
-            } else if (action.equals("/column-parameters")) {
-                setColumnCountAndTableName(request);
-                goTo("create-table", request, response);
-
-            } else if (action.equals("/create-table")) {
-                createTable(manager, request, response);
-
-            } else if (action.equals("/update")) {
-                updateRecord(manager, request, response);
-            }
+            model.addAttribute("tables", getManager(session).getTableNames());
+            return "table-names";
         } catch (Exception e) {
-            error(request, response, e);
+            model.addAttribute("message", e.getMessage());
+            return "error";
         }
     }
 
-    private void createTable(DatabaseManager manager, HttpServletRequest request,
-                             HttpServletResponse response) {
-        int columnCount = Integer.parseInt(getParameter("columnCount", request));
-        Map<String, Object> data1 = new HashMap<>();
-        for (int index = 0; index < columnCount - 1; index++) {
-            int columnIndex = index + 1;
-            data1.put(getParameter("columnName" + columnIndex, request),
-                    getParameter("columnType" + columnIndex, request));
-        }
-        Map<String, Object> data = data1;
+    @RequestMapping(value = {"/table-data", "/clear-table", "/delete-table",
+            "/create-record", "/update-record"}, method = RequestMethod.GET)
+    public String tableName() {
+        return "table-name";
+    }
 
+    @RequestMapping(value = "/table-data", method = RequestMethod.POST)
+    public String tableData(Model model, HttpSession session,
+                            @RequestParam(value = "tableName") String tableName) {
         try {
-            manager.createTable(getParameter("tableName", request), getParameter("keyName", request), data);
-            goTo("success", request, response);
-        } catch (DatabaseException e) {
-            error(request, response, e);
-        }
-    }
-
-    private void updateRecord(DatabaseManager manager, HttpServletRequest request,
-                              HttpServletResponse response) {
-        String tableName = getParameter("tableName", request);
-        try {
-            Map<String, Object> data = new HashMap<>();
-            for (int index = 0; index < getColumnCount(manager, tableName) - 1; index++) {
-                int columnIndex = index + 1;
-                data.put(getParameter("columnName" + columnIndex, request),
-                        getParameter("columnValue" + columnIndex, request));
-            }
-
-            manager.updateRecord(tableName, getParameter("keyName", request), getParameter("keyValue", request), data);
-            goTo("success", request, response);
-        } catch (DatabaseException e) {
-            error(request, response, e);
-        }
-    }
-
-
-    private void setColumnCountAndTableName(HttpServletRequest request, DatabaseManager manager)
-            throws Exception {
-        setAttribute("columnCount", getColumnCount(manager, getParameter("tableName", request)), request);
-        setAttribute("tableName", getParameter("tableName", request), request);
-    }
-
-    private void setColumnCountAndTableName(HttpServletRequest request) {
-        setAttribute("tableName", getParameter("tableName", request), request);
-        setAttribute("columnCount", getParameter("columnCount", request), request);
-    }
-
-    private void setAttribute(String attributeName, Object attributeValue, HttpServletRequest request) {
-        request.setAttribute(attributeName, attributeValue);
-    }
-
-    private String getParameter(String parameterName, HttpServletRequest request) {
-        return request.getParameter(parameterName);
-    }
-
-    private int getColumnCount(DatabaseManager manager, String tableName) throws DatabaseException {
-        return Integer.parseInt(manager.getTableData(tableName).get(0));
-    }
-
-    private String getAction(HttpServletRequest request) {
-        String requestURI = request.getRequestURI();
-        return requestURI.substring(request.getContextPath().length(), requestURI.length());
-    }
-
-    private void error(HttpServletRequest request, HttpServletResponse response, Exception e) {
-        setAttribute("message", e.getMessage(), request);
-        goTo("error", request, response);
-    }
-
-    private void goTo(String jsp, HttpServletRequest request, HttpServletResponse response) {
-        try {
-            request.getRequestDispatcher(jsp + ".jsp").forward(request, response);
+            model.addAttribute("table", service.getTableData(getManager(session), tableName));
+            return "table-data";
         } catch (Exception e) {
-            error(request, response, e);
+            model.addAttribute("message", e.getMessage());
+            return "error";
         }
     }
 
-    private void redirect(String url, HttpServletRequest request, HttpServletResponse response) {
+    @RequestMapping(value = "/clear-table", method = RequestMethod.POST)
+    public String clearingTable(Model model, HttpSession session,
+                                @RequestParam(value = "tableName") String tableName) {
         try {
-            response.sendRedirect(response.encodeRedirectURL(url));
+            getManager(session).clearTable(tableName);
+            return "success";
         } catch (Exception e) {
-            error(request, response, e);
+            model.addAttribute("message", e.getMessage());
+            return "error";
         }
     }
 
-    private void connect(HttpServletRequest request, HttpServletResponse response) {
+    @RequestMapping(value = "/delete-record", method = RequestMethod.GET)
+    public String deleteRecord() {
+        return "delete-record";
+    }
+
+    @RequestMapping(value = "/delete-record", method = RequestMethod.POST)
+    public String deletingRecord(Model model, HttpSession session,
+                                 @RequestParam(value = "tableName") String tableName,
+                                 @RequestParam(value = "keyName") String keyName,
+                                 @RequestParam(value = "keyValue") String keyValue) {
         try {
-            DatabaseManager manager = service.connect(
-                    getParameter("database", request),
-                    getParameter("user", request),
-                    getParameter("password", request));
-            request.getSession().setAttribute("manager", manager);
-            redirect("menu", request, response);
+            getManager(session).deleteRecord(tableName, keyName, keyValue);
+            return "success";
         } catch (Exception e) {
-            error(request, response, e);
+            model.addAttribute("message", e.getMessage());
+            return "error";
         }
     }
 
+    @RequestMapping(value = "/create-record", method = RequestMethod.POST)
+    public String createRecord(Model model, HttpSession session,
+                               @RequestParam(value = "tableName") String tableName) {
+        try {
+            model.addAttribute("columnCount", getColumnCount(session, tableName));
+            model.addAttribute("tableName", tableName);
+            return "create-record";
+        } catch (Exception e) {
+            model.addAttribute("message", e.getMessage());
+            return "error";
+        }
+    }
+
+    @RequestMapping(value = "/create", method = RequestMethod.POST)
+    public String creatingRecord(Model model, HttpSession session,
+                                 @RequestParam Map<String,String> allRequestParams) {
+        String tableName = allRequestParams.remove("tableName");
+        Map<String, Object> data = getData(allRequestParams);
+        try {
+            getManager(session).createRecord(tableName, data);
+            return "success";
+        } catch (Exception e) {
+            model.addAttribute("message", e.getMessage());
+            return "error";
+        }
+    }
+
+    @RequestMapping(value = "/delete-table", method = RequestMethod.POST)
+    public String deleteTable(Model model, HttpSession session,
+                              @RequestParam(value = "tableName") String tableName) {
+        try {
+            getManager(session).dropTable(tableName);
+            return "success";
+        } catch (Exception e) {
+            model.addAttribute("message", e.getMessage());
+            return "error";
+        }
+    }
+
+    @RequestMapping(value = {"/create-database", "/delete-database"}, method = RequestMethod.GET)
+    public String databaseName() {
+        return "database-name";
+    }
+
+    @RequestMapping(value = "/delete-database", method = RequestMethod.POST)
+    public String deleteDatabase(Model model, HttpSession session,
+                                 @RequestParam(value = "databaseName") String databaseName) {
+        try {
+            getManager(session).dropBase(databaseName);
+            return "success";
+        } catch (Exception e) {
+            model.addAttribute("message", e.getMessage());
+            return "error";
+        }
+    }
+
+    @RequestMapping(value = "/create-database", method = RequestMethod.POST)
+    public String createDatabase(Model model, HttpSession session,
+                                 @RequestParam(value = "databaseName") String databaseName) {
+        try {
+            getManager(session).createBase(databaseName);
+            return "success";
+        } catch (Exception e) {
+            model.addAttribute("message", e.getMessage());
+            return "error";
+        }
+    }
+
+    @RequestMapping(value = "/update-record", method = RequestMethod.POST)
+    public String updateRecord(Model model, HttpSession session,
+                               @RequestParam(value = "tableName") String tableName) {
+        try {
+            model.addAttribute("columnCount", getColumnCount(session, tableName));
+            model.addAttribute("tableName", tableName);
+            return "update-record";
+        } catch (Exception e) {
+            model.addAttribute("message", e.getMessage());
+            return "error";
+        }
+    }
+
+    @RequestMapping(value = "/update", method = RequestMethod.POST)
+    public String updatingRecord(HttpSession session, Model model,
+                                 @RequestParam Map<String,String> allRequestParams) {
+        try {
+            String tableName = allRequestParams.remove("tableName");
+            String keyName = allRequestParams.remove("keyName");
+            String value = allRequestParams.remove("keyValue");
+            Map<String, Object> data = getData(allRequestParams);
+            getManager(session).updateRecord(tableName, keyName, value, data);
+            return "success";
+        } catch (Exception e) {
+            model.addAttribute("message", e.getMessage());
+            return "error";
+        }
+    }
+
+    @RequestMapping(value = "/create-table", method = RequestMethod.GET)
+    public String tableSize() {
+        return "table-name-column-count";
+    }
+
+    @RequestMapping(value = "/column-parameters", method = RequestMethod.POST)
+    public String createTable(Model model,
+                                 @RequestParam(value = "tableName") String tableName,
+                                 @RequestParam(value = "columnCount") String columnCount) {
+        model.addAttribute("tableName", tableName);
+        model.addAttribute("columnCount", columnCount);
+        return "create-table";
+    }
+
+    @RequestMapping(value = "/create-table", method = RequestMethod.POST)
+    public String creatingTable2(HttpSession session, Model model,
+                                 @RequestParam Map<String,String> allRequestParams) {
+        String tableName = allRequestParams.remove("tableName");
+        String keyName = allRequestParams.remove("keyName");
+        Map<String, Object> data = getData(allRequestParams);
+        try {
+            getManager(session).createTable(tableName, keyName, data);
+            return "success";
+        } catch (Exception e) {
+            model.addAttribute("message", e.getMessage());
+            return "error";
+        }
+    }
+
+    private Map<String, Object> getData(@RequestParam Map<String, String> allRequestParams) {
+        Map<String, Object> data = new LinkedHashMap<>();
+        Iterator<Map.Entry<String, String>> iterator = allRequestParams.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<String, String> pair = iterator.next();
+            String key = pair.getValue();
+            pair = iterator.next();
+            String value = pair.getValue();
+            data.put(key, value);
+        }
+        return data;
+    }
+
+    private int getColumnCount(HttpSession session,
+                               @RequestParam(value = "tableName") String tableName) throws ServiceException {
+        List<List<String>> tableData = service.getTableData(getManager(session), tableName);
+        return tableData.get(0).size();
+    }
+
+    private DatabaseManager getManager(HttpSession session) {
+        return (DatabaseManager) session.getAttribute("manager");
+    }
 }
