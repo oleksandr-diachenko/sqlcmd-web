@@ -8,7 +8,6 @@
 <form action="create-table" method="post">
     <table>
         <input type="hidden" name="tableName" value="${tableName}"/>
-        <input type="hidden" name="columnCount" value="${columnCount}"/>
 
         <tr>
             <td>Primary key name</td>

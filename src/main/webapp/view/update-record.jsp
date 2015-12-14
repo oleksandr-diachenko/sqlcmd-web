@@ -7,7 +7,6 @@
 <body>
 <form action="update" method="post">
     <table>
-        <input type="hidden" name="columnCount" value="${columnCount}"/>
         <input type="hidden" name="tableName" value="${tableName}"/>
         <tr>
             <td>Primary key name</td>

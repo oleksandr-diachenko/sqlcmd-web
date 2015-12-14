@@ -9,7 +9,9 @@
     <table>
         <tr>
             <td>Database name</td>
-            <td><input type="text" name="databaseName"/></td>
+            <td><label>
+                <input type="text" name="databaseName"/>
+            </label></td>
         </tr>
 
         <tr>
