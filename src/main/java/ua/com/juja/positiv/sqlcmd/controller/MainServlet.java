@@ -52,10 +52,6 @@ public class MainServlet extends HttpServlet {
             if (action.equals("/create-table")) {
                 goTo("table-name-column-count", request, response);
 
-            } else if (action.equals("/update-record")) {
-                setAttribute("actionURL", "update-record", request);
-                goTo("table-name", request, response);
-
             } else {
                 goTo("error", request, response);
             }
@@ -80,10 +76,6 @@ public class MainServlet extends HttpServlet {
 
             } else if (action.equals("/create-table")) {
                 createTable(manager, request, response);
-
-            } else if (action.equals("/update-record")) {
-                setColumnCountAndTableName(request, manager);
-                goTo("update-record", request, response);
 
             } else if (action.equals("/update")) {
                 updateRecord(manager, request, response);
