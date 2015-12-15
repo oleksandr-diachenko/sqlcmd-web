@@ -1,8 +1,5 @@
 package ua.com.juja.positiv.sqlcmd.databasemanager;
 
-import ua.com.juja.positiv.sqlcmd.databasemanager.DatabaseException;
-import ua.com.juja.positiv.sqlcmd.databasemanager.DatabaseManager;
-
 import java.util.*;
 
 /**
