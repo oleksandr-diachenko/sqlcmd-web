@@ -26,11 +26,11 @@ public class ServiceTest {
     @Test
     public void testCommandList() {
         assertEquals("[connect, create-table, " +
-                "table-names, table-data, " +
-                "update-record, clear-table, " +
-                "create-record, delete-record, " +
-                "delete-table, create-database, " +
-                "delete-database]", service.commandList().toString());
+                      "table-names, table-data, " +
+                      "update-record, clear-table, " +
+                      "create-record, delete-record, " +
+                      "delete-table, create-database, " +
+                      "delete-database]", service.commandList().toString());
     }
 
     @Test
@@ -42,7 +42,7 @@ public class ServiceTest {
                 "2", "testName2", "testPassword2"));
 
         assertEquals("[[id, name, password], " +
-                "[1, testName1, testPassword1], " +
-                "[2, testName2, testPassword2]]", service.getTableData(manager, "test").toString());
+                      "[1, testName1, testPassword1], " +
+                      "[2, testName2, testPassword2]]", service.getTableData(manager, "test").toString());
     }
 }

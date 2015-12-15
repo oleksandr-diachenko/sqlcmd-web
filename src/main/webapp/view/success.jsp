@@ -4,10 +4,10 @@
 <head>
     <title></title>
 </head>
-<body>
-<b>Success!</b><br>
-<tr>
-    <td><b>To menu <a href="menu">menu</a></b></td>
-</tr>
-</body>
+    <body>
+        <b>Success!</b><br>
+        <tr>
+            <td><b>To menu <a href="menu">menu</a></b></td>
+        </tr>
+    </body>
 </html>

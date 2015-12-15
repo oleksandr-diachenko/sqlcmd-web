@@ -1,4 +1,4 @@
-package ua.com.juja.positiv.sqlcmd.controller;
+package ua.com.juja.positiv.sqlcmd.web;
 
 import net.sourceforge.jwebunit.api.IElement;
 import org.junit.*;

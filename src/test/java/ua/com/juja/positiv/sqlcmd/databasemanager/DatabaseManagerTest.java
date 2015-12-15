@@ -30,8 +30,8 @@ public class DatabaseManagerTest {
 
         List<String> tableData = manager.getTableData("car");
         assertEquals("[4, id, name, color, year, " +
-                "1, ferrari, red, 2002, " +
-                "2, porsche, black, 1964]", tableData.toString());
+                      "1, ferrari, red, 2002, " +
+                      "2, porsche, black, 1964]", tableData.toString());
     }
 
     @Test(expected = DatabaseException.class)
@@ -51,9 +51,9 @@ public class DatabaseManagerTest {
         preparation.run();
         List<String> tableData = manager.getTableData("car");
         assertEquals("[4, id, name, color, year, " +
-                "1, ferrari, red, 2002, " +
-                "2, porsche, black, 1964, " +
-                "3, bmw, blue, 2001]", tableData.toString());
+                      "1, ferrari, red, 2002, " +
+                      "2, porsche, black, 1964, " +
+                      "3, bmw, blue, 2001]", tableData.toString());
     }
 
     @Test(expected = DatabaseException.class)
@@ -66,8 +66,8 @@ public class DatabaseManagerTest {
         preparation.run();
         List<String> tableData = manager.getTableData("car LIMIT 2 OFFSET 1");
         assertEquals("[4, id, name, color, year, " +
-                "2, porsche, black, 1964, " +
-                "3, bmw, blue, 2001]", tableData.toString());
+                      "2, porsche, black, 1964, " +
+                      "3, bmw, blue, 2001]", tableData.toString());
     }
 
     @Test
@@ -81,9 +81,9 @@ public class DatabaseManagerTest {
 
         List<String> tableData = manager.getTableData("car");
         assertEquals("[4, id, name, color, year, " +
-                "1, ferrari, red, 2002, " +
-                "2, porsche, black, 1964, " +
-                "3, mercedes, white, 2008]", tableData.toString());
+                      "1, ferrari, red, 2002, " +
+                      "2, porsche, black, 1964, " +
+                      "3, mercedes, white, 2008]", tableData.toString());
     }
 
     @Test
@@ -95,9 +95,9 @@ public class DatabaseManagerTest {
 
         List<String> tableData = manager.getTableData("car");
         assertEquals("[4, id, name, color, year, " +
-                "1, ferrari, red, 2002, " +
-                "2, porsche, black, 1964, " +
-                "3, mercedes, blue, 2001]", tableData.toString());
+                      "1, ferrari, red, 2002, " +
+                      "2, porsche, black, 1964, " +
+                      "3, mercedes, blue, 2001]", tableData.toString());
     }
 
     @Test(expected = DatabaseException.class)
@@ -133,10 +133,10 @@ public class DatabaseManagerTest {
 
         List<String> tableData = manager.getTableData("car");
         assertEquals("[4, id, name, color, year, " +
-                "1, ferrari, red, 2002, " +
-                "2, porsche, black, 1964, " +
-                "3, bmw, blue, 2001, " +
-                "4, ferrari, red, 6]", tableData.toString());
+                      "1, ferrari, red, 2002, " +
+                      "2, porsche, black, 1964, " +
+                      "3, bmw, blue, 2001, " +
+                      "4, ferrari, red, 6]", tableData.toString());
     }
 
     @Test
@@ -148,11 +148,11 @@ public class DatabaseManagerTest {
 
         List<String> tableData = manager.getTableData("car");
         assertEquals("[4, id, name, color, year, " +
-                "1, ferrari, red, 2002, " +
-                "2, porsche, black, 1964, " +
-                "3, bmw, blue, 2001, " +
-                "4, , , ]", tableData.toString());
-    }
+                      "1, ferrari, red, 2002, " +
+                      "2, porsche, black, 1964, " +
+                      "3, bmw, blue, 2001, " +
+                      "4, , , ]", tableData.toString());
+        }
 
     @Test(expected = StringIndexOutOfBoundsException.class)
     public void testCreate_WithIncorrectData_Length() throws DatabaseException {

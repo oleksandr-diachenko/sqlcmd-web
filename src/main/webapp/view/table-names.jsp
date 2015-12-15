@@ -5,21 +5,20 @@
     <title>sqlcmd</title>
 </head>
 <body>
-<table border="1">
-    <tr>
-        <td></td>
-        <td>Tables</td>
-    </tr>
-    <c:forEach items="${tables}" var="table" varStatus="loop">
+    <table border="1">
         <tr>
-            <td>${loop.count}</td>
-            <td>${table}</td>
+            <td></td>
+            <td>Tables</td>
         </tr>
-    </c:forEach>
-
-</table>
-<tr>
-    <td><b>To menu <a href="menu">menu</a></b></td>
-</tr>
+        <c:forEach items="${tables}" var="table" varStatus="loop">
+            <tr>
+                <td>${loop.count}</td>
+                <td>${table}</td>
+            </tr>
+        </c:forEach>
+    </table>
+    <tr>
+        <td><b>To menu <a href="menu">menu</a></b></td>
+    </tr>
 </body>
 </html>
