@@ -29,8 +29,7 @@ public class MainServlet {
         return "table-name";
     }
 
-    @RequestMapping(value = {"/create-database", "/delete-database"},
-                     method = RequestMethod.GET)
+    @RequestMapping(value = {"/create-database", "/delete-database"}, method = RequestMethod.GET)
     public String databaseName() {
         return "database-name";
     }

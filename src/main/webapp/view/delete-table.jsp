@@ -5,18 +5,17 @@
     <title>sqlcmd</title>
 </head>
 <body>
-<form action="delete-table" method="post">
-    <table>
-        <tr>
-            <td>Table name</td>
-            <td><input type="text" name="tableName"/></td>
-        </tr>
-
-        <tr>
-            <td></td>
-            <td><input type="submit" value="OK"/></td>
-        </tr>
-    </table>
-</form>
+    <form action="delete-table" method="post">
+        <table>
+            <tr>
+                <td>Table name</td>
+                <td><input type="text" name="tableName"/></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><input type="submit" value="OK"/></td>
+            </tr>
+        </table>
+    </form>
 </body>
 </html>
