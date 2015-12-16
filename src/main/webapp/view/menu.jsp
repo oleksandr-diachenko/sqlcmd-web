@@ -7,13 +7,13 @@
 </head>
 <table border="1">
     <body>
-    <c:forEach items="${items}" var="item">
-        <tr>
-            <td>
-                <b> <a href="${item}">${item}</a></b><br>
-            </td>
-        </tr>
-    </c:forEach>
+        <c:forEach items="${items}" var="item">
+            <tr>
+                <td>
+                    <b> <a href="${item}">${item}</a></b><br>
+                </td>
+            </tr>
+        </c:forEach>
     </body>
 </table>
 </html>

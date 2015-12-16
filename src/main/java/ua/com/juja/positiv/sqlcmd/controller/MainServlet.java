@@ -23,6 +23,17 @@ public class MainServlet {
     @Autowired
     private Service service;
 
+    @RequestMapping(value = {"/table-data", "/clear-table", "/delete-table",
+                             "update-record", "/create-record"}, method = RequestMethod.GET)
+    public String tableName() {
+        return "table-name";
+    }
+
+    @RequestMapping(value = {"/create-database", "/delete-database"}, method = RequestMethod.GET)
+    public String databaseName() {
+        return "database-name";
+    }
+
     @RequestMapping(value = {"/menu", "/"}, method = RequestMethod.GET)
     public String menu(ModelMap model) {
         model.put("items", service.commandList());
@@ -31,7 +42,7 @@ public class MainServlet {
 
     @RequestMapping(value = "/connect", method = RequestMethod.GET)
     public String connect(HttpSession session) {
-        if (getManager(session) == null) {
+        if (getManager(session) == null || getManager(session) == DatabaseManager.NULL) {
             return "connect";
         }
         return "redirect:menu";
@@ -47,8 +58,7 @@ public class MainServlet {
             session.setAttribute("manager", manager);
             return "redirect:menu";
         } catch (Exception e) {
-            model.addAttribute("message", e.getMessage());
-            return "error";
+            return error(model, e);
         }
     }
 
@@ -58,15 +68,8 @@ public class MainServlet {
             model.addAttribute("tables", getManager(session).getTableNames());
             return "table-names";
         } catch (Exception e) {
-            model.addAttribute("message", e.getMessage());
-            return "error";
+            return error(model, e);
         }
-    }
-
-    @RequestMapping(value = {"/table-data", "/clear-table", "/delete-table",
-            "/create-record", "/update-record"}, method = RequestMethod.GET)
-    public String tableName() {
-        return "table-name";
     }
 
     @RequestMapping(value = "/table-data", method = RequestMethod.POST)
@@ -76,8 +79,7 @@ public class MainServlet {
             model.addAttribute("table", service.getTableData(getManager(session), tableName));
             return "table-data";
         } catch (Exception e) {
-            model.addAttribute("message", e.getMessage());
-            return "error";
+            return error(model, e);
         }
     }
 
@@ -88,8 +90,7 @@ public class MainServlet {
             getManager(session).clearTable(tableName);
             return "success";
         } catch (Exception e) {
-            model.addAttribute("message", e.getMessage());
-            return "error";
+            return error(model, e);
         }
     }
 
@@ -107,8 +108,7 @@ public class MainServlet {
             getManager(session).deleteRecord(tableName, keyName, keyValue);
             return "success";
         } catch (Exception e) {
-            model.addAttribute("message", e.getMessage());
-            return "error";
+            return error(model, e);
         }
     }
 
@@ -120,8 +120,7 @@ public class MainServlet {
             model.addAttribute("tableName", tableName);
             return "create-record";
         } catch (Exception e) {
-            model.addAttribute("message", e.getMessage());
-            return "error";
+            return error(model, e);
         }
     }
 
@@ -134,8 +133,7 @@ public class MainServlet {
             getManager(session).createRecord(tableName, data);
             return "success";
         } catch (Exception e) {
-            model.addAttribute("message", e.getMessage());
-            return "error";
+            return error(model, e);
         }
     }
 
@@ -146,14 +144,8 @@ public class MainServlet {
             getManager(session).dropTable(tableName);
             return "success";
         } catch (Exception e) {
-            model.addAttribute("message", e.getMessage());
-            return "error";
+            return error(model, e);
         }
-    }
-
-    @RequestMapping(value = {"/create-database", "/delete-database"}, method = RequestMethod.GET)
-    public String databaseName() {
-        return "database-name";
     }
 
     @RequestMapping(value = "/delete-database", method = RequestMethod.POST)
@@ -163,8 +155,7 @@ public class MainServlet {
             getManager(session).dropBase(databaseName);
             return "success";
         } catch (Exception e) {
-            model.addAttribute("message", e.getMessage());
-            return "error";
+            return error(model, e);
         }
     }
 
@@ -175,8 +166,7 @@ public class MainServlet {
             getManager(session).createBase(databaseName);
             return "success";
         } catch (Exception e) {
-            model.addAttribute("message", e.getMessage());
-            return "error";
+            return error(model, e);
         }
     }
 
@@ -188,13 +178,12 @@ public class MainServlet {
             model.addAttribute("tableName", tableName);
             return "update-record";
         } catch (Exception e) {
-            model.addAttribute("message", e.getMessage());
-            return "error";
+            return error(model, e);
         }
     }
 
     @RequestMapping(value = "/update", method = RequestMethod.POST)
-    public String updatingRecord(HttpSession session, Model model,
+    public String updatingRecord(Model model, HttpSession session,
                                  @RequestParam Map<String,String> allRequestParams) {
         try {
             String tableName = allRequestParams.remove("tableName");
@@ -204,8 +193,7 @@ public class MainServlet {
             getManager(session).updateRecord(tableName, keyName, value, data);
             return "success";
         } catch (Exception e) {
-            model.addAttribute("message", e.getMessage());
-            return "error";
+            return error(model, e);
         }
     }
 
@@ -216,15 +204,15 @@ public class MainServlet {
 
     @RequestMapping(value = "/column-parameters", method = RequestMethod.POST)
     public String createTable(Model model,
-                                 @RequestParam(value = "tableName") String tableName,
-                                 @RequestParam(value = "columnCount") String columnCount) {
+                             @RequestParam(value = "tableName") String tableName,
+                             @RequestParam(value = "columnCount") String columnCount) {
         model.addAttribute("tableName", tableName);
         model.addAttribute("columnCount", columnCount);
         return "create-table";
     }
 
     @RequestMapping(value = "/create-table", method = RequestMethod.POST)
-    public String creatingTable2(HttpSession session, Model model,
+    public String creatingTable(Model model, HttpSession session,
                                  @RequestParam Map<String,String> allRequestParams) {
         String tableName = allRequestParams.remove("tableName");
         String keyName = allRequestParams.remove("keyName");
@@ -233,8 +221,7 @@ public class MainServlet {
             getManager(session).createTable(tableName, keyName, data);
             return "success";
         } catch (Exception e) {
-            model.addAttribute("message", e.getMessage());
-            return "error";
+            return error(model, e);
         }
     }
 
@@ -252,12 +239,22 @@ public class MainServlet {
     }
 
     private int getColumnCount(HttpSession session,
-                               @RequestParam(value = "tableName") String tableName) throws ServiceException {
+                               @RequestParam(value = "tableName") String tableName)
+                                                                 throws ServiceException {
         List<List<String>> tableData = service.getTableData(getManager(session), tableName);
         return tableData.get(0).size();
     }
 
     private DatabaseManager getManager(HttpSession session) {
-        return (DatabaseManager) session.getAttribute("manager");
+        DatabaseManager manager = (DatabaseManager) session.getAttribute("manager");
+        if(manager == null) {
+            return DatabaseManager.NULL;
+        }
+        return manager;
+    }
+
+    private String error(Model model, Exception e) {
+        model.addAttribute("message", e.getMessage());
+        return "error";
     }
 }
