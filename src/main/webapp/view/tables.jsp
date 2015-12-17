@@ -10,15 +10,15 @@
             <td></td>
             <td>Tables</td>
         </tr>
-        <c:forEach items="${tables}" var="table" varStatus="loop">
+        <c:forEach items="${list}" var="table" varStatus="loop">
             <tr>
                 <td>${loop.count}</td>
-                <td>${table}</td>
+                <td><a href="tables/${table}">${table}</a></td>
             </tr>
         </c:forEach>
     </table>
     <tr>
-        <td><b>To menu <a href="menu">menu</a></b></td>
+        <td><b>To menu <a href="/sqlcmd/menu">menu</a></b></td>
     </tr>
 </body>
 </html>

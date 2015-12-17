@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,7 +24,7 @@ public class MainServlet {
     @Autowired
     private Service service;
 
-    @RequestMapping(value = {"/table-data", "/clear-table", "/delete-table",
+    @RequestMapping(value = {"/clear-table", "/delete-table",
                              "update-record", "/create-record"}, method = RequestMethod.GET)
     public String tableName() {
         return "table-name";
@@ -62,19 +63,19 @@ public class MainServlet {
         }
     }
 
-    @RequestMapping(value = "/table-names", method = RequestMethod.GET)
+    @RequestMapping(value = "/tables", method = RequestMethod.GET)
     public String tableNames(Model model, HttpSession session) {
         try {
-            model.addAttribute("tables", getManager(session).getTableNames());
-            return "table-names";
+            model.addAttribute("list", getManager(session).getTableNames());
+            return "tables";
         } catch (Exception e) {
             return error(model, e);
         }
     }
 
-    @RequestMapping(value = "/table-data", method = RequestMethod.POST)
+    @RequestMapping(value = "/tables/{tableName}", method = RequestMethod.GET)
     public String tableData(Model model, HttpSession session,
-                            @RequestParam(value = "tableName") String tableName) {
+                            @PathVariable(value = "tableName") String tableName) {
         try {
             model.addAttribute("table", service.getTableData(getManager(session), tableName));
             return "table-data";

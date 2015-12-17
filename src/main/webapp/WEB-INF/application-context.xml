@@ -14,8 +14,7 @@
             <list>
                 <value>connect</value>
                 <value>create-table</value>
-                <value>table-names</value>
-                <value>table-data</value>
+                <value>tables</value>
                 <value>update-record</value>
                 <value>clear-table</value>
                 <value>create-record</value>
