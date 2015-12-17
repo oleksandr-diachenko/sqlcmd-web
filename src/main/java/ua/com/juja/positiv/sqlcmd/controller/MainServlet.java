@@ -25,7 +25,7 @@ public class MainServlet {
     private Service service;
 
     @RequestMapping(value = {"/clear-table", "/delete-table",
-                             "update-record", "/create-record"}, method = RequestMethod.GET)
+                             "update-record"}, method = RequestMethod.GET)
     public String tableName() {
         return "table-name";
     }
@@ -77,6 +77,7 @@ public class MainServlet {
     public String tableData(Model model, HttpSession session,
                             @PathVariable(value = "tableName") String tableName) {
         try {
+            model.addAttribute("tableName", tableName);
             model.addAttribute("table", service.getTableData(getManager(session), tableName));
             return "table-data";
         } catch (Exception e) {
@@ -95,14 +96,21 @@ public class MainServlet {
         }
     }
 
-    @RequestMapping(value = "/delete-record", method = RequestMethod.GET)
-    public String deleteRecord() {
-        return "delete-record";
+    @RequestMapping(value = "tables/{tableName}/delete-record", method = RequestMethod.GET)
+    public String deleteRecord(Model model, HttpSession session,
+                               @PathVariable(value = "tableName") String tableName) {
+        try {
+            List<String> columnNames = service.getTableData(getManager(session), tableName).get(0);
+            model.addAttribute("columnNames", columnNames);
+            return "delete-record";
+        } catch (Exception e) {
+            return error(model, e);
+        }
     }
 
-    @RequestMapping(value = "/delete-record", method = RequestMethod.POST)
+    @RequestMapping(value = "tables/{tableName}/delete-record", method = RequestMethod.POST)
     public String deletingRecord(Model model, HttpSession session,
-                                 @RequestParam(value = "tableName") String tableName,
+                                 @PathVariable(value = "tableName") String tableName,
                                  @RequestParam(value = "keyName") String keyName,
                                  @RequestParam(value = "keyValue") String keyValue) {
         try {
