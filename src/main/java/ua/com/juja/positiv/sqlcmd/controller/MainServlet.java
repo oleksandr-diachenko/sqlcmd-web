@@ -97,15 +97,8 @@ public class MainServlet {
     }
 
     @RequestMapping(value = "tables/{tableName}/delete-record", method = RequestMethod.GET)
-    public String deleteRecord(Model model, HttpSession session,
-                               @PathVariable(value = "tableName") String tableName) {
-        try {
-            List<String> columnNames = service.getTableData(getManager(session), tableName).get(0);
-            model.addAttribute("columnNames", columnNames);
-            return "delete-record";
-        } catch (Exception e) {
-            return error(model, e);
-        }
+    public String deleteRecord(@PathVariable(value = "tableName") String tableName) {
+        return "delete-record";
     }
 
     @RequestMapping(value = "tables/{tableName}/delete-record", method = RequestMethod.POST)
@@ -179,27 +172,25 @@ public class MainServlet {
         }
     }
 
-    @RequestMapping(value = "/update-record", method = RequestMethod.POST)
+    @RequestMapping(value = "tables/{tableName}/update-record", method = RequestMethod.GET)
     public String updateRecord(Model model, HttpSession session,
-                               @RequestParam(value = "tableName") String tableName) {
+                               @PathVariable(value = "tableName") String tableName) {
         try {
-            model.addAttribute("columnCount", getColumnCount(session, tableName));
-            model.addAttribute("tableName", tableName);
+            List<String> columnNames = service.getTableData(getManager(session), tableName).get(0);
+            model.addAttribute("columnNames", columnNames);
             return "update-record";
         } catch (Exception e) {
             return error(model, e);
         }
     }
 
-    @RequestMapping(value = "/update", method = RequestMethod.POST)
+    @RequestMapping(value = "tables/{tableName}/update-record", method = RequestMethod.POST)
     public String updatingRecord(Model model, HttpSession session,
-                                 @RequestParam Map<String,String> allRequestParams) {
+                                 @PathVariable(value = "tableName") String tableName,
+                                 @RequestParam Map<String, Object> allRequestParams) {
         try {
-            String tableName = allRequestParams.remove("tableName");
-            String keyName = allRequestParams.remove("keyName");
-            String value = allRequestParams.remove("keyValue");
-            Map<String, Object> data = getData(allRequestParams);
-            getManager(session).updateRecord(tableName, keyName, value, data);
+            String keyValue = (String) allRequestParams.remove("id"); //TODO подумать как узнавать ключ
+            getManager(session).updateRecord(tableName, "id", keyValue, allRequestParams);
             return "success";
         } catch (Exception e) {
             return error(model, e);
