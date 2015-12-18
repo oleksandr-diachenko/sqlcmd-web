@@ -86,9 +86,7 @@ public class WebTest {
     @Test
     public void testCreateRecord() {
         preparation.run();
-        clickLinkWithText("tables");
-        clickLinkWithText("car");
-        clickLinkWithText("create");
+        gotoPage("/tables/car/create-record");
 
         assertTextPresent("id");
         assertTextPresent("name");
@@ -107,9 +105,7 @@ public class WebTest {
     @Test
     public void testClearTable() {
         preparation.run();
-        clickLinkWithText("tables");
-        clickLinkWithText("car");
-        clickLinkWithText("clear");
+        gotoPage("/tables/car/clear-table");
 
         success();
     }
@@ -117,9 +113,7 @@ public class WebTest {
     @Test
     public void testDeleteRecord() {
         preparation.run();
-        clickLinkWithText("tables");
-        clickLinkWithText("car");
-        clickLinkWithText("delete");
+        gotoPage("/tables/car/delete-record");
 
         assertTextPresent("Key name");
         assertTextPresent("Key value");
@@ -133,9 +127,7 @@ public class WebTest {
     @Test
     public void testUpdateRecord() {
         preparation.run();
-        clickLinkWithText("tables");
-        clickLinkWithText("car");
-        clickLinkWithText("update");
+        gotoPage("/tables/car/update-record");
 
         assertTextPresent("id");
         assertTextPresent("name");
@@ -197,9 +189,7 @@ public class WebTest {
     @Test
     public void testDeleteTable() {
         preparation.run();
-        clickLinkWithText("tables");
-        clickLinkWithText("car");
-        clickLinkWithText("drop");
+        gotoPage("/tables/car/delete-table");
 
         success();
     }
