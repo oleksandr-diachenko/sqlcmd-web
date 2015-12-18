@@ -92,7 +92,7 @@ public class WebTest {
         assertTextPresent("name");
         assertTextPresent("color");
         assertTextPresent("year");
-        int random = new Random().nextInt(100500);
+        int random = Math.abs(new Random().nextInt(100500));
         setTextField("id", String.valueOf(random));
         setTextField("name", "testName" + random);
         setTextField("color", "testColor" + random);
@@ -134,7 +134,7 @@ public class WebTest {
         assertTextPresent("color");
         assertTextPresent("year");
         setTextField("id", "1");
-        int random = new Random().nextInt(100500);
+        int random = Math.abs(new Random().nextInt(100500));
         setTextField("name", "testName" + random);
         setTextField("color", "testColor" + random);
         setTextField("year", String.valueOf(random));
