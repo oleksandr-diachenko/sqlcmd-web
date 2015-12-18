@@ -39,8 +39,7 @@ public class WebTest {
     @Test
     public void testMenu() {
         List<String> commands = new LinkedList<>(Arrays.asList("connect", "create-table",
-                "table-names", "table-data", "update-record", "clear-table", "create-record",
-                "delete-record", "delete-table", "create-database", "delete-database"));
+                "tables", "create-database", "delete-database"));
         List<IElement> links = getElementsByXPath("//a");
 
         assertTrue(commands.size() == links.size());
@@ -52,50 +51,124 @@ public class WebTest {
     @Test
     public void testTableNames() {
         preparation.run();
-        clickLinkWithText("table-names");
+        clickLinkWithText("tables");
 
         assertTableEquals("",
                 new String[][]{
                         {"", "Tables"},
                         {"1", "car"},
                         {"2", "client"}});
-        assertTextPresent("To menu menu");
+        assertTextPresent("To menu");
         assertLinkPresentWithText("menu");
     }
 
     @Test
     public void testTableData() {
         preparation.run();
-        clickLinkWithText("table-data");
+        clickLinkWithText("tables");
+        clickLinkWithText("car");
 
-        assertTextPresent("Table name");
-        setTextField("tableName", "car");
-        submit();
-
+        assertLinkPresentWithText("create");
+        assertLinkPresentWithText("update");
+        assertLinkPresentWithText("delete");
+        assertLinkPresentWithText("clear");
+        assertLinkPresentWithText("drop");
         assertTableEquals("",
                 new String[][]{
                         {"id", "name", "color", "year"},
                         {"1", "ferrari", "red", "2002"},
                         {"2", "porsche", "black", "1964"},
                         {"3", "bmw", "blue", "2001"}});
-        assertTextPresent("To menu menu");
+        assertTextPresent("To menu");
         assertLinkPresentWithText("menu");
     }
 
     @Test
-    public void testTableData_WithIncorrect_TableName() {
+    public void testCreateRecord() {
         preparation.run();
-        clickLinkWithText("table-data");
+        clickLinkWithText("tables");
+        clickLinkWithText("car");
+        clickLinkWithText("create");
 
-        assertTextPresent("Table name");
-        setTextField("tableName", "qwe");
+        assertTextPresent("id");
+        assertTextPresent("name");
+        assertTextPresent("color");
+        assertTextPresent("year");
+        int random = new Random().nextInt(100500);
+        setTextField("id", String.valueOf(random));
+        setTextField("name", "testName" + random);
+        setTextField("color", "testColor" + random);
+        setTextField("year", String.valueOf(random));
         submit();
 
-        assertTextPresent("Something going wrong...");
-        assertTextPresent("Can't get table data. " +
-                "ERROR: relation \"public.qwe\" does not exist Позиция: 15");
-        assertTextPresent("To menu menu");
-        assertLinkPresentWithText("menu");
+        success();
+    }
+
+    @Test
+    public void testClearTable() {
+        preparation.run();
+        clickLinkWithText("tables");
+        clickLinkWithText("car");
+        clickLinkWithText("clear");
+
+        success();
+    }
+
+    @Test
+    public void testDeleteRecord() {
+        preparation.run();
+        clickLinkWithText("tables");
+        clickLinkWithText("car");
+        clickLinkWithText("delete");
+
+        assertTextPresent("Key name");
+        assertTextPresent("Key value");
+        setTextField("keyName", "id");
+        setTextField("keyValue", "1");
+        submit();
+
+        success();
+    }
+
+    @Test
+    public void testUpdateRecord() {
+        preparation.run();
+        clickLinkWithText("tables");
+        clickLinkWithText("car");
+        clickLinkWithText("update");
+
+        assertTextPresent("id");
+        assertTextPresent("name");
+        assertTextPresent("color");
+        assertTextPresent("year");
+        setTextField("id", "1");
+        int random = new Random().nextInt(100500);
+        setTextField("name", "testName" + random);
+        setTextField("color", "testColor" + random);
+        setTextField("year", String.valueOf(random));
+        submit();
+
+        success();
+    }
+
+    @Test
+    public void testCreateAndDeleteDatabase() {
+        clickLinkWithText("create-database");
+
+        assertTextPresent("Database name");
+        setTextField("databaseName", "test" + Math.abs(new Random(10000).nextInt()));
+        submit();
+
+        success();
+
+        clickLinkWithText("menu");
+        clickLinkWithText("delete-database");
+
+        assertTextPresent("Database name");
+        setTextField("databaseName", "test" + Math.abs(new Random(10000).nextInt()));
+        submit();
+
+        success();
     }
 
     @Test
@@ -122,121 +195,11 @@ public class WebTest {
     }
 
     @Test
-    public void testClearTable() {
-        preparation.run();
-        clickLinkWithText("clear-table");
-
-        assertTextPresent("Table name");
-        setTextField("tableName", "car");
-        submit();
-
-        success();
-    }
-
-    @Test
     public void testDeleteTable() {
         preparation.run();
-        clickLinkWithText("delete-table");
-
-        assertTextPresent("Table name");
-        setTextField("tableName", "car");
-        submit();
-
-        success();
-    }
-
-    @Test
-    public void testDeleteRecord() {
-        preparation.run();
-        clickLinkWithText("delete-record");
-
-        assertTextPresent("Table name");
-        assertTextPresent("Primary key name");
-        assertTextPresent("Primary key value");
-        setTextField("tableName", "car");
-        setTextField("keyName", "id");
-        setTextField("keyValue", "1");
-        submit();
-
-        success();
-    }
-
-    @Test
-    public void testCreateRecord() {
-        preparation.run();
-        clickLinkWithText("create-record");
-
-        assertTextPresent("Table name");
-        setTextField("tableName", "car");
-        submit();
-
-        assertTextPresent("Column name 1");
-        assertTextPresent("Column name 2");
-        assertTextPresent("Column name 3");
-        assertTextPresent("Column name 4");
-        assertTextPresent("Column value 1");
-        assertTextPresent("Column value 2");
-        assertTextPresent("Column value 3");
-        assertTextPresent("Column value 4");
-        setTextField("columnName1", "id");
-        setTextField("columnName2", "name");
-        setTextField("columnName3", "color");
-        setTextField("columnName4", "year");
-        setTextField("columnValue1", "5");
-        setTextField("columnValue2", "testName");
-        setTextField("columnValue3", "testColor");
-        setTextField("columnValue4", "1");
-        submit();
-
-        success();
-    }
-
-    @Test
-    public void testUpdateRecord() {
-        preparation.run();
-        clickLinkWithText("update-record");
-
-        assertTextPresent("Table name");
-        setTextField("tableName", "car");
-        submit();
-
-        assertTextPresent("Primary key name");
-        assertTextPresent("Primary key value");
-        assertTextPresent("Column name 1");
-        assertTextPresent("Column name 2");
-        assertTextPresent("Column name 3");
-        assertTextPresent("Column value 1");
-        assertTextPresent("Column value 2");
-        assertTextPresent("Column value 3");
-        setTextField("keyName", "id");
-        setTextField("keyValue", "1");
-        setTextField("columnName1", "name");
-        setTextField("columnName2", "color");
-        setTextField("columnName3", "year");
-        setTextField("columnValue1", "testName");
-        setTextField("columnValue2", "testColor");
-        setTextField("columnValue3", "1");
-        submit();
-
-        success();
-    }
-
-    @Test
-    public void testCreateAndDeleteDatabase() {
-        clickLinkWithText("create-database");
-
-        assertTextPresent("Database name");
-        setTextField("databaseName", "test" + Math.abs(new Random(10000).nextInt()));
-        submit();
-
-        success();
-
-        clickLinkWithText("menu");
-        clickLinkWithText("delete-database");
-
-        assertTextPresent("Database name");
-        setTextField("databaseName", "test" + Math.abs(new Random(10000).nextInt()));
-        submit();
+        clickLinkWithText("tables");
+        clickLinkWithText("car");
+        clickLinkWithText("drop");
 
         success();
     }
