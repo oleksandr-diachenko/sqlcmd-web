@@ -7,9 +7,9 @@
 <table border="1">
     <body>
 
-    <a href="${tableName}/create-record">delete-record</a>&nbsp;
-    <a href="${tableName}/update-record">update-record</a>&nbsp;
-    <a href="${tableName}/delete-record">update-record</a>
+    <a href="${tableName}/create-record">create</a>&nbsp;
+    <a href="${tableName}/update-record">update</a>&nbsp;
+    <a href="${tableName}/delete-record">delete</a>
         <c:forEach items="${table}" var="row">
             <tr>
                 <c:forEach items="${row}" var="element">

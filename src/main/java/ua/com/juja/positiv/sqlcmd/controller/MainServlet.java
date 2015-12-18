@@ -114,25 +114,23 @@ public class MainServlet {
         }
     }
 
-    @RequestMapping(value = "/create-record", method = RequestMethod.POST)
+    @RequestMapping(value = "tables/{tableName}/create-record", method = RequestMethod.GET)
     public String createRecord(Model model, HttpSession session,
-                               @RequestParam(value = "tableName") String tableName) {
+                               @PathVariable(value = "tableName") String tableName) {
         try {
-            model.addAttribute("columnCount", getColumnCount(session, tableName));
-            model.addAttribute("tableName", tableName);
+            model.addAttribute("columnNames", getColumnNames(session, tableName));
             return "create-record";
         } catch (Exception e) {
             return error(model, e);
         }
     }
 
-    @RequestMapping(value = "/create", method = RequestMethod.POST)
+    @RequestMapping(value = "tables/{tableName}/create-record", method = RequestMethod.POST)
     public String creatingRecord(Model model, HttpSession session,
-                                 @RequestParam Map<String,String> allRequestParams) {
-        String tableName = allRequestParams.remove("tableName");
-        Map<String, Object> data = getData(allRequestParams);
+                                 @PathVariable(value = "tableName") String tableName,
+                                 @RequestParam Map<String, Object> allRequestParams) {
         try {
-            getManager(session).createRecord(tableName, data);
+            getManager(session).createRecord(tableName, allRequestParams);
             return "success";
         } catch (Exception e) {
             return error(model, e);
@@ -176,12 +174,15 @@ public class MainServlet {
     public String updateRecord(Model model, HttpSession session,
                                @PathVariable(value = "tableName") String tableName) {
         try {
-            List<String> columnNames = service.getTableData(getManager(session), tableName).get(0);
-            model.addAttribute("columnNames", columnNames);
+            model.addAttribute("columnNames", getColumnNames(session, tableName));
             return "update-record";
         } catch (Exception e) {
             return error(model, e);
         }
+    }
+
+    private List<String> getColumnNames(HttpSession session, String tableName) throws ServiceException {
+        return service.getTableData(getManager(session), tableName).get(0);
     }
 
     @RequestMapping(value = "tables/{tableName}/update-record", method = RequestMethod.POST)
