@@ -40,4 +40,6 @@ public interface DatabaseManager {
     void createBase(String database) throws DatabaseException;
 
     void dropBase(String database) throws DatabaseException;
+
+    String getPrimaryKey(String tableName) throws DatabaseException;
 }

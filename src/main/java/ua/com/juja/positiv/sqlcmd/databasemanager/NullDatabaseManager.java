@@ -61,4 +61,9 @@ public class NullDatabaseManager implements DatabaseManager {
     public void dropBase(String database) throws DatabaseException {
         //do nothing
     }
+
+    @Override
+    public String getPrimaryKey(String tableName) throws DatabaseException {
+        return "";
+    }
 }
