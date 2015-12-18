@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,8 +24,8 @@ public class MainServlet {
     @Autowired
     private Service service;
 
-    @RequestMapping(value = {"/table-data", "/clear-table", "/delete-table",
-                             "update-record", "/create-record"}, method = RequestMethod.GET)
+    @RequestMapping(value = {"/delete-table",
+                             "update-record"}, method = RequestMethod.GET)
     public String tableName() {
         return "table-name";
     }
@@ -62,20 +63,21 @@ public class MainServlet {
         }
     }
 
-    @RequestMapping(value = "/table-names", method = RequestMethod.GET)
+    @RequestMapping(value = "/tables", method = RequestMethod.GET)
     public String tableNames(Model model, HttpSession session) {
         try {
-            model.addAttribute("tables", getManager(session).getTableNames());
-            return "table-names";
+            model.addAttribute("list", getManager(session).getTableNames());
+            return "tables";
         } catch (Exception e) {
             return error(model, e);
         }
     }
 
-    @RequestMapping(value = "/table-data", method = RequestMethod.POST)
+    @RequestMapping(value = "/tables/{tableName}", method = RequestMethod.GET)
     public String tableData(Model model, HttpSession session,
-                            @RequestParam(value = "tableName") String tableName) {
+                            @PathVariable(value = "tableName") String tableName) {
         try {
+            model.addAttribute("tableName", tableName);
             model.addAttribute("table", service.getTableData(getManager(session), tableName));
             return "table-data";
         } catch (Exception e) {
@@ -83,9 +85,9 @@ public class MainServlet {
         }
     }
 
-    @RequestMapping(value = "/clear-table", method = RequestMethod.POST)
+    @RequestMapping(value = "tables/{tableName}/clear-table", method = RequestMethod.GET)
     public String clearingTable(Model model, HttpSession session,
-                                @RequestParam(value = "tableName") String tableName) {
+                                @PathVariable(value = "tableName") String tableName) {
         try {
             getManager(session).clearTable(tableName);
             return "success";
@@ -94,14 +96,14 @@ public class MainServlet {
         }
     }
 
-    @RequestMapping(value = "/delete-record", method = RequestMethod.GET)
-    public String deleteRecord() {
+    @RequestMapping(value = "tables/{tableName}/delete-record", method = RequestMethod.GET)
+    public String deleteRecord(@PathVariable(value = "tableName") String tableName) {
         return "delete-record";
     }
 
-    @RequestMapping(value = "/delete-record", method = RequestMethod.POST)
+    @RequestMapping(value = "tables/{tableName}/delete-record", method = RequestMethod.POST)
     public String deletingRecord(Model model, HttpSession session,
-                                 @RequestParam(value = "tableName") String tableName,
+                                 @PathVariable(value = "tableName") String tableName,
                                  @RequestParam(value = "keyName") String keyName,
                                  @RequestParam(value = "keyValue") String keyValue) {
         try {
@@ -112,34 +114,32 @@ public class MainServlet {
         }
     }
 
-    @RequestMapping(value = "/create-record", method = RequestMethod.POST)
+    @RequestMapping(value = "tables/{tableName}/create-record", method = RequestMethod.GET)
     public String createRecord(Model model, HttpSession session,
-                               @RequestParam(value = "tableName") String tableName) {
+                               @PathVariable(value = "tableName") String tableName) {
         try {
-            model.addAttribute("columnCount", getColumnCount(session, tableName));
-            model.addAttribute("tableName", tableName);
+            model.addAttribute("columnNames", getColumnNames(session, tableName));
             return "create-record";
         } catch (Exception e) {
             return error(model, e);
         }
     }
 
-    @RequestMapping(value = "/create", method = RequestMethod.POST)
+    @RequestMapping(value = "tables/{tableName}/create-record", method = RequestMethod.POST)
     public String creatingRecord(Model model, HttpSession session,
-                                 @RequestParam Map<String,String> allRequestParams) {
-        String tableName = allRequestParams.remove("tableName");
-        Map<String, Object> data = getData(allRequestParams);
+                                 @PathVariable(value = "tableName") String tableName,
+                                 @RequestParam Map<String, Object> allRequestParams) {
         try {
-            getManager(session).createRecord(tableName, data);
+            getManager(session).createRecord(tableName, allRequestParams);
             return "success";
         } catch (Exception e) {
             return error(model, e);
         }
     }
 
-    @RequestMapping(value = "/delete-table", method = RequestMethod.POST)
+    @RequestMapping(value = "tables/{tableName}/delete-table", method = RequestMethod.GET)
     public String deleteTable(Model model, HttpSession session,
-                              @RequestParam(value = "tableName") String tableName) {
+                              @PathVariable(value = "tableName") String tableName) {
         try {
             getManager(session).dropTable(tableName);
             return "success";
@@ -170,27 +170,24 @@ public class MainServlet {
         }
     }
 
-    @RequestMapping(value = "/update-record", method = RequestMethod.POST)
+    @RequestMapping(value = "tables/{tableName}/update-record", method = RequestMethod.GET)
     public String updateRecord(Model model, HttpSession session,
-                               @RequestParam(value = "tableName") String tableName) {
+                               @PathVariable(value = "tableName") String tableName) {
         try {
-            model.addAttribute("columnCount", getColumnCount(session, tableName));
-            model.addAttribute("tableName", tableName);
+            model.addAttribute("columnNames", getColumnNames(session, tableName));
             return "update-record";
         } catch (Exception e) {
             return error(model, e);
         }
     }
 
-    @RequestMapping(value = "/update", method = RequestMethod.POST)
+    @RequestMapping(value = "tables/{tableName}/update-record", method = RequestMethod.POST)
     public String updatingRecord(Model model, HttpSession session,
-                                 @RequestParam Map<String,String> allRequestParams) {
+                                 @PathVariable(value = "tableName") String tableName,
+                                 @RequestParam Map<String, Object> allRequestParams) {
         try {
-            String tableName = allRequestParams.remove("tableName");
-            String keyName = allRequestParams.remove("keyName");
-            String value = allRequestParams.remove("keyValue");
-            Map<String, Object> data = getData(allRequestParams);
-            getManager(session).updateRecord(tableName, keyName, value, data);
+            String keyValue = (String) allRequestParams.remove("id"); //TODO подумать как узнавать ключ
+            getManager(session).updateRecord(tableName, "id", keyValue, allRequestParams);
             return "success";
         } catch (Exception e) {
             return error(model, e);
@@ -238,19 +235,16 @@ public class MainServlet {
         return data;
     }
 
-    private int getColumnCount(HttpSession session,
-                               @RequestParam(value = "tableName") String tableName)
-                                                                 throws ServiceException {
-        List<List<String>> tableData = service.getTableData(getManager(session), tableName);
-        return tableData.get(0).size();
-    }
-
     private DatabaseManager getManager(HttpSession session) {
         DatabaseManager manager = (DatabaseManager) session.getAttribute("manager");
         if(manager == null) {
             return DatabaseManager.NULL;
         }
         return manager;
+    }
+
+    private List<String> getColumnNames(HttpSession session, String tableName) throws ServiceException {
+        return service.getTableData(getManager(session), tableName).get(0);
     }
 
     private String error(Model model, Exception e) {

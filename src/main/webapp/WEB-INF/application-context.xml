@@ -14,13 +14,7 @@
             <list>
                 <value>connect</value>
                 <value>create-table</value>
-                <value>table-names</value>
-                <value>table-data</value>
-                <value>update-record</value>
-                <value>clear-table</value>
-                <value>create-record</value>
-                <value>delete-record</value>
-                <value>delete-table</value>
+                <value>tables</value>
                 <value>create-database</value>
                 <value>delete-database</value>
             </list>
