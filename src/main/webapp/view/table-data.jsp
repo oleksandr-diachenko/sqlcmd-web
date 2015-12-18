@@ -9,7 +9,8 @@
 
     <a href="${tableName}/create-record">create</a>&nbsp;
     <a href="${tableName}/update-record">update</a>&nbsp;
-    <a href="${tableName}/delete-record">delete</a>
+    <a href="${tableName}/delete-record">delete</a>&nbsp;
+    <a href="${tableName}/clear-table">clear</a>
         <c:forEach items="${table}" var="row">
             <tr>
                 <c:forEach items="${row}" var="element">

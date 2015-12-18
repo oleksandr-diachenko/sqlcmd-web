@@ -24,7 +24,7 @@ public class MainServlet {
     @Autowired
     private Service service;
 
-    @RequestMapping(value = {"/clear-table", "/delete-table",
+    @RequestMapping(value = {"/delete-table",
                              "update-record"}, method = RequestMethod.GET)
     public String tableName() {
         return "table-name";
@@ -85,9 +85,9 @@ public class MainServlet {
         }
     }
 
-    @RequestMapping(value = "/clear-table", method = RequestMethod.POST)
+    @RequestMapping(value = "tables/{tableName}/clear-table", method = RequestMethod.GET)
     public String clearingTable(Model model, HttpSession session,
-                                @RequestParam(value = "tableName") String tableName) {
+                                @PathVariable(value = "tableName") String tableName) {
         try {
             getManager(session).clearTable(tableName);
             return "success";
@@ -181,10 +181,6 @@ public class MainServlet {
         }
     }
 
-    private List<String> getColumnNames(HttpSession session, String tableName) throws ServiceException {
-        return service.getTableData(getManager(session), tableName).get(0);
-    }
-
     @RequestMapping(value = "tables/{tableName}/update-record", method = RequestMethod.POST)
     public String updatingRecord(Model model, HttpSession session,
                                  @PathVariable(value = "tableName") String tableName,
@@ -239,19 +235,16 @@ public class MainServlet {
         return data;
     }
 
-    private int getColumnCount(HttpSession session,
-                               @RequestParam(value = "tableName") String tableName)
-                                                                 throws ServiceException {
-        List<List<String>> tableData = service.getTableData(getManager(session), tableName);
-        return tableData.get(0).size();
-    }
-
     private DatabaseManager getManager(HttpSession session) {
         DatabaseManager manager = (DatabaseManager) session.getAttribute("manager");
         if(manager == null) {
             return DatabaseManager.NULL;
         }
         return manager;
+    }
+
+    private List<String> getColumnNames(HttpSession session, String tableName) throws ServiceException {
+        return service.getTableData(getManager(session), tableName).get(0);
     }
 
     private String error(Model model, Exception e) {
