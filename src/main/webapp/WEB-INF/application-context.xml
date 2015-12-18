@@ -15,8 +15,6 @@
                 <value>connect</value>
                 <value>create-table</value>
                 <value>tables</value>
-                <value>clear-table</value>
-                <value>delete-table</value>
                 <value>create-database</value>
                 <value>delete-database</value>
             </list>
