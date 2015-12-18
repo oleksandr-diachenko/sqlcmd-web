@@ -232,7 +232,6 @@ public class PostgreDatabaseManager implements DatabaseManager {
             String columnName = "";
             while (rs.next()) {
                 columnName = rs.getString("COLUMN_NAME");
-
             }
             return columnName;
         } catch (SQLException e) {

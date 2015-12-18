@@ -1,4 +1,4 @@
-package ua.com.juja.positiv.sqlcmd.web;
+package ua.com.juja.positiv.sqlcmd.integration;
 
 import net.sourceforge.jwebunit.api.IElement;
 import org.junit.*;
@@ -15,7 +15,7 @@ import static org.junit.Assert.assertTrue;
  * Created by POSITIV on 25.11.2015.
  */
 
-public class WebTest {
+public class IntegrationTest {
 
     DatabaseLogin login = new DatabaseLogin();
     DatabasePreparation preparation = new DatabasePreparation();
