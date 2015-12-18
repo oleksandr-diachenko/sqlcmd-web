@@ -137,9 +137,9 @@ public class MainServlet {
         }
     }
 
-    @RequestMapping(value = "/delete-table", method = RequestMethod.POST)
+    @RequestMapping(value = "tables/{tableName}/delete-table", method = RequestMethod.GET)
     public String deleteTable(Model model, HttpSession session,
-                              @RequestParam(value = "tableName") String tableName) {
+                              @PathVariable(value = "tableName") String tableName) {
         try {
             getManager(session).dropTable(tableName);
             return "success";
