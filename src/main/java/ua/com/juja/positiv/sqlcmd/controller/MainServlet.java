@@ -97,7 +97,7 @@ public class MainServlet {
     }
 
     @RequestMapping(value = "tables/{tableName}/delete-record", method = RequestMethod.GET)
-    public String deleteRecord(@PathVariable(value = "tableName") String tableName) {
+    public String deleteRecord() {
         return "delete-record";
     }
 
