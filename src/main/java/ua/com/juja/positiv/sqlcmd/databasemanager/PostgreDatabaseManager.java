@@ -223,4 +223,20 @@ public class PostgreDatabaseManager implements DatabaseManager {
             throw new DatabaseException("Can't delete database. " + e.getMessage(), e);
         }
     }
+
+    @Override
+    public String getPrimaryKey(String tableName) throws DatabaseException {
+        try {
+            DatabaseMetaData meta = connection.getMetaData();
+            ResultSet rs = meta.getPrimaryKeys(null, null, tableName);
+            String columnName = "";
+            while (rs.next()) {
+                columnName = rs.getString("COLUMN_NAME");
+
+            }
+            return columnName;
+        } catch (SQLException e) {
+            throw new DatabaseException("Can't get primary key. " + e.getMessage(), e);
+        }
+    }
 }

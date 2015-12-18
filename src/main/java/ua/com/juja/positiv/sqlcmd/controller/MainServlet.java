@@ -97,16 +97,16 @@ public class MainServlet {
     }
 
     @RequestMapping(value = "tables/{tableName}/delete-record", method = RequestMethod.GET)
-    public String deleteRecord(@PathVariable(value = "tableName") String tableName) {
+    public String deleteRecord() {
         return "delete-record";
     }
 
     @RequestMapping(value = "tables/{tableName}/delete-record", method = RequestMethod.POST)
     public String deletingRecord(Model model, HttpSession session,
                                  @PathVariable(value = "tableName") String tableName,
-                                 @RequestParam(value = "keyName") String keyName,
                                  @RequestParam(value = "keyValue") String keyValue) {
         try {
+            String keyName = getManager(session).getPrimaryKey(tableName);
             getManager(session).deleteRecord(tableName, keyName, keyValue);
             return "success";
         } catch (Exception e) {
@@ -186,8 +186,9 @@ public class MainServlet {
                                  @PathVariable(value = "tableName") String tableName,
                                  @RequestParam Map<String, Object> allRequestParams) {
         try {
-            String keyValue = (String) allRequestParams.remove("id"); //TODO подумать как узнавать ключ
-            getManager(session).updateRecord(tableName, "id", keyValue, allRequestParams);
+            String keyName = getManager(session).getPrimaryKey(tableName);
+            String keyValue = (String) allRequestParams.remove(keyName);
+            getManager(session).updateRecord(tableName, keyName, keyValue, allRequestParams);
             return "success";
         } catch (Exception e) {
             return error(model, e);

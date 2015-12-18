@@ -115,9 +115,7 @@ public class WebTest {
         preparation.run();
         gotoPage("/tables/car/delete-record");
 
-        assertTextPresent("Key name");
         assertTextPresent("Key value");
-        setTextField("keyName", "id");
         setTextField("keyValue", "1");
         submit();
 
