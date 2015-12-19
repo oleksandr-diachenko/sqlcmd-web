@@ -182,10 +182,15 @@ public class DatabaseManagerTest {
     }
 
     @Test(expected = DatabaseException.class)
-    public void testTable_WithIncorrectData_Type() throws DatabaseException {
+    public void testCreateTable_WithIncorrectData_Type() throws DatabaseException {
         Map<String, Object> data = new HashMap<>();
         data.put("name", "");
         manager.createTable("city", "id", data);
+    }
+
+    @Test(expected = DatabaseException.class)
+    public void testDeleteTable_WithIncorrectData_TableName() throws DatabaseException {
+        manager.dropTable("qwe");
     }
 
     @Test
@@ -193,5 +198,15 @@ public class DatabaseManagerTest {
         String database = "test" + Math.abs(new Random(100000).nextInt());
         manager.createBase(database);
         manager.dropBase(database);
+    }
+
+    @Test(expected = DatabaseException.class)
+    public void testDeleteDatabase_WithIncorrectData_DatabaseName() throws DatabaseException {
+        manager.dropBase("qwe");
+    }
+
+    @Test
+    public void testPrimaryKeyWithCorrectData() throws DatabaseException {
+        assertEquals("id", manager.getPrimaryKey("car"));
     }
 }

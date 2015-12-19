@@ -5,8 +5,6 @@ package ua.com.juja.positiv.sqlcmd.databasemanager;
  */
 public class DatabaseException extends Exception {
 
-    public DatabaseException(){}
-
     public DatabaseException(String message, Exception e){
        super(message, e);
     }
