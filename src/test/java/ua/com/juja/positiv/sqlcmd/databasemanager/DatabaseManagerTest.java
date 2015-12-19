@@ -181,7 +181,7 @@ public class DatabaseManagerTest {
         manager.dropTable("city");
     }
 
-    @Test(expected = DatabaseException.class)
+    @Test(expected = org.springframework.jdbc.BadSqlGrammarException.class)
     public void testCreateTable_WithIncorrectData_Type() throws DatabaseException {
         Map<String, Object> data = new HashMap<>();
         data.put("name", "");

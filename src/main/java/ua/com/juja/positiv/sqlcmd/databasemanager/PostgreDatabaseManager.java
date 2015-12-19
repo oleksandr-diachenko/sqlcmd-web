@@ -40,19 +40,7 @@ public class PostgreDatabaseManager implements DatabaseManager {
     @Override
     public void createTable(String tableName, String keyName, Map<String, Object> columnParameters)
             throws DatabaseException {
-        StringBuilder url = new StringBuilder(7);
-        url.append("CREATE TABLE public.")
-                .append(tableName)
-                .append("(")
-                .append(keyName)
-                .append(" INT  PRIMARY KEY NOT NULL").
-                append(getParameters(columnParameters))
-                .append(")");
-        try (Statement stmt = connection.createStatement()) {
-            stmt.executeUpdate(url.toString());
-        } catch (SQLException e) {
-            throw new DatabaseException("Can't create table. " + e.getMessage(), e);
-        }
+        template.execute("CREATE TABLE public." + tableName + " (" + keyName + " INT  PRIMARY KEY NOT NULL" + getParameters(columnParameters) + ")");
     }
 
     private String getParameters(Map<String, Object> columnParameters) {
