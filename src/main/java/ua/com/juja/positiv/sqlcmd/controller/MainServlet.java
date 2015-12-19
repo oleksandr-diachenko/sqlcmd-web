@@ -1,6 +1,7 @@
 package ua.com.juja.positiv.sqlcmd.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -19,16 +20,11 @@ import java.util.*;
  * Created by POSITIV on 11.12.2015.
  */
 @Controller
+@Scope("session")
 public class MainServlet {
 
     @Autowired
     private Service service;
-
-    @RequestMapping(value = {"/delete-table",
-                             "update-record"}, method = RequestMethod.GET)
-    public String tableName() {
-        return "table-name";
-    }
 
     @RequestMapping(value = {"/create-database", "/delete-database"}, method = RequestMethod.GET)
     public String databaseName() {
@@ -86,7 +82,7 @@ public class MainServlet {
     }
 
     @RequestMapping(value = "tables/{tableName}/clear-table", method = RequestMethod.GET)
-    public String clearingTable(Model model, HttpSession session,
+    public String clearTable(Model model, HttpSession session,
                                 @PathVariable(value = "tableName") String tableName) {
         try {
             getManager(session).clearTable(tableName);
