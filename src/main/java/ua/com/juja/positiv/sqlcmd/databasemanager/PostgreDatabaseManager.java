@@ -1,6 +1,8 @@
 package ua.com.juja.positiv.sqlcmd.databasemanager;
 
 import org.springframework.context.annotation.Scope;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 import org.springframework.stereotype.Component;
 
 import java.sql.*;
@@ -15,14 +17,19 @@ public class PostgreDatabaseManager implements DatabaseManager {
 
     public static final String JDBC_POSTGRESQL_URL = "jdbc:postgresql://localhost:5432/";
     private Connection connection;
+    private JdbcTemplate template;
 
     @Override
     public void connect(String database, String user, String password) throws DatabaseException {
         try {
             Class.forName("org.postgresql.Driver");
+            if(connection != null) {
+                connection.close();
+            }
             connection = DriverManager.getConnection(
                     JDBC_POSTGRESQL_URL + database + "", "" + user + "",
                     "" + password + "");
+            template = new JdbcTemplate(new SingleConnectionDataSource(connection, false));
         } catch (SQLException e) {
             throw new DatabaseException("Can't connect to database. " + e.getMessage(), e);
         } catch (ClassNotFoundException e) {
@@ -106,21 +113,9 @@ public class PostgreDatabaseManager implements DatabaseManager {
     }
 
     @Override
-    public void createRecord(String tableName, Map<String, Object> columnData) throws DatabaseException {
-        try (Statement stmt = connection.createStatement()) {
-            StringBuilder url = new StringBuilder(8);
-            url.append("INSERT INTO public.")
-                    .append(tableName)
-                    .append(" (")
-                    .append(getColumnNames(columnData))
-                    .append(")")
-                    .append(" VALUES (")
-                    .append(getColumnValues(columnData))
-                    .append(")");
-            stmt.executeUpdate(url.toString());
-        } catch (SQLException e) {
-            throw new DatabaseException("Can't create record. " + e.getMessage(), e);
-        }
+    public void createRecord(String tableName, Map<String, Object> columnData) {
+        this.template.update("INSERT INTO public." + tableName + " " +
+                "(" + getColumnNames(columnData) + ") values (" + getColumnValues(columnData) + ")");
     }
 
     private String getColumnNames(Map<String, Object> columnData) {

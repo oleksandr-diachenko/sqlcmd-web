@@ -160,7 +160,7 @@ public class DatabaseManagerTest {
         manager.createRecord("qwe", map);
     }
 
-    @Test(expected = DatabaseException.class)
+    @Test(expected = org.springframework.jdbc.BadSqlGrammarException.class)
     public void testCreate_WithIncorrectData_TableName() throws DatabaseException {
         Map<String, Object> data = new HashMap<>();
         data.put("id", "2");
