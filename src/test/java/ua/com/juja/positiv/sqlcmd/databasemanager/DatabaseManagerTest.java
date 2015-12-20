@@ -3,6 +3,7 @@ package ua.com.juja.positiv.sqlcmd.databasemanager;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.jdbc.BadSqlGrammarException;
+import org.springframework.jdbc.UncategorizedSQLException;
 import ua.com.juja.positiv.sqlcmd.DatabaseLogin;
 import ua.com.juja.positiv.sqlcmd.DatabasePreparation;
 
@@ -155,7 +156,7 @@ public class DatabaseManagerTest {
                       "4, , , ]", tableData.toString());
         }
 
-    @Test(expected = StringIndexOutOfBoundsException.class)
+    @Test(expected = BadSqlGrammarException.class)
     public void testCreate_WithIncorrectData_Length() throws DatabaseException {
         Map<String, Object> map = new HashMap<>();
         manager.createRecord("qwe", map);
@@ -201,7 +202,7 @@ public class DatabaseManagerTest {
         manager.dropBase(database);
     }
 
-    @Test(expected = DatabaseException.class)
+    @Test(expected = UncategorizedSQLException.class)
     public void testDeleteDatabase_WithIncorrectData_DatabaseName() throws DatabaseException {
         manager.dropBase("qwe");
     }

@@ -5,6 +5,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.sql.*;
 import java.util.*;
@@ -115,24 +116,14 @@ public class PostgreDatabaseManager implements DatabaseManager {
 
     @Override
     public void createRecord(String tableName, Map<String, Object> columnData) {
-        template.update("INSERT INTO public." + tableName + " " +
-                "(" + getColumnNames(columnData) + ") values (" + getColumnValues(columnData) + ")");
-    }
-
-    private String getColumnNames(Map<String, Object> columnData) {
-        StringBuilder columnNames = new StringBuilder(2);
+        StringJoiner keyJoiner = new StringJoiner(", ");
+        StringJoiner valueJoiner = new StringJoiner("', '", "'", "'");
         for (Map.Entry<String, Object> pair : columnData.entrySet()) {
-            columnNames.append(pair.getKey()).append(", ");
+            keyJoiner.add(pair.getKey());
+            valueJoiner.add(pair.getValue().toString());
         }
-        return columnNames.substring(0, columnNames.length() - 2);
-    }
-
-    private String getColumnValues(Map<String, Object> columnData) {
-        StringBuilder columnValues = new StringBuilder(3);
-        for (Map.Entry<String, Object> pair : columnData.entrySet()) {
-            columnValues.append("'").append(pair.getValue()).append("', ");
-        }
-        return columnValues.substring(0, columnValues.length() - 2);
+        template.update("INSERT INTO public." + tableName +
+                "(" + keyJoiner.toString() + ") values (" + valueJoiner.toString()+ ")");
     }
 
     @Override
@@ -164,14 +155,8 @@ public class PostgreDatabaseManager implements DatabaseManager {
     }
 
     @Override
-    public void dropBase(String database) throws DatabaseException {
-        StringBuilder url = new StringBuilder(2);
-        url.append("DROP DATABASE ").append(database);
-        try (Statement stmt = connection.createStatement()) {
-            stmt.executeUpdate(url.toString());
-        } catch (SQLException e) {
-            throw new DatabaseException("Can't delete database. " + e.getMessage(), e);
-        }
+    public void dropBase(String database) {
+        template.execute("DROP DATABASE " + database);
     }
 
     @Override
