@@ -58,7 +58,7 @@ public class PostgreDatabaseManager implements DatabaseManager {
 
     @Override
     public Set<String> getTableNames() {
-        return new LinkedHashSet<>(this.template.query(
+        return new LinkedHashSet<>(template.query(
                 "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'",
                 new RowMapper<String>() {
                     public String mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -115,7 +115,7 @@ public class PostgreDatabaseManager implements DatabaseManager {
 
     @Override
     public void createRecord(String tableName, Map<String, Object> columnData) {
-        this.template.update("INSERT INTO public." + tableName + " " +
+        template.update("INSERT INTO public." + tableName + " " +
                 "(" + getColumnNames(columnData) + ") values (" + getColumnValues(columnData) + ")");
     }
 
@@ -138,30 +138,24 @@ public class PostgreDatabaseManager implements DatabaseManager {
     @Override
     public void updateRecord(String tableName, String keyName, String keyValue, Map<String, Object> columnData) {
         for (Map.Entry<String, Object> pair : columnData.entrySet()) {
-            this.template.update("UPDATE public." + tableName + " SET " + pair.getKey() + " = '" + pair.getValue() +
+            template.update("UPDATE public." + tableName + " SET " + pair.getKey() + " = '" + pair.getValue() +
                     "' WHERE " + keyName + " = '" + keyValue + "'");
         }
     }
 
     @Override
     public void deleteRecord(String tableName, String keyName, String keyValue) {
-        this.template.update("DELETE FROM public." + tableName + " WHERE " + keyName + " = '" + keyValue + "'");
+        template.update("DELETE FROM public." + tableName + " WHERE " + keyName + " = '" + keyValue + "'");
     }
 
     @Override
     public void clearTable(String tableName) {
-        this.template.update("DELETE FROM public." + tableName);
+        template.update("DELETE FROM public." + tableName);
     }
 
     @Override
-    public void dropTable(String tableName) throws DatabaseException {
-        StringBuilder url = new StringBuilder(2);
-        url.append("DROP TABLE public.").append(tableName);
-        try (Statement stmt = connection.createStatement()) {
-            stmt.executeUpdate(url.toString());
-        } catch (SQLException e) {
-            throw new DatabaseException("Can't delete table. " + e.getMessage(), e);
-        }
+    public void dropTable(String tableName) {
+        template.update("DROP TABLE public." + tableName);
     }
 
     @Override

@@ -189,7 +189,7 @@ public class DatabaseManagerTest {
         manager.createTable("city", "id", data);
     }
 
-    @Test(expected = DatabaseException.class)
+    @Test(expected = BadSqlGrammarException.class)
     public void testDeleteTable_WithIncorrectData_TableName() throws DatabaseException {
         manager.dropTable("qwe");
     }
