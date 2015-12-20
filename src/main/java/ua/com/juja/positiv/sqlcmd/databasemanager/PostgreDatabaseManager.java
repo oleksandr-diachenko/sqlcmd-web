@@ -144,20 +144,8 @@ public class PostgreDatabaseManager implements DatabaseManager {
     }
 
     @Override
-    public void deleteRecord(String tableName, String keyName, String keyValue) throws DatabaseException {
-        StringBuilder url = new StringBuilder(7);
-        url.append("DELETE FROM public.")
-                .append(tableName)
-                .append(" WHERE ")
-                .append(keyName)
-                .append(" = '")
-                .append(keyValue)
-                .append("'");
-        try (Statement stmt = connection.createStatement()) {
-            stmt.executeUpdate(url.toString());
-        } catch (SQLException e) {
-            throw new DatabaseException("Can't delete record. " + e.getMessage(), e);
-        }
+    public void deleteRecord(String tableName, String keyName, String keyValue) {
+        this.template.update("DELETE FROM public." + tableName + " WHERE " + keyName + " = '" + keyValue + "'");
     }
 
     @Override

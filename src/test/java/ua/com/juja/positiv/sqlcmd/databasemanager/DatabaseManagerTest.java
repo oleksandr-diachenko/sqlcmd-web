@@ -35,7 +35,7 @@ public class DatabaseManagerTest {
                       "2, porsche, black, 1964]", tableData.toString());
     }
 
-    @Test(expected = DatabaseException.class)
+    @Test(expected = BadSqlGrammarException.class)
     public void testDelete_WithIncorrectData_TableName() throws DatabaseException {
         manager.deleteRecord("qwe", "id", "3");
     }
