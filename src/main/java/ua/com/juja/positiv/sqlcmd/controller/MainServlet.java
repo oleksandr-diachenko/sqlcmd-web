@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import ua.com.juja.positiv.sqlcmd.databasemanager.DatabaseException;
 import ua.com.juja.positiv.sqlcmd.databasemanager.DatabaseManager;
 import ua.com.juja.positiv.sqlcmd.service.Service;
 import ua.com.juja.positiv.sqlcmd.service.ServiceException;
@@ -74,7 +75,10 @@ public class MainServlet {
                             @PathVariable(value = "tableName") String tableName) {
         try {
             model.addAttribute("tableName", tableName);
-            model.addAttribute("table", service.getTableData(getManager(session), tableName));
+            List<List<String>> tableData = getManager(session).getTableData(tableName);
+            List<String> columnNames = getManager(session).getColumnNames(tableName);
+            tableData.add(0, columnNames);
+            model.addAttribute("table", tableData);
             return "table-data";
         } catch (Exception e) {
             return error(model, e);
@@ -114,7 +118,7 @@ public class MainServlet {
     public String createRecord(Model model, HttpSession session,
                                @PathVariable(value = "tableName") String tableName) {
         try {
-            model.addAttribute("columnNames", getColumnNames(session, tableName));
+            model.addAttribute("columnNames", getManager(session).getColumnNames(tableName));
             return "create-record";
         } catch (Exception e) {
             return error(model, e);
@@ -170,7 +174,7 @@ public class MainServlet {
     public String updateRecord(Model model, HttpSession session,
                                @PathVariable(value = "tableName") String tableName) {
         try {
-            model.addAttribute("columnNames", getColumnNames(session, tableName));
+            model.addAttribute("columnNames", getManager(session).getColumnNames(tableName));
             return "update-record";
         } catch (Exception e) {
             return error(model, e);
@@ -238,10 +242,6 @@ public class MainServlet {
             return DatabaseManager.NULL;
         }
         return manager;
-    }
-
-    private List<String> getColumnNames(HttpSession session, String tableName) throws ServiceException {
-        return service.getTableData(getManager(session), tableName).get(0);
     }
 
     private String error(Model model, Exception e) {

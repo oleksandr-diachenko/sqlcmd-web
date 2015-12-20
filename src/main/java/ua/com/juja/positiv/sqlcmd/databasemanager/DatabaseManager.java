@@ -13,7 +13,9 @@ public interface DatabaseManager {
 
     void connect(String database, String user, String command) throws DatabaseException;
 
-    Set<String> getTableNames() throws DatabaseException;
+    Set<String> getTableNames();
+
+    List<String> getColumnNames(String tableName);
 
     /**
      * @param tableName .
@@ -23,23 +25,23 @@ public interface DatabaseManager {
      * List[columnCount + 1, size] = columnData.
      * @throws DatabaseException .
      */
-    List<String> getTableData(String tableName) throws DatabaseException;
+    List<List<String>> getTableData(String tableName);
 
-    void createTable(String tableName, String keyName, Map<String, Object> columnParameters) throws DatabaseException;
+    void createTable(String tableName, String keyName, Map<String, Object> columnParameters);
 
-    void createRecord(String tableName, Map<String, Object> columnData) throws DatabaseException;
+    void createRecord(String tableName, Map<String, Object> columnData);
 
-    void updateRecord(String tableName, String keyName, String keyValue, Map<String, Object> columnData) throws DatabaseException;
+    void updateRecord(String tableName, String keyName, String keyValue, Map<String, Object> columnData);
 
-    void deleteRecord(String tableName, String keyName, String keyValue) throws DatabaseException;
+    void deleteRecord(String tableName, String keyName, String keyValue);
 
-    void clearTable(String tableName) throws DatabaseException;
+    void clearTable(String tableName);
 
-    void dropTable(String tableName) throws DatabaseException;
+    void dropTable(String tableName);
 
-    void createBase(String database) throws DatabaseException;
+    void createBase(String database);
 
-    void dropBase(String database) throws DatabaseException;
+    void dropBase(String database);
 
     String getPrimaryKey(String tableName) throws DatabaseException;
 }

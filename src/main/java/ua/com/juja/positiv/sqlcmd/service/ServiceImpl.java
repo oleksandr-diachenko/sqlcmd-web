@@ -4,7 +4,6 @@ import org.springframework.stereotype.Component;
 import ua.com.juja.positiv.sqlcmd.databasemanager.DatabaseException;
 import ua.com.juja.positiv.sqlcmd.databasemanager.DatabaseManager;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,30 +26,10 @@ public abstract class ServiceImpl implements Service {
         DatabaseManager manager = getManager();
         try {
             manager.connect(database, user, password);
+            return manager;
         } catch (DatabaseException e) {
             throw new ServiceException(e.getMessage(), e);
         }
-        return manager;
-    }
-
-    @Override
-    public List<List<String>> getTableData(DatabaseManager manager, String tableName) throws ServiceException {
-        List<String> tableData ;
-        try {
-            tableData = manager.getTableData(tableName);
-        } catch (DatabaseException e) {
-            throw new ServiceException(e.getMessage(), e);
-        }
-        List<List<String>> table = new ArrayList<>(tableData.size() - 1);
-        int columnCount = Integer.parseInt(tableData.get(0));
-        for (int current = 1; current < tableData.size(); ) {
-            List<String> row = new ArrayList<>(columnCount);
-            for (int rowIndex = 0; rowIndex < columnCount; rowIndex++) {
-                row.add(tableData.get(current++));
-            }
-            table.add(row);
-        }
-        return table;
     }
 
     public void setCommands(List<String> commands) {

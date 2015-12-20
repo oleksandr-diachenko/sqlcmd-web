@@ -5,7 +5,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
 import java.sql.*;
 import java.util.*;
@@ -27,9 +26,6 @@ public class PostgreDatabaseManager implements DatabaseManager {
             Class.forName("org.postgresql.Driver");
             if(connection != null) {
                 connection.close();
-            }
-            if(template != null) {
-                template = null;
             }
             connection = DriverManager.getConnection(
                     JDBC_POSTGRESQL_URL + database + "", "" + user + "",
@@ -60,7 +56,7 @@ public class PostgreDatabaseManager implements DatabaseManager {
     @Override
     public Set<String> getTableNames() {
         return new LinkedHashSet<>(template.query(
-                "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'",
+            "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'",
                 new RowMapper<String>() {
                     public String mapRow(ResultSet rs, int rowNum) throws SQLException {
                         return rs.getString("table_name");
@@ -69,49 +65,30 @@ public class PostgreDatabaseManager implements DatabaseManager {
     }
 
     @Override
-    public List<String> getTableData(final String tableName) throws DatabaseException {
-        StringBuilder url = new StringBuilder(2);
-        url.append("SELECT * FROM public.").append(tableName);
-        try (Statement stmt = connection.createStatement();
-             ResultSet resultSet = stmt.executeQuery(url.toString())) {
-            ResultSetMetaData rsmd = resultSet.getMetaData();
-
-            List<String> tableData = new ArrayList<>();
-            tableData.add(String.valueOf(rsmd.getColumnCount()));
-            for (int indexColumn = 1; indexColumn <= rsmd.getColumnCount(); indexColumn++) {
-                tableData.add(resultSet.getMetaData().getColumnName(indexColumn));
-            }
-
-            while (resultSet.next()) {
-                for (int indexData = 1; indexData <= rsmd.getColumnCount(); indexData++) {
-                    if (resultSet.getString(indexData) == null) {
-                        tableData.add("");
-                    } else {
-                        tableData.add(resultSet.getString(indexData));
+    public List<String> getColumnNames(String tableName) {
+        return template.query("SELECT * FROM information_schema.columns " +
+            "WHERE table_schema = 'public' " +
+            "AND table_name = '" + tableName + "'",
+                new RowMapper<String>() {
+                    public String mapRow(ResultSet resultSet, int rowNum) throws SQLException {
+                        return resultSet.getString("column_name");
                     }
-                }
-            }
-            return tableData;
-        } catch (SQLException e) {
-            throw new DatabaseException("Can't get table data. " + e.getMessage(), e);
-        }
+                });
+    }
 
-//        return this.template.query( //TODO закончить
-//                "SELECT * FROM public." + tableName,
-//                    new RowMapper<String>() {
-//                        public String mapRow(ResultSet rs, int rowNum) throws SQLException {
-//                            ResultSetMetaData rsmd = rs.getMetaData();
-//                            List<String> tableData = new ArrayList<>();
-//                            tableData.add(String.valueOf(rsmd.getColumnCount()));
-//                            for (int index = 0; index < rsmd.getColumnCount(); index++) {
-//                                tableData.add(rsmd.getColumnName(index + 1));
-//                            }
-//                            for (int index = 0; index < rsmd.getColumnCount(); index++) {
-//                                tableData.add(rs.getString(index + 1));
-//                            }
-//                            return tableData;
-//                        }
-//                });
+    @Override
+    public List<List<String>> getTableData(final String tableName) {
+        return template.query("SELECT * FROM " + tableName,
+            new RowMapper() {
+                public List<String> mapRow(ResultSet resultSet, int rowNum) throws SQLException {
+                    List<String> row = new ArrayList<>();
+                    ResultSetMetaData rsmd = resultSet.getMetaData();
+                    for (int index = 0; index < rsmd.getColumnCount(); index++) {
+                        row.add(resultSet.getString(index + 1));
+                    }
+                    return row;
+                }
+            });
     }
 
     @Override

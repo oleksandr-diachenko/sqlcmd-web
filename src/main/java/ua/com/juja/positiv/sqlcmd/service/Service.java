@@ -15,7 +15,4 @@ public interface Service {
 
     DatabaseManager connect(String database, String user, String password)
             throws ServiceException;
-
-    List<List<String>> getTableData(DatabaseManager manager, String tableName) throws ServiceException;
-
 }

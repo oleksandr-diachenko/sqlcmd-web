@@ -13,52 +13,57 @@ public class NullDatabaseManager implements DatabaseManager {
     }
 
     @Override
-    public Set<String> getTableNames() throws DatabaseException {
+    public Set<String> getTableNames(){
         return new HashSet<>();
     }
 
     @Override
-    public List<String> getTableData(String tableName) throws DatabaseException {
-        return new LinkedList<>();
+    public List<List<String>> getTableData(String tableName) {
+        return new ArrayList<>();
     }
 
     @Override
-    public void createTable(String tableName, String keyName, Map<String, Object> columnParameters) throws DatabaseException {
+    public void createTable(String tableName, String keyName, Map<String, Object> columnParameters) {
         //do nothing
     }
 
     @Override
-    public void createRecord(String tableName, Map<String, Object> columnData) throws DatabaseException {
+    public List<String> getColumnNames(String tableName) {
+        return new ArrayList<>();
+    }
+
+    @Override
+    public void createRecord(String tableName, Map<String, Object> columnData) {
         //do nothing
     }
 
     @Override
-    public void updateRecord(String tableName, String keyName, String keyValue, Map<String, Object> columnData) throws DatabaseException {
+    public void updateRecord(String tableName, String keyName, String keyValue, Map<String, Object> columnData) {
         //do nothing
     }
 
     @Override
-    public void deleteRecord(String tableName, String keyName, String keyValue) throws DatabaseException {
+    public void deleteRecord(String tableName, String keyName, String keyValue) {
         //do nothing
     }
 
     @Override
-    public void clearTable(String tableName) throws DatabaseException {
+    public void clearTable(String tableName) {
         //do nothing
     }
 
     @Override
-    public void dropTable(String tableName) throws DatabaseException {
+    public void dropTable(String tableName) {
         //do nothing
     }
 
     @Override
-    public void createBase(String database) throws DatabaseException {
+    public void createBase(String database) {
         //do nothing
     }
 
     @Override
-    public void dropBase(String database) throws DatabaseException {
+    public void dropBase(String database) {
         //do nothing
     }
 

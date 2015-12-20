@@ -26,54 +26,56 @@ public class DatabaseManagerTest {
     }
 
     @Test
-    public void testDelete_WithCorrectData() throws DatabaseException {
+    public void testDelete_WithCorrectData() {
         preparation.run();
         manager.deleteRecord("car", "id", "3");
 
-        List<String> tableData = manager.getTableData("car");
-        assertEquals("[4, id, name, color, year, " +
-                      "1, ferrari, red, 2002, " +
-                      "2, porsche, black, 1964]", tableData.toString());
+        assertEquals("[[1, ferrari, red, 2002], " +
+                      "[2, porsche, black, 1964]]", manager.getTableData("car").toString());
     }
 
     @Test(expected = BadSqlGrammarException.class)
-    public void testDelete_WithIncorrectData_TableName() throws DatabaseException {
+    public void testDelete_WithIncorrectData_TableName() {
         manager.deleteRecord("qwe", "id", "3");
     }
 
     @Test
-    public void testGetTableNames() throws Exception {
+    public void testGetTableNames() {
         preparation.run();
         Set<String> tableNames = manager.getTableNames();
         assertEquals("[car, client]", tableNames.toString());
     }
 
     @Test
-    public void testFind_WithCorrectData() throws DatabaseException {
+    public void testGetColumnNames(){
         preparation.run();
-        List<String> tableData = manager.getTableData("car");
-        assertEquals("[4, id, name, color, year, " +
-                      "1, ferrari, red, 2002, " +
-                      "2, porsche, black, 1964, " +
-                      "3, bmw, blue, 2001]", tableData.toString());
+
+        assertEquals("[id, name, color, year]", manager.getColumnNames("car").toString());
     }
 
-    @Test(expected = DatabaseException.class)
-    public void testFind_WithIncorrectData_TableName() throws DatabaseException {
+
+    @Test
+    public void testFind_WithCorrectData() {
+        preparation.run();
+        assertEquals("[[1, ferrari, red, 2002], " +
+                      "[2, porsche, black, 1964], " +
+                      "[3, bmw, blue, 2001]]", manager.getTableData("car").toString());
+    }
+
+    @Test(expected = BadSqlGrammarException.class)
+    public void testFind_WithIncorrectData_TableName() {
         manager.getTableData("qwe");
     }
 
     @Test
-    public void testFindLimitOffset_WithCorrectData() throws DatabaseException {
+    public void testFindLimitOffset_WithCorrectData() {
         preparation.run();
-        List<String> tableData = manager.getTableData("car LIMIT 2 OFFSET 1");
-        assertEquals("[4, id, name, color, year, " +
-                      "2, porsche, black, 1964, " +
-                      "3, bmw, blue, 2001]", tableData.toString());
+        assertEquals("[[2, porsche, black, 1964], " +
+                      "[3, bmw, blue, 2001]]", manager.getTableData("car LIMIT 2 OFFSET 1").toString());
     }
 
     @Test
-    public void testUpdateAll_WithCorrectData() throws DatabaseException {
+    public void testUpdateAll_WithCorrectData() {
         preparation.run();
         Map<String, Object> columnData = new LinkedHashMap<>();
         columnData.put("name", "mercedes");
@@ -81,50 +83,45 @@ public class DatabaseManagerTest {
         columnData.put("year", "2008");
         manager.updateRecord("car", "id", "3", columnData);
 
-        List<String> tableData = manager.getTableData("car");
-        assertEquals("[4, id, name, color, year, " +
-                      "1, ferrari, red, 2002, " +
-                      "2, porsche, black, 1964, " +
-                      "3, mercedes, white, 2008]", tableData.toString());
+        assertEquals("[[1, ferrari, red, 2002], " +
+                      "[2, porsche, black, 1964], " +
+                      "[3, mercedes, white, 2008]]", manager.getTableData("car").toString());
     }
 
     @Test
-    public void testUpdateSingle_WithCorrectData() throws DatabaseException {
+    public void testUpdateSingle_WithCorrectData() {
         preparation.run();
         Map<String, Object> columnData = new LinkedHashMap<>();
         columnData.put("name", "mercedes");
         manager.updateRecord("car", "id", "3", columnData);
 
-        List<String> tableData = manager.getTableData("car");
-        assertEquals("[4, id, name, color, year, " +
-                      "1, ferrari, red, 2002, " +
-                      "2, porsche, black, 1964, " +
-                      "3, mercedes, blue, 2001]", tableData.toString());
+        assertEquals("[[1, ferrari, red, 2002], " +
+                      "[2, porsche, black, 1964], " +
+                      "[3, mercedes, blue, 2001]]", manager.getTableData("car").toString());
     }
 
     @Test(expected = BadSqlGrammarException.class)
-    public void testUpdate_WithIncorrectData_TableName() throws DatabaseException {
+    public void testUpdate_WithIncorrectData_TableName() {
         Map<String, Object> columnData = new LinkedHashMap<>();
         columnData.put("name", "mercedes");
         manager.updateRecord("qwe", "id", "3", columnData);
     }
 
     @Test
-    public void testClear_WithCorrectData() throws DatabaseException {
+    public void testClear_WithCorrectData() {
         preparation.run();
         manager.clearTable("car");
 
-        List<String> tableData = manager.getTableData("car");
-        assertEquals("[4, id, name, color, year]", tableData.toString());
+        assertEquals("[]", manager.getTableData("car").toString());
     }
 
     @Test(expected = BadSqlGrammarException.class)
-    public void testClear_WithIncorrectData_TableName() throws DatabaseException {
+    public void testClear_WithIncorrectData_TableName() {
         manager.clearTable("qwe");
     }
 
     @Test
-    public void testCreateAll_WithCorrectData() throws DatabaseException {
+    public void testCreateAll_WithCorrectData() {
         preparation.run();
         Map<String, Object> data = new HashMap<>();
         data.put("id", "4");
@@ -133,44 +130,40 @@ public class DatabaseManagerTest {
         data.put("year", "6");
         manager.createRecord("car", data);
 
-        List<String> tableData = manager.getTableData("car");
-        assertEquals("[4, id, name, color, year, " +
-                      "1, ferrari, red, 2002, " +
-                      "2, porsche, black, 1964, " +
-                      "3, bmw, blue, 2001, " +
-                      "4, ferrari, red, 6]", tableData.toString());
+        assertEquals("[[1, ferrari, red, 2002], " +
+                      "[2, porsche, black, 1964], " +
+                      "[3, bmw, blue, 2001], " +
+                      "[4, ferrari, red, 6]]", manager.getTableData("car").toString());
     }
 
     @Test
-    public void testCreateSingle_WithCorrectData() throws DatabaseException {
+    public void testCreateSingle_WithCorrectData() {
         preparation.run();
         Map<String, Object> data = new HashMap<>();
         data.put("id", "4");
         manager.createRecord("car", data);
 
-        List<String> tableData = manager.getTableData("car");
-        assertEquals("[4, id, name, color, year, " +
-                      "1, ferrari, red, 2002, " +
-                      "2, porsche, black, 1964, " +
-                      "3, bmw, blue, 2001, " +
-                      "4, , , ]", tableData.toString());
+        assertEquals("[[1, ferrari, red, 2002], " +
+                      "[2, porsche, black, 1964], " +
+                      "[3, bmw, blue, 2001], " +
+                      "[4, null, null, null]]", manager.getTableData("car").toString());
         }
 
     @Test(expected = BadSqlGrammarException.class)
-    public void testCreate_WithIncorrectData_Length() throws DatabaseException {
+    public void testCreate_WithIncorrectData_Length() {
         Map<String, Object> map = new HashMap<>();
         manager.createRecord("qwe", map);
     }
 
     @Test(expected = BadSqlGrammarException.class)
-    public void testCreate_WithIncorrectData_TableName() throws DatabaseException {
+    public void testCreate_WithIncorrectData_TableName() {
         Map<String, Object> data = new HashMap<>();
         data.put("id", "2");
         manager.createRecord("qwe", data);
     }
 
     @Test
-    public void testTable_WithCorrectData() throws DatabaseException {
+    public void testCreateTable_WithCorrectData() {
         preparation.run();
         Map<String, Object> data = new HashMap<>();
         data.put("name", "text");
@@ -184,26 +177,26 @@ public class DatabaseManagerTest {
     }
 
     @Test(expected = BadSqlGrammarException.class)
-    public void testCreateTable_WithIncorrectData_Type() throws DatabaseException {
+    public void testCreateTable_WithIncorrectData_Type() {
         Map<String, Object> data = new HashMap<>();
         data.put("name", "");
         manager.createTable("city", "id", data);
     }
 
     @Test(expected = BadSqlGrammarException.class)
-    public void testDeleteTable_WithIncorrectData_TableName() throws DatabaseException {
+    public void testDeleteTable_WithIncorrectData_TableName() {
         manager.dropTable("qwe");
     }
 
     @Test
-    public void testCreateAndDeleteDatabase_WithCorrectData() throws DatabaseException {
+    public void testCreateAndDeleteDatabase_WithCorrectData() {
         String database = "test" + Math.abs(new Random(100000).nextInt());
         manager.createBase(database);
         manager.dropBase(database);
     }
 
     @Test(expected = UncategorizedSQLException.class)
-    public void testDeleteDatabase_WithIncorrectData_DatabaseName() throws DatabaseException {
+    public void testDeleteDatabase_WithIncorrectData_DatabaseName() {
         manager.dropBase("qwe");
     }
 
