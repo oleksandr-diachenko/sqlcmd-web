@@ -117,7 +117,7 @@ public class DatabaseManagerTest {
         assertEquals("[4, id, name, color, year]", tableData.toString());
     }
 
-    @Test(expected = DatabaseException.class)
+    @Test(expected = BadSqlGrammarException.class)
     public void testClear_WithIncorrectData_TableName() throws DatabaseException {
         manager.clearTable("qwe");
     }

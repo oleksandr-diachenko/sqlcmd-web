@@ -95,7 +95,7 @@ public class PostgreDatabaseManager implements DatabaseManager {
             throw new DatabaseException("Can't get table data. " + e.getMessage(), e);
         }
 
-//        return this.template.query(
+//        return this.template.query( //TODO закончить
 //                "SELECT * FROM public." + tableName,
 //                    new RowMapper<String>() {
 //                        public String mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -149,14 +149,8 @@ public class PostgreDatabaseManager implements DatabaseManager {
     }
 
     @Override
-    public void clearTable(String tableName) throws DatabaseException {
-        StringBuilder url = new StringBuilder(2);
-        url.append("DELETE FROM public.").append(tableName);
-        try (Statement stmt = connection.createStatement()) {
-            stmt.executeUpdate(url.toString());
-        } catch (SQLException e) {
-            throw new DatabaseException("Can't clear table. " + e.getMessage(), e);
-        }
+    public void clearTable(String tableName) {
+        this.template.update("DELETE FROM public." + tableName);
     }
 
     @Override
