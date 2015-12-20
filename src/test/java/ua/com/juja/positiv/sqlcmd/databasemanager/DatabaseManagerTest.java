@@ -2,6 +2,7 @@ package ua.com.juja.positiv.sqlcmd.databasemanager;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.jdbc.BadSqlGrammarException;
 import ua.com.juja.positiv.sqlcmd.DatabaseLogin;
 import ua.com.juja.positiv.sqlcmd.DatabasePreparation;
 
@@ -100,7 +101,7 @@ public class DatabaseManagerTest {
                       "3, mercedes, blue, 2001]", tableData.toString());
     }
 
-    @Test(expected = DatabaseException.class)
+    @Test(expected = BadSqlGrammarException.class)
     public void testUpdate_WithIncorrectData_TableName() throws DatabaseException {
         Map<String, Object> columnData = new LinkedHashMap<>();
         columnData.put("name", "mercedes");
@@ -160,7 +161,7 @@ public class DatabaseManagerTest {
         manager.createRecord("qwe", map);
     }
 
-    @Test(expected = org.springframework.jdbc.BadSqlGrammarException.class)
+    @Test(expected = BadSqlGrammarException.class)
     public void testCreate_WithIncorrectData_TableName() throws DatabaseException {
         Map<String, Object> data = new HashMap<>();
         data.put("id", "2");
@@ -181,7 +182,7 @@ public class DatabaseManagerTest {
         manager.dropTable("city");
     }
 
-    @Test(expected = org.springframework.jdbc.BadSqlGrammarException.class)
+    @Test(expected = BadSqlGrammarException.class)
     public void testCreateTable_WithIncorrectData_Type() throws DatabaseException {
         Map<String, Object> data = new HashMap<>();
         data.put("name", "");

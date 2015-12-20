@@ -57,7 +57,7 @@ public class PostgreDatabaseManager implements DatabaseManager {
     }
 
     @Override
-    public Set<String> getTableNames() throws DatabaseException {
+    public Set<String> getTableNames() {
         return new LinkedHashSet<>(this.template.query(
                 "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'",
                 new RowMapper<String>() {
@@ -68,7 +68,7 @@ public class PostgreDatabaseManager implements DatabaseManager {
     }
 
     @Override
-    public List<String> getTableData(String tableName) throws DatabaseException {
+    public List<String> getTableData(final String tableName) throws DatabaseException {
         StringBuilder url = new StringBuilder(2);
         url.append("SELECT * FROM public.").append(tableName);
         try (Statement stmt = connection.createStatement();
@@ -94,6 +94,23 @@ public class PostgreDatabaseManager implements DatabaseManager {
         } catch (SQLException e) {
             throw new DatabaseException("Can't get table data. " + e.getMessage(), e);
         }
+
+//        return this.template.query(
+//                "SELECT * FROM public." + tableName,
+//                    new RowMapper<String>() {
+//                        public String mapRow(ResultSet rs, int rowNum) throws SQLException {
+//                            ResultSetMetaData rsmd = rs.getMetaData();
+//                            List<String> tableData = new ArrayList<>();
+//                            tableData.add(String.valueOf(rsmd.getColumnCount()));
+//                            for (int index = 0; index < rsmd.getColumnCount(); index++) {
+//                                tableData.add(rsmd.getColumnName(index + 1));
+//                            }
+//                            for (int index = 0; index < rsmd.getColumnCount(); index++) {
+//                                tableData.add(rs.getString(index + 1));
+//                            }
+//                            return tableData;
+//                        }
+//                });
     }
 
     @Override
@@ -119,26 +136,10 @@ public class PostgreDatabaseManager implements DatabaseManager {
     }
 
     @Override
-    public void updateRecord(String tableName, String keyName, String keyValue, Map<String, Object> columnData)
-            throws DatabaseException {
-        try (Statement stmt = connection.createStatement()) {
-            for (Map.Entry<String, Object> pair : columnData.entrySet()) {
-                StringBuilder url = new StringBuilder(11);
-                url.append("UPDATE public.")
-                        .append(tableName)
-                        .append(" SET ")
-                        .append(pair.getKey())
-                        .append(" = '")
-                        .append(pair.getValue())
-                        .append("' WHERE ")
-                        .append(keyName)
-                        .append(" = '")
-                        .append(keyValue)
-                        .append("'");
-                stmt.executeUpdate(url.toString());
-            }
-        } catch (SQLException e) {
-            throw new DatabaseException("Can't update record. " + e.getMessage(), e);
+    public void updateRecord(String tableName, String keyName, String keyValue, Map<String, Object> columnData) {
+        for (Map.Entry<String, Object> pair : columnData.entrySet()) {
+            this.template.update("UPDATE public." + tableName + " SET " + pair.getKey() + " = '" + pair.getValue() +
+                    "' WHERE " + keyName + " = '" + keyValue + "'");
         }
     }
 
