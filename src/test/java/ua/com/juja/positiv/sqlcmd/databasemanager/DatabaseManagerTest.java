@@ -177,7 +177,7 @@ public class DatabaseManagerTest {
         manager.createTable("city", "id", data);
 
         Set<String> tableNames = manager.getTableNames();
-        assertEquals("[car, city, client]", tableNames.toString());
+        assertEquals("[car, client, city]", tableNames.toString());
         manager.dropTable("city");
     }
 

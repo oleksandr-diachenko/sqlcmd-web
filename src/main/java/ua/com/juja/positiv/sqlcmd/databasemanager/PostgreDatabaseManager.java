@@ -2,6 +2,7 @@ package ua.com.juja.positiv.sqlcmd.databasemanager;
 
 import org.springframework.context.annotation.Scope;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 import org.springframework.stereotype.Component;
 
@@ -26,6 +27,9 @@ public class PostgreDatabaseManager implements DatabaseManager {
             if(connection != null) {
                 connection.close();
             }
+            if(template != null) {
+                template = null;
+            }
             connection = DriverManager.getConnection(
                     JDBC_POSTGRESQL_URL + database + "", "" + user + "",
                     "" + password + "");
@@ -38,9 +42,10 @@ public class PostgreDatabaseManager implements DatabaseManager {
     }
 
     @Override
-    public void createTable(String tableName, String keyName, Map<String, Object> columnParameters)
-            throws DatabaseException {
-        template.execute("CREATE TABLE public." + tableName + " (" + keyName + " INT  PRIMARY KEY NOT NULL" + getParameters(columnParameters) + ")");
+    public void createTable(String tableName, String keyName, Map<String, Object> columnParameters) {
+        template.execute("CREATE TABLE public." + tableName +
+                " (" + keyName + " INT  PRIMARY KEY NOT NULL" +
+                getParameters(columnParameters) + ")");
     }
 
     private String getParameters(Map<String, Object> columnParameters) {
@@ -53,22 +58,13 @@ public class PostgreDatabaseManager implements DatabaseManager {
 
     @Override
     public Set<String> getTableNames() throws DatabaseException {
-        DatabaseMetaData metaData;
-        try {
-            metaData = connection.getMetaData();
-        } catch (SQLException e) {
-            throw new DatabaseException("Can't get table names. " + e.getMessage(), e);
-        }
-
-        try (ResultSet resultSet = metaData.getTables(null, "public", "%", new String[]{"TABLE"})) {
-            Set<String> tableNames = new LinkedHashSet<>();
-            while (resultSet.next()) {
-                tableNames.add(resultSet.getString(3));
-            }
-            return tableNames;
-        } catch (SQLException e) {
-            throw new DatabaseException("Can't get table names. " + e.getMessage(), e);
-        }
+        return new LinkedHashSet<>(this.template.query(
+                "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'",
+                new RowMapper<String>() {
+                    public String mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        return rs.getString("table_name");
+                    }
+                }));
     }
 
     @Override
