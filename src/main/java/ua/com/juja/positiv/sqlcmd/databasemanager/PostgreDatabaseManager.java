@@ -159,14 +159,8 @@ public class PostgreDatabaseManager implements DatabaseManager {
     }
 
     @Override
-    public void createBase(String database) throws DatabaseException {
-        StringBuilder url = new StringBuilder(2);
-        url.append("CREATE DATABASE ").append(database);
-        try (Statement stmt = connection.createStatement()) {
-            stmt.executeUpdate(url.toString());
-        } catch (SQLException e) {
-            throw new DatabaseException("Can't create database. " + e.getMessage(), e);
-        }
+    public void createBase(String database)  {
+        template.execute("CREATE DATABASE " + database);
     }
 
     @Override
