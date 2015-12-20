@@ -43,6 +43,7 @@ public class DatabaseManagerTest {
     public void testGetTableNames() {
         preparation.run();
         Set<String> tableNames = manager.getTableNames();
+
         assertEquals("[car, client]", tableNames.toString());
     }
 
@@ -57,6 +58,7 @@ public class DatabaseManagerTest {
     @Test
     public void testFind_WithCorrectData() {
         preparation.run();
+
         assertEquals("[[1, ferrari, red, 2002], " +
                       "[2, porsche, black, 1964], " +
                       "[3, bmw, blue, 2001]]", manager.getTableData("car").toString());
@@ -70,6 +72,7 @@ public class DatabaseManagerTest {
     @Test
     public void testFindLimitOffset_WithCorrectData() {
         preparation.run();
+
         assertEquals("[[2, porsche, black, 1964], " +
                       "[3, bmw, blue, 2001]]", manager.getTableData("car LIMIT 2 OFFSET 1").toString());
     }
@@ -81,6 +84,7 @@ public class DatabaseManagerTest {
         columnData.put("name", "mercedes");
         columnData.put("color", "white");
         columnData.put("year", "2008");
+
         manager.updateRecord("car", "id", "3", columnData);
 
         assertEquals("[[1, ferrari, red, 2002], " +
@@ -93,6 +97,7 @@ public class DatabaseManagerTest {
         preparation.run();
         Map<String, Object> columnData = new LinkedHashMap<>();
         columnData.put("name", "mercedes");
+
         manager.updateRecord("car", "id", "3", columnData);
 
         assertEquals("[[1, ferrari, red, 2002], " +
@@ -104,6 +109,7 @@ public class DatabaseManagerTest {
     public void testUpdate_WithIncorrectData_TableName() {
         Map<String, Object> columnData = new LinkedHashMap<>();
         columnData.put("name", "mercedes");
+
         manager.updateRecord("qwe", "id", "3", columnData);
     }
 
@@ -128,6 +134,7 @@ public class DatabaseManagerTest {
         data.put("name", "ferrari");
         data.put("color", "red");
         data.put("year", "6");
+
         manager.createRecord("car", data);
 
         assertEquals("[[1, ferrari, red, 2002], " +
@@ -141,6 +148,7 @@ public class DatabaseManagerTest {
         preparation.run();
         Map<String, Object> data = new HashMap<>();
         data.put("id", "4");
+
         manager.createRecord("car", data);
 
         assertEquals("[[1, ferrari, red, 2002], " +
@@ -172,8 +180,8 @@ public class DatabaseManagerTest {
         manager.createTable("city", "id", data);
 
         Set<String> tableNames = manager.getTableNames();
+
         assertEquals("[car, client, city]", tableNames.toString());
-        manager.dropTable("city");
     }
 
     @Test(expected = BadSqlGrammarException.class)

@@ -76,8 +76,7 @@ public class MainServlet {
         try {
             model.addAttribute("tableName", tableName);
             List<List<String>> tableData = getManager(session).getTableData(tableName);
-            List<String> columnNames = getManager(session).getColumnNames(tableName);
-            tableData.add(0, columnNames);
+            tableData.add(0, getManager(session).getColumnNames(tableName));
             model.addAttribute("table", tableData);
             return "table-data";
         } catch (Exception e) {
