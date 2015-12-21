@@ -74,4 +74,14 @@ public class NullDatabaseManager implements DatabaseManager {
     public String getPrimaryKey(String tableName) throws DatabaseException {
         return "";
     }
+
+    @Override
+    public String getUser() {
+        return "";
+    }
+
+    @Override
+    public String getDatabase() {
+        return "";
+    }
 }

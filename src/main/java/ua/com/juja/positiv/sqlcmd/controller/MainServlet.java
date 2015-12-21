@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import ua.com.juja.positiv.sqlcmd.databasemanager.DatabaseException;
 import ua.com.juja.positiv.sqlcmd.databasemanager.DatabaseManager;
+import ua.com.juja.positiv.sqlcmd.databasemanager.UserAction;
 import ua.com.juja.positiv.sqlcmd.service.Service;
 import ua.com.juja.positiv.sqlcmd.service.ServiceException;
 
@@ -54,6 +55,9 @@ public class MainServlet {
         try {
             DatabaseManager manager = service.connect(database, user, password);
             session.setAttribute("manager", manager);
+            service.log(new UserAction(manager.getUser(),
+                    manager.getDatabase(),
+                    "CONNECT"));
             return "redirect:menu";
         } catch (Exception e) {
             return error(model, e);
@@ -63,7 +67,10 @@ public class MainServlet {
     @RequestMapping(value = "/tables", method = RequestMethod.GET)
     public String tableNames(Model model, HttpSession session) {
         try {
-            model.addAttribute("list", getManager(session).getTableNames());
+            DatabaseManager manager = getManager(session);
+            model.addAttribute("list", manager.getTableNames());
+            service.log(new UserAction(manager.getUser(),
+                    manager.getDatabase(), "GET TABLE LIST"));
             return "tables";
         } catch (Exception e) {
             return error(model, e);
@@ -75,8 +82,11 @@ public class MainServlet {
                             @PathVariable(value = "tableName") String tableName) {
         try {
             model.addAttribute("tableName", tableName);
-            List<List<String>> tableData = getManager(session).getTableData(tableName);
-            tableData.add(0, getManager(session).getColumnNames(tableName));
+            DatabaseManager manager = getManager(session);
+            List<List<String>> tableData = manager.getTableData(tableName);
+            tableData.add(0, manager.getColumnNames(tableName));
+            service.log(new UserAction(manager.getUser(), manager.getDatabase(),
+                    "GET TABLE DATA(" + tableName + ")"));
             model.addAttribute("table", tableData);
             return "table-data";
         } catch (Exception e) {
@@ -88,7 +98,10 @@ public class MainServlet {
     public String clearTable(Model model, HttpSession session,
                                 @PathVariable(value = "tableName") String tableName) {
         try {
-            getManager(session).clearTable(tableName);
+            DatabaseManager manager = getManager(session);
+            manager.clearTable(tableName);
+            service.log(new UserAction(manager.getUser(), manager.getDatabase(),
+                    "CLEAR TABLE(" + tableName + ")"));
             return "success";
         } catch (Exception e) {
             return error(model, e);
@@ -105,8 +118,11 @@ public class MainServlet {
                                  @PathVariable(value = "tableName") String tableName,
                                  @RequestParam(value = "keyValue") String keyValue) {
         try {
-            String keyName = getManager(session).getPrimaryKey(tableName);
-            getManager(session).deleteRecord(tableName, keyName, keyValue);
+            DatabaseManager manager = getManager(session);
+            String keyName = manager.getPrimaryKey(tableName);
+            manager.deleteRecord(tableName, keyName, keyValue);
+            service.log(new UserAction(manager.getUser(), manager.getDatabase(),
+                    "DELETE RECORD(" + keyName + "=" + keyValue + ")"));
             return "success";
         } catch (Exception e) {
             return error(model, e);
@@ -129,7 +145,10 @@ public class MainServlet {
                                  @PathVariable(value = "tableName") String tableName,
                                  @RequestParam Map<String, Object> allRequestParams) {
         try {
-            getManager(session).createRecord(tableName, allRequestParams);
+            DatabaseManager manager = getManager(session);
+            manager.createRecord(tableName, allRequestParams);
+            service.log(new UserAction(manager.getUser(), manager.getDatabase(),
+                    "CREATE RECORD IN TABLE (" + tableName +")"));
             return "success";
         } catch (Exception e) {
             return error(model, e);
@@ -140,7 +159,10 @@ public class MainServlet {
     public String deleteTable(Model model, HttpSession session,
                               @PathVariable(value = "tableName") String tableName) {
         try {
-            getManager(session).dropTable(tableName);
+            DatabaseManager manager = getManager(session);
+            manager.dropTable(tableName);
+            service.log(new UserAction(manager.getUser(), manager.getDatabase(),
+                    "DELETE TABLE (" + tableName +")"));
             return "success";
         } catch (Exception e) {
             return error(model, e);
@@ -151,7 +173,10 @@ public class MainServlet {
     public String deleteDatabase(Model model, HttpSession session,
                                  @RequestParam(value = "databaseName") String databaseName) {
         try {
-            getManager(session).dropBase(databaseName);
+            DatabaseManager manager = getManager(session);
+            manager.dropBase(databaseName);
+            service.log(new UserAction(manager.getUser(), manager.getDatabase(),
+                    "DELETE DATABASE (" + databaseName +")"));
             return "success";
         } catch (Exception e) {
             return error(model, e);
@@ -162,7 +187,10 @@ public class MainServlet {
     public String createDatabase(Model model, HttpSession session,
                                  @RequestParam(value = "databaseName") String databaseName) {
         try {
-            getManager(session).createBase(databaseName);
+            DatabaseManager manager = getManager(session);
+            manager.createBase(databaseName);
+            service.log(new UserAction(manager.getUser(), manager.getDatabase(),
+                    "CREATE DATABASE (" + databaseName +")"));
             return "success";
         } catch (Exception e) {
             return error(model, e);
@@ -185,9 +213,13 @@ public class MainServlet {
                                  @PathVariable(value = "tableName") String tableName,
                                  @RequestParam Map<String, Object> allRequestParams) {
         try {
-            String keyName = getManager(session).getPrimaryKey(tableName);
+            DatabaseManager manager = getManager(session);
+            String keyName = manager.getPrimaryKey(tableName);
             String keyValue = (String) allRequestParams.remove(keyName);
-            getManager(session).updateRecord(tableName, keyName, keyValue, allRequestParams);
+            manager.updateRecord(tableName, keyName, keyValue, allRequestParams);
+            service.log(new UserAction(manager.getUser(), manager.getDatabase(),
+                    "UPDATE RECORD IN TABLE (" + tableName +") " +
+                            "" + keyName + "=" + keyValue));
             return "success";
         } catch (Exception e) {
             return error(model, e);
@@ -215,7 +247,10 @@ public class MainServlet {
         String keyName = allRequestParams.remove("keyName");
         Map<String, Object> data = getData(allRequestParams);
         try {
-            getManager(session).createTable(tableName, keyName, data);
+            DatabaseManager manager = getManager(session);
+            manager.createTable(tableName, keyName, data);
+            service.log(new UserAction(manager.getUser(), manager.getDatabase(),
+                    "CREATE TABLE (" + tableName +")"));
             return "success";
         } catch (Exception e) {
             return error(model, e);

@@ -20,6 +20,8 @@ public class PostgreDatabaseManager implements DatabaseManager {
     public static final String JDBC_POSTGRESQL_URL = "jdbc:postgresql://localhost:5432/";
     private Connection connection;
     private JdbcTemplate template;
+    private String user;
+    private String database;
 
     @Override
     public void connect(String database, String user, String password)
@@ -34,6 +36,8 @@ public class PostgreDatabaseManager implements DatabaseManager {
                     JDBC_POSTGRESQL_URL + database + "", "" + user + "",
                     "" + password + "");
             template = new JdbcTemplate(new SingleConnectionDataSource(connection, false));
+            this.user = user;
+            this.database = database;
         } catch (SQLException e) {
             throw new DatabaseException("Can't connect to database. " + e.getMessage(), e);
         } catch (ClassNotFoundException e) {
@@ -82,10 +86,9 @@ public class PostgreDatabaseManager implements DatabaseManager {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public List<List<String>> getTableData(String tableName) {
         return  template.query(String.format("SELECT * FROM %s", tableName),
-            new RowMapper() {
+            new RowMapper<List<String>>() {
                 public List<String> mapRow(ResultSet resultSet, int rowNum)
                                                         throws SQLException {
                     List<String> row = new ArrayList<>();
@@ -157,5 +160,15 @@ public class PostgreDatabaseManager implements DatabaseManager {
         } catch (SQLException e) {
             throw new DatabaseException("Can't get primary key. " + e.getMessage(), e);
         }
+    }
+
+    @Override
+    public String getUser() {
+        return user;
+    }
+
+    @Override
+    public String getDatabase() {
+        return database;
     }
 }

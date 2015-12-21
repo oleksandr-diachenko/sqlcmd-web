@@ -2,6 +2,7 @@ package ua.com.juja.positiv.sqlcmd.service;
 
 import org.springframework.stereotype.Component;
 import ua.com.juja.positiv.sqlcmd.databasemanager.DatabaseManager;
+import ua.com.juja.positiv.sqlcmd.databasemanager.UserAction;
 
 import java.util.List;
 
@@ -15,4 +16,8 @@ public interface Service {
 
     DatabaseManager connect(String database, String user, String password)
             throws ServiceException;
+
+    void log(UserAction userAction);
+
+    List<UserAction> getAllFor(String userName);
 }

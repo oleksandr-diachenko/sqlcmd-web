@@ -1,8 +1,12 @@
 package ua.com.juja.positiv.sqlcmd.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import ua.com.juja.positiv.sqlcmd.databasemanager.DatabaseException;
 import ua.com.juja.positiv.sqlcmd.databasemanager.DatabaseManager;
+import ua.com.juja.positiv.sqlcmd.databasemanager.UserAction;
+import ua.com.juja.positiv.sqlcmd.databasemanager.UserActionsDao;
 
 import java.util.List;
 
@@ -15,6 +19,10 @@ public abstract class ServiceImpl implements Service {
     private List<String> commands;
 
     public abstract DatabaseManager getManager();
+
+    @Qualifier("userActionsDaoImpl")
+    @Autowired
+    private UserActionsDao actionsDao;
 
     @Override
     public List<String> commandList() {
@@ -35,5 +43,20 @@ public abstract class ServiceImpl implements Service {
 
     public void setCommands(List<String> commands) {
         this.commands = commands;
+    }
+
+    @Override
+    public void log(UserAction userAction) {
+        actionsDao.log(userAction.getUserName(),
+                userAction.getDbName(),
+                userAction.getUserAction());
+    }
+
+    @Override
+    public List<UserAction> getAllFor(String userName){
+        if(userName == null) {
+            throw new IllegalArgumentException("User name cant be null");
+        }
+        return actionsDao.getAllFor(userName);
     }
 }

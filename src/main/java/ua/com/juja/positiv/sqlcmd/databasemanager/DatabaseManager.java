@@ -38,4 +38,8 @@ public interface DatabaseManager {
     void dropBase(String database);
 
     String getPrimaryKey(String tableName) throws DatabaseException;
+
+    String getUser();
+
+    String getDatabase();
 }
