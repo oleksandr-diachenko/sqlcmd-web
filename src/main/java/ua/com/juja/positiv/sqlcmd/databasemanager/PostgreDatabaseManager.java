@@ -52,7 +52,7 @@ public class PostgreDatabaseManager implements DatabaseManager {
     @Override
     public void createTable(String tableName, String keyName,
                             Map<String, Object> columnParameters) {
-        template.execute(String.format("CREATE TABLE public.%s " +
+        template.execute(String.format("CREATE TABLE IF NOT EXISTS public.%s " +
                 "(%s INT  PRIMARY KEY NOT NULL %s)",
                 tableName, keyName, getParameters(columnParameters)));
     }

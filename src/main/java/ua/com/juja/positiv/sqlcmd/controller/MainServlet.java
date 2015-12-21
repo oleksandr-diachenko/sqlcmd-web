@@ -75,6 +75,8 @@ public class MainServlet {
                             @PathVariable(value = "tableName") String tableName) {
         try {
             model.addAttribute("tableName", tableName);
+
+            //TODO отправить склеивание в сервис
             List<List<String>> tableData = service.getTableData(
                                                     getManager(session), tableName);
             tableData.add(0, service.getColumnNames(getManager(session), tableName));
