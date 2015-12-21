@@ -21,11 +21,13 @@ public class PostgreDatabaseManager implements DatabaseManager {
     private JdbcTemplate template;
 
     @Override
-    public void connect(String database, String user, String password) throws DatabaseException {
+    public void connect(String database, String user, String password)
+                                            throws DatabaseException {
         try {
             Class.forName("org.postgresql.Driver");
             if(connection != null) {
                 connection.close();
+                template = null;
             }
             connection = DriverManager.getConnection(
                     JDBC_POSTGRESQL_URL + database + "", "" + user + "",
@@ -34,15 +36,17 @@ public class PostgreDatabaseManager implements DatabaseManager {
         } catch (SQLException e) {
             throw new DatabaseException("Can't connect to database. " + e.getMessage(), e);
         } catch (ClassNotFoundException e) {
-            throw new DatabaseException("Can't find driver jar. Add it to project. " + e.getMessage(), e);
+            throw new DatabaseException("Can't find driver jar. Add it to project. "
+                                                                + e.getMessage(), e);
         }
     }
 
     @Override
-    public void createTable(String tableName, String keyName, Map<String, Object> columnParameters) {
-        template.execute("CREATE TABLE public." + tableName +
-                " (" + keyName + " INT  PRIMARY KEY NOT NULL" +
-                getParameters(columnParameters) + ")");
+    public void createTable(String tableName, String keyName,
+                            Map<String, Object> columnParameters) {
+        template.execute(String.format("CREATE TABLE public.%s " +
+                "(%s INT  PRIMARY KEY NOT NULL %s)",
+                tableName, keyName, getParameters(columnParameters)));
     }
 
     private String getParameters(Map<String, Object> columnParameters) {
@@ -66,21 +70,22 @@ public class PostgreDatabaseManager implements DatabaseManager {
 
     @Override
     public List<String> getColumnNames(String tableName) {
-        return template.query("SELECT * FROM information_schema.columns " +
-            "WHERE table_schema = 'public' " +
-            "AND table_name = '" + tableName + "'",
+        return template.query(String.format("SELECT * FROM information_schema.columns " +
+                "WHERE table_schema = 'public' AND table_name = '%s'", tableName),
                 new RowMapper<String>() {
-                    public String mapRow(ResultSet resultSet, int rowNum) throws SQLException {
+                    public String mapRow(ResultSet resultSet, int rowNum)
+                                                    throws SQLException {
                         return resultSet.getString("column_name");
                     }
                 });
     }
 
     @Override
-    public List<List<String>> getTableData(final String tableName) {
-        return template.query("SELECT * FROM " + tableName,
+    public List<List<String>> getTableData(String tableName) {
+        return template.query(String.format("SELECT * FROM %s", tableName),
             new RowMapper() {
-                public List<String> mapRow(ResultSet resultSet, int rowNum) throws SQLException {
+                public List<String> mapRow(ResultSet resultSet, int rowNum)
+                                                        throws SQLException {
                     List<String> row = new ArrayList<>();
                     ResultSetMetaData rsmd = resultSet.getMetaData();
                     for (int index = 0; index < rsmd.getColumnCount(); index++) {
@@ -99,41 +104,43 @@ public class PostgreDatabaseManager implements DatabaseManager {
             keyJoiner.add(pair.getKey());
             valueJoiner.add(pair.getValue().toString());
         }
-        template.update("INSERT INTO public." + tableName +
-                "(" + keyJoiner.toString() + ") values (" + valueJoiner.toString()+ ")");
+        template.update(String.format("INSERT INTO public.%s(%s) values (%s)",
+                tableName, keyJoiner.toString(), valueJoiner.toString()));
     }
 
     @Override
-    public void updateRecord(String tableName, String keyName, String keyValue, Map<String, Object> columnData) {
+    public void updateRecord(String tableName, String keyName, String keyValue,
+                                                Map<String, Object> columnData) {
         for (Map.Entry<String, Object> pair : columnData.entrySet()) {
-            template.update("UPDATE public." + tableName + " SET " + pair.getKey() + " = '" + pair.getValue() +
-                    "' WHERE " + keyName + " = '" + keyValue + "'");
+            template.update(String.format("UPDATE public.%s SET %s = '%s' WHERE %s = '%s'",
+                    tableName, pair.getKey(), pair.getValue(), keyName, keyValue));
         }
     }
 
     @Override
     public void deleteRecord(String tableName, String keyName, String keyValue) {
-        template.update("DELETE FROM public." + tableName + " WHERE " + keyName + " = '" + keyValue + "'");
+        template.update(String.format("DELETE FROM public.%s WHERE %s = '%s'",
+                                            tableName, keyName, keyValue));
     }
 
     @Override
     public void clearTable(String tableName) {
-        template.update("DELETE FROM public." + tableName);
+        template.update(String.format("DELETE FROM public.%s", tableName));
     }
 
     @Override
     public void dropTable(String tableName) {
-        template.update("DROP TABLE public." + tableName);
+        template.update(String.format("DROP TABLE public.%s", tableName));
     }
 
     @Override
     public void createBase(String database)  {
-        template.execute("CREATE DATABASE " + database);
+        template.execute(String.format("CREATE DATABASE %s", database));
     }
 
     @Override
     public void dropBase(String database) {
-        template.execute("DROP DATABASE " + database);
+        template.execute(String.format("DROP DATABASE %s", database));
     }
 
     @Override

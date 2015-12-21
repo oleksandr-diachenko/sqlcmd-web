@@ -8,7 +8,8 @@ import java.util.*;
 public class NullDatabaseManager implements DatabaseManager {
 
     @Override
-    public void connect(String database, String user, String command) throws DatabaseException {
+    public void connect(String database, String user, String command)
+                                            throws DatabaseException {
         //do nothing
     }
 
@@ -23,7 +24,8 @@ public class NullDatabaseManager implements DatabaseManager {
     }
 
     @Override
-    public void createTable(String tableName, String keyName, Map<String, Object> columnParameters) {
+    public void createTable(String tableName, String keyName,
+                            Map<String, Object> columnParameters) {
         //do nothing
     }
 
@@ -38,7 +40,8 @@ public class NullDatabaseManager implements DatabaseManager {
     }
 
     @Override
-    public void updateRecord(String tableName, String keyName, String keyValue, Map<String, Object> columnData) {
+    public void updateRecord(String tableName, String keyName, String keyValue,
+                             Map<String, Object> columnData) {
         //do nothing
     }
 

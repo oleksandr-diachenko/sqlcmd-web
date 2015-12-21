@@ -17,21 +17,15 @@ public interface DatabaseManager {
 
     List<String> getColumnNames(String tableName);
 
-    /**
-     * @param tableName .
-     * @return tableData .
-     * List[0] = columnCount.
-     * List[1, columnCount + 1] = columnName.
-     * List[columnCount + 1, size] = columnData.
-     * @throws DatabaseException .
-     */
     List<List<String>> getTableData(String tableName);
 
-    void createTable(String tableName, String keyName, Map<String, Object> columnParameters);
+    void createTable(String tableName, String keyName,
+                                        Map<String, Object> columnParameters);
 
     void createRecord(String tableName, Map<String, Object> columnData);
 
-    void updateRecord(String tableName, String keyName, String keyValue, Map<String, Object> columnData);
+    void updateRecord(String tableName, String keyName, String keyValue,
+                                        Map<String, Object> columnData);
 
     void deleteRecord(String tableName, String keyName, String keyValue);
 

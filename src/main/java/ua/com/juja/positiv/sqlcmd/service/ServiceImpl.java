@@ -22,7 +22,8 @@ public abstract class ServiceImpl implements Service {
     }
 
     @Override
-    public DatabaseManager connect(String database, String user, String password) throws ServiceException {
+    public DatabaseManager connect(String database, String user, String password)
+                                                        throws ServiceException {
         DatabaseManager manager = getManager();
         try {
             manager.connect(database, user, password);

@@ -4,10 +4,7 @@ import ua.com.juja.positiv.sqlcmd.databasemanager.DatabaseException;
 import ua.com.juja.positiv.sqlcmd.databasemanager.DatabaseManager;
 import ua.com.juja.positiv.sqlcmd.databasemanager.PostgreDatabaseManager;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by POSITIV on 14.10.2015.
