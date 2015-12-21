@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import java.sql.*;
 import java.util.*;
 
+
 /**
  * Created by POSITIV on 16.09.2015.
  */
@@ -81,8 +82,9 @@ public class PostgreDatabaseManager implements DatabaseManager {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public List<List<String>> getTableData(String tableName) {
-        return template.query(String.format("SELECT * FROM %s", tableName),
+        return  template.query(String.format("SELECT * FROM %s", tableName),
             new RowMapper() {
                 public List<String> mapRow(ResultSet resultSet, int rowNum)
                                                         throws SQLException {
