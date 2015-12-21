@@ -1,13 +1,25 @@
 package ua.com.juja.positiv.sqlcmd.databasemanager;
 
+import javax.persistence.*;
+
 /**
  * Created by POSITIV on 21.12.2015.
  */
+@Entity
+@Table(name = "user_actions", schema = "public")
 public class UserAction {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
+
+    @Column(name = "user_name")
     private String userName;
+
+    @Column(name = "db_name")
     private String dbName;
+
+    @Column(name = "action")
     private String userAction;
 
     public UserAction() {
