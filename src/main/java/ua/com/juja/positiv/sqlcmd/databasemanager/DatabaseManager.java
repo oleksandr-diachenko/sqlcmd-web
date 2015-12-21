@@ -11,7 +11,8 @@ public interface DatabaseManager {
 
     DatabaseManager NULL = new NullDatabaseManager();
 
-    void connect(String database, String user, String command) throws DatabaseException;
+    void connect(String database, String user, String command)
+                                        throws DatabaseException;
 
     Set<String> getTableNames();
 

@@ -6,6 +6,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 import org.springframework.stereotype.Component;
 
+import javax.sql.DataSource;
 import java.sql.*;
 import java.util.*;
 
@@ -35,11 +36,13 @@ public class PostgreDatabaseManager implements DatabaseManager {
             connection = DriverManager.getConnection(
                     JDBC_POSTGRESQL_URL + database + "", "" + user + "",
                     "" + password + "");
-            template = new JdbcTemplate(new SingleConnectionDataSource(connection, false));
+            DataSource dataSource = new SingleConnectionDataSource(connection, false);
+            template = new JdbcTemplate(dataSource);
             this.user = user;
             this.database = database;
         } catch (SQLException e) {
-            throw new DatabaseException("Can't connect to database. " + e.getMessage(), e);
+            throw new DatabaseException("Can't connect to database. " +
+                                                    e.getMessage(), e);
         } catch (ClassNotFoundException e) {
             throw new DatabaseException("Can't find driver jar. Add it to project. "
                                                                 + e.getMessage(), e);
@@ -57,7 +60,10 @@ public class PostgreDatabaseManager implements DatabaseManager {
     private String getParameters(Map<String, Object> columnParameters) {
         StringBuilder url = new StringBuilder(4);
         for (Map.Entry<String, Object> pair : columnParameters.entrySet()) {
-            url.append(", ").append(pair.getKey()).append(" ").append(pair.getValue());
+            url.append(", ")
+                    .append(pair.getKey())
+                    .append(" ")
+                    .append(pair.getValue());
         }
         return url.toString();
     }
@@ -65,9 +71,11 @@ public class PostgreDatabaseManager implements DatabaseManager {
     @Override
     public Set<String> getTableNames() {
         return new LinkedHashSet<>(template.query(
-            "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'",
+            "SELECT table_name FROM information_schema.tables " +
+                    "WHERE table_schema = 'public'",
                 new RowMapper<String>() {
-                    public String mapRow(ResultSet rs, int rowNum) throws SQLException {
+                    public String mapRow(ResultSet rs, int rowNum)
+                                                throws SQLException {
                         return rs.getString("table_name");
                     }
                 }));
@@ -117,8 +125,10 @@ public class PostgreDatabaseManager implements DatabaseManager {
     public void updateRecord(String tableName, String keyName, String keyValue,
                                                 Map<String, Object> columnData) {
         for (Map.Entry<String, Object> pair : columnData.entrySet()) {
-            template.update(String.format("UPDATE public.%s SET %s = '%s' WHERE %s = '%s'",
-                    tableName, pair.getKey(), pair.getValue(), keyName, keyValue));
+            template.update(String.format("UPDATE public.%s SET %s = '%s' " +
+                                            "WHERE %s = '%s'",
+                                            tableName, pair.getKey(),
+                                            pair.getValue(), keyName, keyValue));
         }
     }
 

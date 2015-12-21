@@ -21,10 +21,8 @@ public class ServiceTest {
     @Test
     public void testCommandList() {
         assertEquals("[connect, create-table, " +
-                      "table-names, table-data, " +
-                      "update-record, clear-table, " +
-                      "create-record, delete-record, " +
-                      "delete-table, create-database, " +
+                      "tables, " +
+                      "create-database, " +
                       "delete-database]", service.commandList().toString());
     }
 }
