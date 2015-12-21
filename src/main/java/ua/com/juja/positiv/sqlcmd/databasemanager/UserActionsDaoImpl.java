@@ -34,15 +34,16 @@ public class UserActionsDaoImpl implements UserActionsDao {
     @Override
     public List<UserAction> getAllFor(String userName) {
         return template.query("SELECT * FROM public.user_actions " +
-            "WHERE user_name = ?",new Object[] {userName},
+            "WHERE user_name = ?", new Object[] {userName},
                 new RowMapper<UserAction>() {
+                    @Override
                     public UserAction mapRow(ResultSet resultSet, int rowNum)
-                            throws SQLException {
+                                                        throws SQLException {
                         UserAction result = new UserAction();
                         result.setId(resultSet.getInt("id"));
-                        result.setUserName(resultSet.getString("userName"));
-                        result.setDbName(resultSet.getString("dbName"));
-                        result.setUserAction(resultSet.getString("userAction"));
+                        result.setUserName(resultSet.getString("user_name"));
+                        result.setDbName(resultSet.getString("db_name"));
+                        result.setUserAction(resultSet.getString("action"));
                         return result;
                     }
             });
