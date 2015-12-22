@@ -1,7 +1,7 @@
-package ua.com.juja.positiv.sqlcmd.repository;
+package ua.com.juja.positiv.sqlcmd.dao.repository;
 
 import org.springframework.data.repository.CrudRepository;
-import ua.com.juja.positiv.sqlcmd.entity.UserAction;
+import ua.com.juja.positiv.sqlcmd.dao.entity.UserAction;
 
 import java.util.List;
 

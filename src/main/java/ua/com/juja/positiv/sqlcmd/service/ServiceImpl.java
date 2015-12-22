@@ -2,10 +2,10 @@ package ua.com.juja.positiv.sqlcmd.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ua.com.juja.positiv.sqlcmd.databasemanager.DatabaseException;
-import ua.com.juja.positiv.sqlcmd.databasemanager.DatabaseManager;
-import ua.com.juja.positiv.sqlcmd.entity.UserAction;
-import ua.com.juja.positiv.sqlcmd.repository.UserActionRepository;
+import ua.com.juja.positiv.sqlcmd.dao.databasemanager.DatabaseException;
+import ua.com.juja.positiv.sqlcmd.dao.databasemanager.DatabaseManager;
+import ua.com.juja.positiv.sqlcmd.dao.entity.UserAction;
+import ua.com.juja.positiv.sqlcmd.dao.repository.UserActionRepository;
 
 import java.util.List;
 import java.util.Map;

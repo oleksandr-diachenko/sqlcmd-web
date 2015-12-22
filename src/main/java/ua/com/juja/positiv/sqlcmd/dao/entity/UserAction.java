@@ -1,4 +1,4 @@
-package ua.com.juja.positiv.sqlcmd.entity;
+package ua.com.juja.positiv.sqlcmd.dao.entity;
 
 import javax.persistence.*;
 

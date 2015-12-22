@@ -1,4 +1,4 @@
-package ua.com.juja.positiv.sqlcmd.databasemanager;
+package ua.com.juja.positiv.sqlcmd.dao.databasemanager;
 
 import java.util.List;
 import java.util.Map;

@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import ua.com.juja.positiv.sqlcmd.databasemanager.DatabaseManager;
+import ua.com.juja.positiv.sqlcmd.dao.databasemanager.DatabaseManager;
 import ua.com.juja.positiv.sqlcmd.service.Service;
 
 import javax.servlet.http.HttpSession;
@@ -20,16 +20,10 @@ import java.util.*;
  */
 @Controller
 @Scope("session")
-public class MainServlet {
+public class MainController {
 
     @Autowired
     private Service service;
-
-    @RequestMapping(value = {"/create-database", "/delete-database"},
-                                        method = RequestMethod.GET)
-    public String databaseName() {
-        return "database-name";
-    }
 
     @RequestMapping(value = {"/menu", "/"}, method = RequestMethod.GET)
     public String menu(ModelMap model) {
@@ -161,6 +155,12 @@ public class MainServlet {
         }
     }
 
+    @RequestMapping(value = {"/create-database", "/delete-database"},
+            method = RequestMethod.GET)
+    public String databaseName() {
+        return "database-name";
+    }
+
     @RequestMapping(value = "/delete-database", method = RequestMethod.POST)
     public String deleteDatabase(Model model, HttpSession session,
                                  @RequestParam(value = "databaseName")
@@ -237,10 +237,10 @@ public class MainServlet {
                                  @RequestParam Map<String,String> allRequestParams) {
         String tableName = allRequestParams.remove("tableName");
         String keyName = allRequestParams.remove("keyName");
-        Map<String, Object> data = getData(allRequestParams);
+        Map<String, Object> columnParameters = getColumnParameters(allRequestParams);
         try {
             DatabaseManager manager = getManager(session);
-            service.createTable(manager, tableName, keyName, data);
+            service.createTable(manager, tableName, keyName, columnParameters);
             return "success";
         } catch (Exception e) {
             return error(model, e);
@@ -254,7 +254,7 @@ public class MainServlet {
             return "actions";
     }
 
-    private Map<String, Object> getData(@RequestParam Map<String, String>
+    private Map<String, Object> getColumnParameters(@RequestParam Map<String, String>
                                                         allRequestParams) {
         Map<String, Object> data = new LinkedHashMap<>();
         Iterator<Map.Entry<String, String>> iterator;

@@ -5,9 +5,9 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import ua.com.juja.positiv.sqlcmd.databasemanager.DatabaseException;
-import ua.com.juja.positiv.sqlcmd.databasemanager.DatabaseManager;
-import ua.com.juja.positiv.sqlcmd.databasemanager.PostgreDatabaseManager;
+import ua.com.juja.positiv.sqlcmd.dao.databasemanager.DatabaseException;
+import ua.com.juja.positiv.sqlcmd.dao.databasemanager.DatabaseManager;
+import ua.com.juja.positiv.sqlcmd.dao.databasemanager.PostgreDatabaseManager;
 
 import java.sql.SQLException;
 import java.util.HashMap;

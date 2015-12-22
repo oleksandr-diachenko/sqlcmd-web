@@ -1,4 +1,4 @@
-package ua.com.juja.positiv.sqlcmd.databasemanager;
+package ua.com.juja.positiv.sqlcmd.dao.databasemanager;
 
 /**
  * Created by POSITIV on 27.11.2015.

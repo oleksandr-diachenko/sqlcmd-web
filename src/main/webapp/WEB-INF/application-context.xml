@@ -15,12 +15,12 @@
 
     <context:annotation-config/>
     <context:component-scan base-package="ua.com.juja.positiv.sqlcmd"/>
-    <jpa:repositories base-package="ua.com.juja.positiv.sqlcmd.repository"
+    <jpa:repositories base-package="ua.com.juja.positiv.sqlcmd.dao.repository"
                       entity-manager-factory-ref="emf"/>
 
     <bean id="emf"
           class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
-        <property name="packagesToScan" value="ua.com.juja.positiv.sqlcmd.entity" />
+        <property name="packagesToScan" value="ua.com.juja.positiv.sqlcmd.dao.entity" />
         <property name="dataSource" ref="logDataSource" />
 
         <property name="jpaProperties">
@@ -32,7 +32,7 @@
         </property>
 
         <property name="persistenceProvider">
-            <bean class="org.hibernate.jpa.HibernatePersistenceProvider"></bean>
+            <bean class="org.hibernate.jpa.HibernatePersistenceProvider"/>
         </property>
     </bean>
 

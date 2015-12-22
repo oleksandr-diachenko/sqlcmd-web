@@ -1,4 +1,4 @@
-package ua.com.juja.positiv.sqlcmd.databasemanager;
+package ua.com.juja.positiv.sqlcmd.dao;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -6,6 +6,9 @@ import org.springframework.jdbc.BadSqlGrammarException;
 import org.springframework.jdbc.UncategorizedSQLException;
 import ua.com.juja.positiv.sqlcmd.DatabaseLogin;
 import ua.com.juja.positiv.sqlcmd.DatabasePreparation;
+import ua.com.juja.positiv.sqlcmd.dao.databasemanager.DatabaseException;
+import ua.com.juja.positiv.sqlcmd.dao.databasemanager.DatabaseManager;
+import ua.com.juja.positiv.sqlcmd.dao.databasemanager.PostgreDatabaseManager;
 
 import java.util.*;
 
