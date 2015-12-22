@@ -60,5 +60,4 @@ public class ServiceTest {
                       "[sqlcmd, postgres, CREATE RECORD IN TABLE ( car )]]",
                               userActions.toString());
     }
-
 }
