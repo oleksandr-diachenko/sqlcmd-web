@@ -135,13 +135,6 @@ public abstract class ServiceImpl implements Service {
     }
 
     @Override
-    public void log(UserAction userAction) {
-        actionRepository.save(new UserAction(userAction.getUserName(),
-                userAction.getDbName(),
-                userAction.getUserAction()));
-    }
-
-    @Override
     public List<UserAction> getAllFor(String userName){
         if(userName == null) {
             throw new IllegalArgumentException("User name cant be null");

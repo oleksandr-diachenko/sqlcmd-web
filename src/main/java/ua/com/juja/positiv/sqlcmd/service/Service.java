@@ -50,7 +50,5 @@ public interface Service {
     String getPrimaryKey(DatabaseManager manager, String tableName)
                                             throws DatabaseException;
 
-    void log(UserAction userAction);
-
     List<UserAction> getAllFor(String userName);
 }
