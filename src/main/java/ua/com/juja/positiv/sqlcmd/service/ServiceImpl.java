@@ -21,10 +21,6 @@ public abstract class ServiceImpl implements Service {
 
     public abstract DatabaseManager getManager();
 
-    public void setActionRepository(UserActionRepository actionRepository) {
-        this.actionRepository = actionRepository;
-    }
-
     @Autowired
     private UserActionRepository actionRepository;
 
