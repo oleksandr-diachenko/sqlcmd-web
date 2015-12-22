@@ -72,7 +72,7 @@ public class MainController {
             //TODO отправить склеивание в сервис
             List<List<String>> tableData = service.getTableData(
                                                     getManager(session), tableName);
-            tableData.add(0, service.getColumnNames(getManager(session), tableName));
+            tableData.add(0, getManager(session).getColumnNames(tableName));
             model.addAttribute("table", tableData);
             return "table-data";
         } catch (Exception e) {
@@ -106,7 +106,7 @@ public class MainController {
                                  @RequestParam(value = "keyValue") String keyValue) {
         try {
             DatabaseManager manager = getManager(session);
-            String keyName = service.getPrimaryKey(manager, tableName);
+            String keyName = manager.getPrimaryKey(tableName);
             service.deleteRecord(manager, tableName, keyName, keyValue);
             return "success";
         } catch (Exception e) {
@@ -119,9 +119,8 @@ public class MainController {
     public String createRecord(Model model, HttpSession session,
                                @PathVariable(value = "tableName") String tableName) {
         try {
-            DatabaseManager manager = getManager(session);
             model.addAttribute("columnNames",
-                                service.getColumnNames(manager, tableName));
+                                getManager(session).getColumnNames(tableName));
             return "create-record";
         } catch (Exception e) {
             return error(model, e);
@@ -192,9 +191,8 @@ public class MainController {
     public String updateRecord(Model model, HttpSession session,
                                @PathVariable(value = "tableName") String tableName) {
         try {
-            DatabaseManager manager = getManager(session);
             model.addAttribute("columnNames",
-                                service.getColumnNames(manager, tableName));
+                                getManager(session).getColumnNames(tableName));
             return "update-record";
         } catch (Exception e) {
             return error(model, e);
@@ -208,7 +206,7 @@ public class MainController {
                                  @RequestParam Map<String, Object> allRequestParams) {
         try {
             DatabaseManager manager = getManager(session);
-            String keyName = service.getPrimaryKey(manager, tableName);
+            String keyName = manager.getPrimaryKey(tableName);
             String keyValue = (String) allRequestParams.remove(keyName);
             service.updateRecord(manager, tableName, keyName, keyValue,
                                                         allRequestParams);

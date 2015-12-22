@@ -215,4 +215,15 @@ public class DatabaseManagerTest {
     public void testPrimaryKeyWithCorrectData() throws DatabaseException {
         assertEquals("id", manager.getPrimaryKey("car"));
     }
+
+    @Test(expected = DatabaseException.class)
+    public void testPrimaryKeyWithIncorrectData() throws DatabaseException {
+        manager.getPrimaryKey("qwe");
+    }
+
+    @Test
+    public void testColumnNames() {
+        assertEquals("[id, name, color, year]",
+                                manager.getColumnNames("car").toString());
+    }
 }

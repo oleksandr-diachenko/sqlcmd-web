@@ -52,11 +52,6 @@ public abstract class ServiceImpl implements Service {
     }
 
     @Override
-    public List<String> getColumnNames(DatabaseManager manager, String tableName) {
-        return manager.getColumnNames(tableName);
-    }
-
-    @Override
     public List<List<String>> getTableData(DatabaseManager manager, String tableName) {
         actionRepository.save(new UserAction(manager.getUser(), manager.getDatabase(),
                 "GET TABLE ( " + tableName + " )"));
@@ -125,17 +120,11 @@ public abstract class ServiceImpl implements Service {
     }
 
     @Override
-    public String getPrimaryKey(DatabaseManager manager, String tableName)
-                                                throws DatabaseException {
-        return manager.getPrimaryKey(tableName);
-    }
-
-    @Override
     public List<UserAction> getAllFor(String userName){
         if(userName == null) {
             throw new IllegalArgumentException("User name cant be null");
         }
-        return actionRepository.findByUserName(userName);
+        return  actionRepository.findByUserName(userName);
     }
 
     public void setCommands(List<String> commands) {

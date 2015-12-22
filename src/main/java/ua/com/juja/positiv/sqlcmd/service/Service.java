@@ -22,8 +22,6 @@ public interface Service {
 
     Set<String> getTableNames(DatabaseManager manager);
 
-    List<String> getColumnNames(DatabaseManager manager, String tableName);
-
     List<List<String>> getTableData(DatabaseManager manager, String tableName);
 
     void createTable(DatabaseManager manager, String tableName, String keyName,
@@ -46,9 +44,6 @@ public interface Service {
     void createBase(DatabaseManager manager, String database);
 
     void dropBase(DatabaseManager manager, String database);
-
-    String getPrimaryKey(DatabaseManager manager, String tableName)
-                                            throws DatabaseException;
 
     List<UserAction> getAllFor(String userName);
 }

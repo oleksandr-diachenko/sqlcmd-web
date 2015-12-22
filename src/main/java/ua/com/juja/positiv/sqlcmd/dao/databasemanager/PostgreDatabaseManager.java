@@ -167,7 +167,7 @@ public class PostgreDatabaseManager implements DatabaseManager {
                 return rs.getString("COLUMN_NAME");
             }
             throw new RuntimeException();
-        } catch (SQLException e) {
+        } catch (Exception e) {
             throw new DatabaseException("Can't get primary key. " + e.getMessage(), e);
         }
     }
