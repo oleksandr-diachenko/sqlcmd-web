@@ -3,7 +3,7 @@ package ua.com.juja.positiv.sqlcmd.service;
 import org.springframework.stereotype.Component;
 import ua.com.juja.positiv.sqlcmd.databasemanager.DatabaseException;
 import ua.com.juja.positiv.sqlcmd.databasemanager.DatabaseManager;
-import ua.com.juja.positiv.sqlcmd.databasemanager.UserAction;
+import ua.com.juja.positiv.sqlcmd.entity.UserAction;
 
 import java.util.List;
 import java.util.Map;

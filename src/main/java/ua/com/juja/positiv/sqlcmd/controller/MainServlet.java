@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import ua.com.juja.positiv.sqlcmd.databasemanager.DatabaseManager;
-import ua.com.juja.positiv.sqlcmd.databasemanager.UserAction;
 import ua.com.juja.positiv.sqlcmd.service.Service;
 
 import javax.servlet.http.HttpSession;

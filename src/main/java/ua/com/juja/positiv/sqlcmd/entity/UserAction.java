@@ -1,4 +1,4 @@
-package ua.com.juja.positiv.sqlcmd.databasemanager;
+package ua.com.juja.positiv.sqlcmd.entity;
 
 import javax.persistence.*;
 
