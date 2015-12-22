@@ -53,11 +53,11 @@ public class ServiceTest {
         for(List<String> row : userActions) {
             row.remove(0);
         }
-        assertEquals("[[sqlcmd_log, postgres, CLEAR TABLE( user_actions )], " +
+        assertEquals("[[sqlcmd_log, postgres, CLEAR TABLE ( user_actions )], " +
                       "[sqlcmd, postgres, GET TABLES LIST], " +
                       "[sqlcmd, postgres, GET TABLE ( car )], " +
-                      "[sqlcmd, postgres, CLEAR TABLE( car )], " +
-                      "[sqlcmd, postgres, CREATE RECORD IN TABLE( car )]]",
+                      "[sqlcmd, postgres, CLEAR TABLE ( car )], " +
+                      "[sqlcmd, postgres, CREATE RECORD IN TABLE ( car )]]",
                               userActions.toString());
     }
 

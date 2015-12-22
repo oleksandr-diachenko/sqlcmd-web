@@ -78,7 +78,7 @@ public abstract class ServiceImpl implements Service {
                              Map<String, Object> columnData) {
         manager.createRecord(tableName, columnData);
         actionsDao.log(manager.getUser(), manager.getDatabase(),
-                "CREATE RECORD IN TABLE( " + tableName + " )");
+                "CREATE RECORD IN TABLE ( " + tableName + " )");
     }
 
     @Override
@@ -87,7 +87,7 @@ public abstract class ServiceImpl implements Service {
                              Map<String, Object> columnData) {
         manager.updateRecord(tableName, keyName, keyValue, columnData);
         actionsDao.log(manager.getUser(), manager.getDatabase(),
-                "UPDATE RECORD IN TABLE( " + tableName + " ) KEY = " + keyValue);
+                "UPDATE RECORD IN TABLE ( " + tableName + " ) KEY = " + keyValue);
     }
 
     @Override
@@ -95,35 +95,35 @@ public abstract class ServiceImpl implements Service {
                              String keyName, String keyValue) {
         manager.deleteRecord(tableName, keyName, keyValue);
         actionsDao.log(manager.getUser(), manager.getDatabase(),
-                "DELETE RECORD IN TABLE( " + tableName + " ) KEY = " + keyValue);
+                "DELETE RECORD IN TABLE ( " + tableName + " ) KEY = " + keyValue);
     }
 
     @Override
     public void clearTable(DatabaseManager manager, String tableName) {
         manager.clearTable(tableName);
         actionsDao.log(manager.getUser(), manager.getDatabase(),
-                "CLEAR TABLE( " + tableName + " )");
+                "CLEAR TABLE ( " + tableName + " )");
     }
 
     @Override
     public void dropTable(DatabaseManager manager, String tableName) {
         manager.dropTable(tableName);
         actionsDao.log(manager.getUser(), manager.getDatabase(),
-                "DELETE TABLE( " + tableName + " )");
+                "DELETE TABLE ( " + tableName + " )");
     }
 
     @Override
     public void createBase(DatabaseManager manager, String database) {
         manager.createBase(database);
         actionsDao.log(manager.getUser(), manager.getDatabase(),
-                "CREATE DATABASE( " + database + " )");
+                "CREATE DATABASE ( " + database + " )");
     }
 
     @Override
     public void dropBase(DatabaseManager manager, String database) {
         manager.dropBase(database);
         actionsDao.log(manager.getUser(), manager.getDatabase(),
-                "DELETE DATABASE( " + database + " )");
+                "DELETE DATABASE ( " + database + " )");
     }
 
     @Override
