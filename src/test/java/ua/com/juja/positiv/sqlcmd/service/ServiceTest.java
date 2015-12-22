@@ -12,6 +12,7 @@ import ua.com.juja.positiv.sqlcmd.databasemanager.PostgreDatabaseManager;
 
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.*;
@@ -38,16 +39,7 @@ public class ServiceTest {
     public void testLogger() throws DatabaseException, SQLException {
         DatabaseManager manager = new PostgreDatabaseManager();
         manager.connect("sqlcmd_log", "postgres", "postgres");
-        try {
-            service.dropTable(manager, "user_actions");
-        } catch (Exception e) {
-            //do nothing
-        }
-        Map<String, Object> columnParameters = new HashMap<>();
-        columnParameters.put("user_name", "text");
-        columnParameters.put("db_name", "text");
-        columnParameters.put("action", "text");
-        service.createTable(manager, "user_actions", "id", columnParameters);
+        service.clearTable(manager, "user_actions");
 
         manager.connect("sqlcmd", "postgres", "postgres");
         service.getTableNames(manager);
@@ -58,12 +50,16 @@ public class ServiceTest {
         service.createRecord(manager, "car", columnData);
 
         manager.connect("sqlcmd_log", "postgres", "postgres");
-        assertEquals("[[1, sqlcmd_log, postgres, CREATE TABLE ( user_actions )], " +
-                      "[2, sqlcmd, postgres, GET TABLES LIST], " +
-                      "[3, sqlcmd, postgres, GET TABLE ( car )], " +
-                      "[4, sqlcmd, postgres, CLEAR TABLE( car )], " +
-                      "[5, sqlcmd, postgres, CREATE RECORD IN TABLE( car )]]",
-                              manager.getTableData("user_actions").toString());
+        List<List<String>> user_actions = manager.getTableData("user_actions");
+        for(List<String> row : user_actions) {
+            row.remove(0);
+        }
+        assertEquals("[[sqlcmd_log, postgres, CLEAR TABLE( user_actions )], " +
+                      "[sqlcmd, postgres, GET TABLES LIST], " +
+                      "[sqlcmd, postgres, GET TABLE ( car )], " +
+                      "[sqlcmd, postgres, CLEAR TABLE( car )], " +
+                      "[sqlcmd, postgres, CREATE RECORD IN TABLE( car )]]",
+                              user_actions.toString());
     }
 
 }
