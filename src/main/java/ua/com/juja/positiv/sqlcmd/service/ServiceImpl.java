@@ -53,9 +53,12 @@ public abstract class ServiceImpl implements Service {
 
     @Override
     public List<List<String>> getTableData(DatabaseManager manager, String tableName) {
+        List<List<String>> tableData = manager.getTableData(tableName);
+        List<String> columnNames = manager.getColumnNames(tableName);
+        tableData.add(0, columnNames);
         actionRepository.save(new UserAction(manager.getUser(), manager.getDatabase(),
                 "GET TABLE ( " + tableName + " )"));
-        return manager.getTableData(tableName);
+        return tableData;
     }
 
     @Override

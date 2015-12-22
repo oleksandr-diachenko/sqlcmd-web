@@ -67,12 +67,8 @@ public class MainController {
     public String tableData(Model model, HttpSession session,
                             @PathVariable(value = "tableName") String tableName) {
         try {
-            model.addAttribute("tableName", tableName);
-
-            //TODO отправить склеивание в сервис
             List<List<String>> tableData = service.getTableData(
                                                     getManager(session), tableName);
-            tableData.add(0, getManager(session).getColumnNames(tableName));
             model.addAttribute("table", tableData);
             return "table-data";
         } catch (Exception e) {
