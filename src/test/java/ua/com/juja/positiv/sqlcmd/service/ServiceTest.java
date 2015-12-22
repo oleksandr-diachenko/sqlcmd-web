@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import ua.com.juja.positiv.sqlcmd.databasemanager.DatabaseException;
-import ua.com.juja.positiv.sqlcmd.databasemanager.DatabaseException;
 import ua.com.juja.positiv.sqlcmd.databasemanager.DatabaseManager;
 import ua.com.juja.positiv.sqlcmd.databasemanager.PostgreDatabaseManager;
 
@@ -50,8 +49,8 @@ public class ServiceTest {
         service.createRecord(manager, "car", columnData);
 
         manager.connect("sqlcmd_log", "postgres", "postgres");
-        List<List<String>> user_actions = manager.getTableData("user_actions");
-        for(List<String> row : user_actions) {
+        List<List<String>> userActions = manager.getTableData("user_actions");
+        for(List<String> row : userActions) {
             row.remove(0);
         }
         assertEquals("[[sqlcmd_log, postgres, CLEAR TABLE( user_actions )], " +
@@ -59,7 +58,7 @@ public class ServiceTest {
                       "[sqlcmd, postgres, GET TABLE ( car )], " +
                       "[sqlcmd, postgres, CLEAR TABLE( car )], " +
                       "[sqlcmd, postgres, CREATE RECORD IN TABLE( car )]]",
-                              user_actions.toString());
+                              userActions.toString());
     }
 
 }
