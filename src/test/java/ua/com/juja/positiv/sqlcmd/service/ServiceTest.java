@@ -68,7 +68,6 @@ public class ServiceTest {
         manager = new PostgreDatabaseManager();
         manager.connect("sqlcmd_log", "postgres", "postgres");
         manager.clearTable("user_actions");
-        manager.connect("sqlcmd", "postgres", "postgres");
         DatabaseManager mockManager = mock(PostgreDatabaseManager.class);
         when(mockManager.getDatabase()).thenReturn("sqlcmd");
         when(mockManager.getUser()).thenReturn("postgres");
