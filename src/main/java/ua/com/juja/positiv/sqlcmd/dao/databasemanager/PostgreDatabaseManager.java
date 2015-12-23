@@ -70,7 +70,7 @@ public class PostgreDatabaseManager implements DatabaseManager {
 
     @Override
     public Set<String> getTableNames() {
-        return new LinkedHashSet<>(template.query( // TODO разобраться почему выдает в рандомной последовательности
+        return new LinkedHashSet<>(template.query(
             "SELECT table_name FROM information_schema.tables " +
                     "WHERE table_schema = 'public'",
                 new RowMapper<String>() {
