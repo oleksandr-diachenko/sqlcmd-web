@@ -1,17 +1,15 @@
 package ua.com.juja.positiv.sqlcmd.service;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import ua.com.juja.positiv.sqlcmd.dao.databasemanager.DatabaseException;
+import ua.com.juja.positiv.sqlcmd.DatabaseLogin;
 import ua.com.juja.positiv.sqlcmd.dao.databasemanager.DatabaseManager;
 import ua.com.juja.positiv.sqlcmd.dao.databasemanager.PostgreDatabaseManager;
 import ua.com.juja.positiv.sqlcmd.dao.entity.UserAction;
 
-import java.sql.SQLException;
 import java.util.*;
 
 import static org.junit.Assert.*;
@@ -28,11 +26,14 @@ public class ServiceTest {
     @Autowired
     private Service service;
 
-    private DatabaseManager manager;
+    DatabaseManager manager = new PostgreDatabaseManager();
+
+    DatabaseLogin login = new DatabaseLogin();
 
     @Test
     public void testCommandList() {
-        assertEquals("[connect, create-table, " +
+        assertEquals("[connect, " +
+                      "create-table, " +
                       "tables, " +
                       "create-database, " +
                       "delete-database]", service.commandList().toString());
@@ -40,7 +41,7 @@ public class ServiceTest {
 
     @Test
     public void testConnect() throws ServiceException {
-        manager = service.connect("sqlcmd", "postgres", "postgres");
+        manager = service.connect(login.getDatabase(), login.getUser(), login.getPassword());
         assertNotNull(manager);
     }
 
@@ -49,14 +50,11 @@ public class ServiceTest {
         service.connect("qwe", "qwe", "qwe");
     }
 
-    @Ignore
     @Test
     public void testAllFor() throws ServiceException {
-        manager = new PostgreDatabaseManager();
-        service.connect("sqlcmd", "postgres", "postgres");
-        List<UserAction> action = service.getAllFor("postgres");
-        assertEquals("sqlcmd | postgres | CONNECT", action.get(0).getUserAction() + " | " +
-                                                    action.get(0).getConnection());
+        service.connect(login.getDatabase(), login.getUser(), login.getPassword());
+        List<UserAction> action = service.getAllFor(login.getUser());
+        assertEquals("CONNECT", action.get(0).getUserAction());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -66,7 +64,6 @@ public class ServiceTest {
 
     @Test
     public void testLogger() throws Exception {
-        manager = new PostgreDatabaseManager();
         manager.connect("sqlcmd_log", "postgres", "postgres");
         manager.clearTable("user_actions");
         manager.clearTable("database_connection");
@@ -74,7 +71,7 @@ public class ServiceTest {
         when(mockManager.getDatabase()).thenReturn("sqlcmd");
         when(mockManager.getUser()).thenReturn("postgres");
 
-        service.connect("sqlcmd", "postgres", "postgres");
+        service.connect(login.getDatabase(), login.getUser(), login.getPassword());
         service.clearTable(mockManager, "mockTable");
         service.getTableNames(mockManager);
         service.getTableData(mockManager, "mockTable");
