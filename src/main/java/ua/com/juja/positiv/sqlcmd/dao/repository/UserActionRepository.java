@@ -1,6 +1,8 @@
 package ua.com.juja.positiv.sqlcmd.dao.repository;
 
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 import ua.com.juja.positiv.sqlcmd.dao.entity.UserAction;
 
 import java.util.List;
@@ -10,5 +12,6 @@ import java.util.List;
  */
 public interface UserActionRepository extends CrudRepository<UserAction, Integer> {
 
-    List<UserAction> findByUserName(String userName);
+    @Query(value = "SELECT ua FROM UserAction ua WHERE ua.connection.userName = :userName")
+    List<UserAction> findByUserName(@Param("userName") String userName);
 }

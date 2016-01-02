@@ -6,6 +6,7 @@ import ua.com.juja.positiv.sqlcmd.dao.databasemanager.DatabaseException;
 import ua.com.juja.positiv.sqlcmd.dao.databasemanager.DatabaseManager;
 import ua.com.juja.positiv.sqlcmd.dao.entity.DatabaseConnection;
 import ua.com.juja.positiv.sqlcmd.dao.entity.UserAction;
+import ua.com.juja.positiv.sqlcmd.dao.repository.DatabaseConnectionRepository;
 import ua.com.juja.positiv.sqlcmd.dao.repository.UserActionRepository;
 
 import java.util.List;
@@ -25,6 +26,9 @@ public abstract class ServiceImpl implements Service {
     @Autowired
     private UserActionRepository actionRepository;
 
+    @Autowired
+    private DatabaseConnectionRepository databaseConnectionRepository;
+
     @Override
     public List<String> commandList() {
         return commands;
@@ -36,8 +40,7 @@ public abstract class ServiceImpl implements Service {
         DatabaseManager manager = getManager();
         try {
             manager.connect(database, user, password);
-            actionRepository.save(new UserAction("CONNECT",
-                    new DatabaseConnection(manager.getUser(), manager.getDatabase())));
+            saveAction("CONNECT", user, database);
             return manager;
         } catch (DatabaseException e) {
             throw new ServiceException(e.getMessage(), e);
@@ -46,8 +49,7 @@ public abstract class ServiceImpl implements Service {
 
     @Override
     public Set<String> getTableNames(DatabaseManager manager) {
-        actionRepository.save(new UserAction("GET TABLES LIST",
-                new DatabaseConnection(manager.getUser(), manager.getDatabase())));
+        saveAction("GET TABLES LIST", manager.getUser(), manager.getDatabase());
         return manager.getTableNames();
     }
 
@@ -56,8 +58,7 @@ public abstract class ServiceImpl implements Service {
         List<List<String>> tableData = manager.getTableData(tableName);
         List<String> columnNames = manager.getColumnNames(tableName);
         tableData.add(0, columnNames);
-        actionRepository.save(new UserAction("GET TABLE ( " + tableName + " )",
-                new DatabaseConnection(manager.getUser(), manager.getDatabase())));
+        saveAction("GET TABLE ( " + tableName + " )", manager.getUser(), manager.getDatabase());
         return tableData;
     }
 
@@ -65,16 +66,14 @@ public abstract class ServiceImpl implements Service {
     public void createTable(DatabaseManager manager, String tableName, String keyName,
                             Map<String, Object> columnParameters) {
         manager.createTable(tableName, keyName, columnParameters);
-        actionRepository.save(new UserAction("CREATE TABLE ( " + tableName + " )",
-                new DatabaseConnection(manager.getUser(), manager.getDatabase())));
+        saveAction("CREATE TABLE ( " + tableName + " )", manager.getUser(), manager.getDatabase());
     }
 
     @Override
     public void createRecord(DatabaseManager manager, String tableName,
                              Map<String, Object> columnData) {
         manager.createRecord(tableName, columnData);
-        actionRepository.save(new UserAction("CREATE RECORD IN TABLE ( " + tableName + " )",
-                new DatabaseConnection(manager.getUser(), manager.getDatabase())));
+        saveAction("CREATE RECORD IN TABLE ( " + tableName + " )", manager.getUser(), manager.getDatabase());
     }
 
     @Override
@@ -82,44 +81,38 @@ public abstract class ServiceImpl implements Service {
                              String keyName, String keyValue,
                              Map<String, Object> columnData) {
         manager.updateRecord(tableName, keyName, keyValue, columnData);
-        actionRepository.save(new UserAction("UPDATE RECORD IN TABLE ( " + tableName + " ) KEY = " + keyValue,
-                new DatabaseConnection(manager.getUser(), manager.getDatabase())));
+        saveAction("UPDATE RECORD IN TABLE ( " + tableName + " ) KEY = " + keyValue, manager.getUser(), manager.getDatabase());
     }
 
     @Override
     public void deleteRecord(DatabaseManager manager, String tableName,
                              String keyName, String keyValue) {
         manager.deleteRecord(tableName, keyName, keyValue);
-        actionRepository.save(new UserAction("DELETE RECORD IN TABLE ( " + tableName + " ) KEY = " + keyValue,
-                new DatabaseConnection(manager.getUser(), manager.getDatabase())));
+        saveAction("DELETE RECORD IN TABLE ( " + tableName + " ) KEY = " + keyValue, manager.getUser(), manager.getDatabase());
     }
 
     @Override
     public void clearTable(DatabaseManager manager, String tableName) {
         manager.clearTable(tableName);
-        actionRepository.save(new UserAction("CLEAR TABLE ( " + tableName + " )",
-                new DatabaseConnection(manager.getUser(), manager.getDatabase())));
+        saveAction("CLEAR TABLE ( " + tableName + " )", manager.getUser(), manager.getDatabase());
     }
 
     @Override
     public void dropTable(DatabaseManager manager, String tableName) {
         manager.dropTable(tableName);
-        actionRepository.save(new UserAction("DELETE TABLE ( " + tableName + " )",
-                new DatabaseConnection(manager.getUser(), manager.getDatabase())));
+        saveAction("DELETE TABLE ( " + tableName + " )", manager.getUser(), manager.getDatabase());
     }
 
     @Override
     public void createBase(DatabaseManager manager, String database) {
         manager.createBase(database);
-        actionRepository.save(new UserAction("CREATE DATABASE ( " + database + " )",
-                new DatabaseConnection(manager.getUser(), manager.getDatabase())));
+        saveAction("CREATE DATABASE ( " + database + " )", manager.getUser(), manager.getDatabase());
     }
 
     @Override
     public void dropBase(DatabaseManager manager, String database) {
         manager.dropBase(database);
-        actionRepository.save(new UserAction("DELETE DATABASE ( " + database + " )",
-                new DatabaseConnection(manager.getUser(), manager.getDatabase())));
+        saveAction("DELETE DATABASE ( " + database + " )", manager.getUser(), manager.getDatabase());
     }
 
     @Override
@@ -128,6 +121,16 @@ public abstract class ServiceImpl implements Service {
             throw new IllegalArgumentException("User name cant be null");
         }
         return  actionRepository.findByUserName(userName);
+    }
+
+    private void saveAction(String action, String user, String database) {
+        DatabaseConnection databaseConnection = databaseConnectionRepository
+                .findByUserNameAndDbName(user, database);
+        if(databaseConnection == null) {
+            databaseConnection = databaseConnectionRepository.save(
+                    new DatabaseConnection(user, database));
+        }
+        actionRepository.save(new UserAction(action, databaseConnection));
     }
 
     public void setCommands(List<String> commands) {

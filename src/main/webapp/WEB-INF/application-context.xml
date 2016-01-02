@@ -18,8 +18,7 @@
     <jpa:repositories base-package="ua.com.juja.positiv.sqlcmd.dao.repository"
                       entity-manager-factory-ref="emf"/>
 
-    <bean id="emf"
-          class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+    <bean id="emf" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
         <property name="packagesToScan" value="ua.com.juja.positiv.sqlcmd.dao.entity" />
         <property name="dataSource" ref="logDataSource" />
 

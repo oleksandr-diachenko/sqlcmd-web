@@ -6,7 +6,7 @@ import javax.persistence.*;
  * Created by POSITIV on 21.12.2015.
  */
 @Entity
-@Table(name = "user_actions", schema = "public")
+@Table(name = "database_connection", schema = "public")
 public class DatabaseConnection {
 
     @Id
