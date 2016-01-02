@@ -65,7 +65,7 @@ public class ServiceTest {
     }
 
     @Test
-    public void testLogger() throws DatabaseException, SQLException, ServiceException {
+    public void testLogger() throws Exception {
         manager = new PostgreDatabaseManager();
         manager.connect("sqlcmd_log", "postgres", "postgres");
         manager.clearTable("user_actions");
@@ -87,26 +87,27 @@ public class ServiceTest {
         service.updateRecord(mockManager, "mockTable", "mockKeyName", "mockKeyValue",
                                                       new HashMap<String, Object>());
 
-        manager.connect("sqlcmd_log", "postgres", "postgres");
+        service.connect("sqlcmd_log", "postgres", "postgres");
         List<List<String>> userActions = manager.getTableData("user_actions");
         for (List<String> row : userActions) {
             row.remove(0);
         }
         List<List<String>> databaseConnection = manager.getTableData("database_connection");
-        int id = Integer.parseInt(databaseConnection.get(0).get(0));
-        assertEquals(
-                "[[CONNECT, "+ id + "], " +
-                "[CLEAR TABLE ( mockTable ), " + id + "], " +
-                "[GET TABLES LIST, " + id + "], " +
-                "[GET TABLE ( mockTable ), " + id + "], "  +
-                "[CREATE DATABASE ( mockDatabase ), " + id + "], " +
-                "[DELETE DATABASE ( mockDatabase ), " + id + "], " +
-                "[DELETE RECORD IN TABLE ( mockTable ) KEY = mockKeyValue, " + id + "], " +
-                "[DELETE TABLE ( mockTable ), " + id + "], " +
-                "[CREATE RECORD IN TABLE ( mockTable ), " + id + "], " +
-                "[CREATE TABLE ( mockTable ), " + id + "], " +
-                "[UPDATE RECORD IN TABLE ( mockTable ) KEY = mockKeyValue, " + id + "]]",
-                                                                     userActions.toString());
-        assertEquals("[[" + id + ", sqlcmd, postgres]]", databaseConnection.toString());
+        String id1 = databaseConnection.get(0).get(0);
+        String id2 = databaseConnection.get(1).get(0);
+        assertEquals("[[" + id1 + ", sqlcmd, postgres], " +
+                      "[" + id2 + ", sqlcmd_log, postgres]]", databaseConnection.toString());
+        assertEquals("[[CONNECT, " + id1 + "], " +
+                      "[CLEAR TABLE ( mockTable ), " + id1 + "], " +
+                      "[GET TABLES LIST, " + id1 + "], " +
+                      "[GET TABLE ( mockTable ), " + id1 + "], "  +
+                      "[CREATE DATABASE ( mockDatabase ), " + id1 + "], " +
+                      "[DELETE DATABASE ( mockDatabase ), " + id1 + "], " +
+                      "[DELETE RECORD IN TABLE ( mockTable ) KEY = mockKeyValue, " + id1 + "], " +
+                      "[DELETE TABLE ( mockTable ), " + id1 + "], " +
+                      "[CREATE RECORD IN TABLE ( mockTable ), " + id1 + "], " +
+                      "[CREATE TABLE ( mockTable ), " + id1 + "], " +
+                      "[UPDATE RECORD IN TABLE ( mockTable ) KEY = mockKeyValue, " + id1 + "], " +
+                      "[CONNECT, " + id2 + "]]", userActions.toString());
     }
 }
