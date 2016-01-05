@@ -1,6 +1,7 @@
 package ua.com.juja.positiv.sqlcmd.dao.repository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import ua.com.juja.positiv.sqlcmd.dao.entity.DatabaseConnection;
 import ua.com.juja.positiv.sqlcmd.dao.entity.UserAction;
 
@@ -19,6 +20,7 @@ public class UserActionRepositoryImpl implements UserActionRepositoryCustom {
     private EntityManager entityManager;
 
     @Override
+    @Transactional
     public void saveAction(String action, String user, String database) {
         DatabaseConnection databaseConnection = this.databaseConnection
                 .findByUserNameAndDbName(user, database);
