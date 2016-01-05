@@ -1,7 +1,6 @@
 package ua.com.juja.positiv.sqlcmd.service;
 
 import org.springframework.stereotype.Component;
-import ua.com.juja.positiv.sqlcmd.dao.databasemanager.DatabaseException;
 import ua.com.juja.positiv.sqlcmd.dao.databasemanager.DatabaseManager;
 import ua.com.juja.positiv.sqlcmd.dao.entity.UserAction;
 

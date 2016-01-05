@@ -24,7 +24,7 @@ public abstract class ServiceImpl implements Service {
     public abstract DatabaseManager getManager();
 
     @Autowired
-    private UserActionRepository userActionRepository;
+    private UserActionRepository userAction;
 
     @Override
     public List<String> commandList() {
@@ -37,7 +37,7 @@ public abstract class ServiceImpl implements Service {
         DatabaseManager manager = getManager();
         try {
             manager.connect(database, user, password);
-            userActionRepository.saveAction("CONNECT", user, database);
+            userAction.saveAction("CONNECT", user, database);
             return manager;
         } catch (DatabaseException e) {
             throw new ServiceException(e.getMessage(), e);
@@ -46,7 +46,7 @@ public abstract class ServiceImpl implements Service {
 
     @Override
     public Set<String> getTableNames(DatabaseManager manager) {
-        userActionRepository.saveAction("GET TABLES LIST",
+        userAction.saveAction("GET TABLES LIST",
                 manager.getUser(), manager.getDatabase());
         return manager.getTableNames();
     }
@@ -56,7 +56,7 @@ public abstract class ServiceImpl implements Service {
         List<List<String>> tableData = manager.getTableData(tableName);
         List<String> columnNames = manager.getColumnNames(tableName);
         tableData.add(0, columnNames);
-        userActionRepository.saveAction("GET TABLE ( " + tableName + " )",
+        userAction.saveAction("GET TABLE ( " + tableName + " )",
                 manager.getUser(), manager.getDatabase());
         return tableData;
     }
@@ -65,7 +65,7 @@ public abstract class ServiceImpl implements Service {
     public void createTable(DatabaseManager manager, String tableName, String keyName,
                             Map<String, Object> columnParameters) {
         manager.createTable(tableName, keyName, columnParameters);
-        userActionRepository.saveAction("CREATE TABLE ( " + tableName + " )",
+        userAction.saveAction("CREATE TABLE ( " + tableName + " )",
                 manager.getUser(), manager.getDatabase());
     }
 
@@ -73,7 +73,7 @@ public abstract class ServiceImpl implements Service {
     public void createRecord(DatabaseManager manager, String tableName,
                              Map<String, Object> columnData) {
         manager.createRecord(tableName, columnData);
-        userActionRepository.saveAction("CREATE RECORD IN TABLE ( " + tableName + " )",
+        userAction.saveAction("CREATE RECORD IN TABLE ( " + tableName + " )",
                 manager.getUser(), manager.getDatabase());
     }
 
@@ -82,7 +82,7 @@ public abstract class ServiceImpl implements Service {
                              String keyName, String keyValue,
                              Map<String, Object> columnData) {
         manager.updateRecord(tableName, keyName, keyValue, columnData);
-        userActionRepository.saveAction("UPDATE RECORD IN TABLE ( " + tableName + " ) KEY = " + keyValue,
+        userAction.saveAction("UPDATE RECORD IN TABLE ( " + tableName + " ) KEY = " + keyValue,
                 manager.getUser(), manager.getDatabase());
     }
 
@@ -90,35 +90,35 @@ public abstract class ServiceImpl implements Service {
     public void deleteRecord(DatabaseManager manager, String tableName,
                              String keyName, String keyValue) {
         manager.deleteRecord(tableName, keyName, keyValue);
-        userActionRepository.saveAction("DELETE RECORD IN TABLE ( " + tableName + " ) KEY = " + keyValue,
+        userAction.saveAction("DELETE RECORD IN TABLE ( " + tableName + " ) KEY = " + keyValue,
                 manager.getUser(), manager.getDatabase());
     }
 
     @Override
     public void clearTable(DatabaseManager manager, String tableName) {
         manager.clearTable(tableName);
-        userActionRepository.saveAction("CLEAR TABLE ( " + tableName + " )",
+        userAction.saveAction("CLEAR TABLE ( " + tableName + " )",
                 manager.getUser(), manager.getDatabase());
     }
 
     @Override
     public void dropTable(DatabaseManager manager, String tableName) {
         manager.dropTable(tableName);
-        userActionRepository.saveAction("DELETE TABLE ( " + tableName + " )",
+        userAction.saveAction("DELETE TABLE ( " + tableName + " )",
                 manager.getUser(), manager.getDatabase());
     }
 
     @Override
     public void createBase(DatabaseManager manager, String database) {
         manager.createBase(database);
-        userActionRepository.saveAction("CREATE DATABASE ( " + database + " )",
+        userAction.saveAction("CREATE DATABASE ( " + database + " )",
                 manager.getUser(), manager.getDatabase());
     }
 
     @Override
     public void dropBase(DatabaseManager manager, String database) {
         manager.dropBase(database);
-        userActionRepository.saveAction("DELETE DATABASE ( " + database + " )",
+        userAction.saveAction("DELETE DATABASE ( " + database + " )",
                 manager.getUser(), manager.getDatabase());
     }
 
@@ -127,7 +127,7 @@ public abstract class ServiceImpl implements Service {
         if(userName == null) {
             throw new IllegalArgumentException("User name cant be null");
         }
-        return  userActionRepository.findByUserName(userName);
+        return  userAction.findByUserName(userName);
     }
 
     public void setCommands(List<String> commands) {
