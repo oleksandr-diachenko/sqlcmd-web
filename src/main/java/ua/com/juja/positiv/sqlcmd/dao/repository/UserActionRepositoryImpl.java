@@ -4,6 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import ua.com.juja.positiv.sqlcmd.dao.entity.DatabaseConnection;
 import ua.com.juja.positiv.sqlcmd.dao.entity.UserAction;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 /**
  * Created by POSITIV on 05.01.2016.
  */
@@ -12,8 +15,8 @@ public class UserActionRepositoryImpl implements UserActionRepositoryCustom {
     @Autowired
     private DatabaseConnectionRepository databaseConnectionRepository;
 
-    @Autowired
-    private UserActionRepository userActionRepository;
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Override
     public void saveAction(String action, String user, String database) {
@@ -23,6 +26,6 @@ public class UserActionRepositoryImpl implements UserActionRepositoryCustom {
             databaseConnection = databaseConnectionRepository.save(
                     new DatabaseConnection(user, database));
         }
-        userActionRepository.save(new UserAction(action, databaseConnection));
+        entityManager.persist(new UserAction(action, databaseConnection));
     }
 }

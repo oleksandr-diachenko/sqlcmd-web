@@ -2,6 +2,7 @@ package ua.com.juja.positiv.sqlcmd.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import ua.com.juja.positiv.sqlcmd.dao.databasemanager.DatabaseException;
 import ua.com.juja.positiv.sqlcmd.dao.databasemanager.DatabaseManager;
 import ua.com.juja.positiv.sqlcmd.dao.entity.UserAction;
@@ -15,6 +16,7 @@ import java.util.Set;
  * Created by POSITIV on 31.10.2015.
  */
 @Component
+@Transactional
 public abstract class ServiceImpl implements Service {
 
     private List<String> commands;
