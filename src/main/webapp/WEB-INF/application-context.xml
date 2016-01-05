@@ -54,7 +54,6 @@
         <lookup-method name="getManager" bean="postgreDatabaseManager"/>
     </bean>
 
-
     <bean id="logDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
         <property name="driverClassName" value="${log.jdbc.driverClassName}"/>
         <property name="url" value="${log.jdbc.url}"/>
