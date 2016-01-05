@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Created by POSITIV on 21.12.2015.
  */
-public interface UserActionRepository extends CrudRepository<UserAction, Integer> {
+public interface UserActionRepository extends CrudRepository<UserAction, Integer>, UserActionRepositoryCustom {
 
     @Query(value = "SELECT ua FROM UserAction ua WHERE ua.connection.userName = :userName")
     List<UserAction> findByUserName(@Param("userName") String userName);
