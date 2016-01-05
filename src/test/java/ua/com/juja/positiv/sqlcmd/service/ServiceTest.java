@@ -51,10 +51,24 @@ public class ServiceTest {
     }
 
     @Test
-    public void testAllFor() throws ServiceException {
-        service.connect(login.getDatabase(), login.getUser(), login.getPassword());
-        List<UserAction> action = service.getAllFor(login.getUser());
-        assertEquals("CONNECT", action.get(0).getUserAction());
+    public void testAllFor() throws Exception {
+        manager.connect("sqlcmd_log", "postgres", "postgres");
+        manager.clearTable("user_actions");
+        DatabaseManager mockManager = mock(DatabaseManager.class);
+        when(mockManager.getUser()).thenReturn("postgres");
+
+        service.createBase(mockManager, "mockDatabase");
+        service.dropBase(mockManager, "mockDatabase");
+        when(mockManager.getUser()).thenReturn("other");
+        service.dropTable(mockManager, "mockTableName");
+        List<UserAction> userActions = service.getAllFor("postgres");
+
+        List<String> actions = new ArrayList<>();
+        for (int index = 0; index < userActions.size(); index++) {
+            actions.add(index, userActions.get(index).getUserAction());
+        }
+        assertEquals("[CREATE DATABASE ( mockDatabase ), " +
+                      "DELETE DATABASE ( mockDatabase )]", actions.toString());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -67,7 +81,7 @@ public class ServiceTest {
         manager.connect("sqlcmd_log", "postgres", "postgres");
         manager.clearTable("user_actions");
         manager.clearTable("database_connection");
-        DatabaseManager mockManager = mock(PostgreDatabaseManager.class);
+        DatabaseManager mockManager = mock(DatabaseManager.class);
         when(mockManager.getDatabase()).thenReturn("sqlcmd");
         when(mockManager.getUser()).thenReturn("postgres");
 
@@ -79,14 +93,14 @@ public class ServiceTest {
         service.dropBase(mockManager, "mockDatabase");
         service.deleteRecord(mockManager, "mockTable", "mockKeyName", "mockKeyValue");
         service.dropTable(mockManager, "mockTable");
-        service.createRecord(mockManager, "mockTable", new HashMap<String, Object>());
-        service.createTable(mockManager, "mockTable", "mockKeyName", new HashMap<String, Object>());
+        service.createRecord(mockManager, "mockTable", new HashMap<>());
+        service.createTable(mockManager, "mockTable", "mockKeyName", new HashMap<>());
         service.updateRecord(mockManager, "mockTable", "mockKeyName", "mockKeyValue",
-                                                      new HashMap<String, Object>());
+                                                      new HashMap<>());
 
         service.connect("sqlcmd_log", "postgres", "postgres");
-        List<List<String>> userActions = manager.getTableData("user_actions");
-        for (List<String> row : userActions) {
+        List<List<String>> actions = manager.getTableData("user_actions");
+        for (List<String> row : actions) {
             row.remove(0);
         }
         List<List<String>> databaseConnection = manager.getTableData("database_connection");
@@ -105,6 +119,6 @@ public class ServiceTest {
                       "[CREATE RECORD IN TABLE ( mockTable ), " + id1 + "], " +
                       "[CREATE TABLE ( mockTable ), " + id1 + "], " +
                       "[UPDATE RECORD IN TABLE ( mockTable ) KEY = mockKeyValue, " + id1 + "], " +
-                      "[CONNECT, " + id2 + "]]", userActions.toString());
+                      "[CONNECT, " + id2 + "]]", actions.toString());
     }
 }
