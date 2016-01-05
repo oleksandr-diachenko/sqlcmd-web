@@ -2,7 +2,6 @@ package ua.com.juja.positiv.sqlcmd.dao.databasemanager;
 
 import org.springframework.context.annotation.Scope;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 import org.springframework.stereotype.Component;
 
@@ -73,11 +72,8 @@ public class PostgreDatabaseManager implements DatabaseManager {
         return new LinkedHashSet<>(template.query(
             "SELECT table_name FROM information_schema.tables " +
                     "WHERE table_schema = 'public'",
-                new RowMapper<String>() {
-                    public String mapRow(ResultSet rs, int rowNum)
-                                                throws SQLException {
-                        return rs.getString("table_name");
-                    }
+                (rs, rowNum) -> {
+                    return rs.getString("table_name");
                 }));
     }
 
@@ -85,28 +81,22 @@ public class PostgreDatabaseManager implements DatabaseManager {
     public List<String> getColumnNames(String tableName) {
         return template.query(String.format("SELECT * FROM information_schema.columns " +
                 "WHERE table_schema = 'public' AND table_name = '%s'", tableName),
-                new RowMapper<String>() {
-                    public String mapRow(ResultSet resultSet, int rowNum)
-                                                    throws SQLException {
-                        return resultSet.getString("column_name");
-                    }
+                (resultSet, rowNum) -> {
+                    return resultSet.getString("column_name");
                 });
     }
 
     @Override
     public List<List<String>> getTableData(String tableName) {
         return  template.query(String.format("SELECT * FROM %s", tableName),
-            new RowMapper<List<String>>() {
-                public List<String> mapRow(ResultSet resultSet, int rowNum)
-                                                        throws SQLException {
+                (resultSet, rowNum) -> {
                     List<String> row = new ArrayList<>();
                     ResultSetMetaData rsmd = resultSet.getMetaData();
                     for (int index = 0; index < rsmd.getColumnCount(); index++) {
                         row.add(resultSet.getString(index + 1));
                     }
                     return row;
-                }
-            });
+                });
     }
 
     @Override

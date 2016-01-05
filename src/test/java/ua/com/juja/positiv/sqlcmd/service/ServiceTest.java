@@ -63,7 +63,7 @@ public class ServiceTest {
         service.dropTable(mockManager, "mockTableName");
         List<UserAction> userActions = service.getAllFor("postgres");
 
-        List<String> actions = new ArrayList<>();
+        List<String> actions = new LinkedList<>();
         for (int index = 0; index < userActions.size(); index++) {
             actions.add(index, userActions.get(index).getUserAction());
         }
