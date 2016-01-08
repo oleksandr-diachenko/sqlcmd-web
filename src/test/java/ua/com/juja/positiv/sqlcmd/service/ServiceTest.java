@@ -65,7 +65,7 @@ public class ServiceTest {
 
         List<String> actions = new LinkedList<>();
         for (int index = 0; index < userActions.size(); index++) {
-            actions.add(index, userActions.get(index).getUserAction());
+            actions.add(index, userActions.get(index).getAction());
         }
         assertEquals("[CREATE DATABASE ( mockDatabase ), " +
                       "DELETE DATABASE ( mockDatabase )]", actions.toString());

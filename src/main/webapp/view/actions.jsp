@@ -10,7 +10,7 @@
         <tr>
             <td>${action.userName}</td>
             <td>${action.dbName}</td>
-            <td>${action.userAction}</td>
+            <td>${action.action}</td>
         </tr>
     </c:forEach>
     </body>

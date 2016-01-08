@@ -23,36 +23,47 @@ public class PostgreDatabaseManager implements DatabaseManager {
     private String user;
     private String database;
 
-    @Override
-    public void connect(String database, String user, String password)
-                                            throws DatabaseException {
+    static {
         try {
             Class.forName("org.postgresql.Driver");
-            if(connection != null) {
-                connection.close();
-                template = null;
-            }
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void connect(String database, String user, String password)
+            throws DatabaseException
+    {
+        this.user = user;
+        this.database = database;
+        try {
+            closeConnection();
             connection = DriverManager.getConnection(
                     JDBC_POSTGRESQL_URL + database + "", "" + user + "",
                     "" + password + "");
             DataSource dataSource = new SingleConnectionDataSource(connection, false);
             template = new JdbcTemplate(dataSource);
-            this.user = user;
-            this.database = database;
         } catch (SQLException e) {
             throw new DatabaseException("Can't connect to database. " +
-                                                    e.getMessage(), e);
-        } catch (ClassNotFoundException e) {
-            throw new DatabaseException("Can't find driver jar. Add it to project. "
-                                                                + e.getMessage(), e);
+                    e.getMessage(), e);
+        }
+    }
+
+    private void closeConnection() throws SQLException {
+        if (connection != null) {
+            connection.close();
+            template = null;
+            connection = null;
         }
     }
 
     @Override
     public void createTable(String tableName, String keyName,
-                            Map<String, Object> columnParameters) {
+                            Map<String, Object> columnParameters)
+    {
         template.execute(String.format("CREATE TABLE IF NOT EXISTS public.%s " +
-                "(%s INT  PRIMARY KEY NOT NULL %s)",
+                        "(%s INT  PRIMARY KEY NOT NULL %s)",
                 tableName, keyName, getParameters(columnParameters)));
     }
 
@@ -60,9 +71,9 @@ public class PostgreDatabaseManager implements DatabaseManager {
         StringBuilder url = new StringBuilder(4);
         for (Map.Entry<String, Object> pair : columnParameters.entrySet()) {
             url.append(", ")
-                    .append(pair.getKey())
-                    .append(" ")
-                    .append(pair.getValue());
+                .append(pair.getKey())
+                .append(" ")
+                .append(pair.getValue());
         }
         return url.toString();
     }
@@ -70,25 +81,21 @@ public class PostgreDatabaseManager implements DatabaseManager {
     @Override
     public Set<String> getTableNames() {
         return new LinkedHashSet<>(template.query(
-            "SELECT table_name FROM information_schema.tables " +
-                    "WHERE table_schema = 'public'",
-                (rs, rowNum) -> {
-                    return rs.getString("table_name");
-                }));
+                "SELECT table_name FROM information_schema.tables " +
+                        "WHERE table_schema = 'public'",
+                (rs, rowNum) -> rs.getString("table_name")));
     }
 
     @Override
     public List<String> getColumnNames(String tableName) {
         return template.query(String.format("SELECT * FROM information_schema.columns " +
-                "WHERE table_schema = 'public' AND table_name = '%s'", tableName),
-                (resultSet, rowNum) -> {
-                    return resultSet.getString("column_name");
-                });
+                        "WHERE table_schema = 'public' AND table_name = '%s'", tableName),
+                (resultSet, rowNum) -> resultSet.getString("column_name"));
     }
 
     @Override
     public List<List<String>> getTableData(String tableName) {
-        return  template.query(String.format("SELECT * FROM %s", tableName),
+        return template.query(String.format("SELECT * FROM %s", tableName),
                 (resultSet, rowNum) -> {
                     List<String> row = new ArrayList<>();
                     ResultSetMetaData rsmd = resultSet.getMetaData();
@@ -113,19 +120,20 @@ public class PostgreDatabaseManager implements DatabaseManager {
 
     @Override
     public void updateRecord(String tableName, String keyName, String keyValue,
-                                                Map<String, Object> columnData) {
+                             Map<String, Object> columnData)
+    {
         for (Map.Entry<String, Object> pair : columnData.entrySet()) {
             template.update(String.format("UPDATE public.%s SET %s = '%s' " +
-                                            "WHERE %s = '%s'",
-                                            tableName, pair.getKey(),
-                                            pair.getValue(), keyName, keyValue));
+                            "WHERE %s = '%s'",
+                    tableName, pair.getKey(),
+                    pair.getValue(), keyName, keyValue));
         }
     }
 
     @Override
     public void deleteRecord(String tableName, String keyName, String keyValue) {
         template.update(String.format("DELETE FROM public.%s WHERE %s = '%s'",
-                                            tableName, keyName, keyValue));
+                tableName, keyName, keyValue));
     }
 
     @Override
@@ -139,7 +147,7 @@ public class PostgreDatabaseManager implements DatabaseManager {
     }
 
     @Override
-    public void createBase(String database)  {
+    public void createBase(String database) {
         template.execute(String.format("CREATE DATABASE %s", database));
     }
 
@@ -153,10 +161,11 @@ public class PostgreDatabaseManager implements DatabaseManager {
         try {
             DatabaseMetaData meta = connection.getMetaData();
             ResultSet rs = meta.getPrimaryKeys(null, null, tableName);
+            String keyName = null;
             while (rs.next()) {
-                return rs.getString("COLUMN_NAME");
+                keyName = rs.getString("COLUMN_NAME");
             }
-            throw new RuntimeException();
+            return keyName;
         } catch (Exception e) {
             throw new DatabaseException("Can't get primary key. " + e.getMessage(), e);
         }

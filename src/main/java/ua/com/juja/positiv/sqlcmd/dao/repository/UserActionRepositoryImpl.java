@@ -14,7 +14,7 @@ import javax.persistence.PersistenceContext;
 public class UserActionRepositoryImpl implements UserActionRepositoryCustom {
 
     @Autowired
-    private DatabaseConnectionRepository databaseConnection;
+    private DatabaseConnectionRepository databaseConnections;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -22,10 +22,10 @@ public class UserActionRepositoryImpl implements UserActionRepositoryCustom {
     @Override
     @Transactional
     public void saveAction(String action, String user, String database) {
-        DatabaseConnection databaseConnection = this.databaseConnection
+        DatabaseConnection databaseConnection = databaseConnections
                 .findByUserNameAndDbName(user, database);
         if(databaseConnection == null) {
-            databaseConnection = this.databaseConnection.save(
+            databaseConnection = databaseConnections.save(
                     new DatabaseConnection(user, database));
         }
         entityManager.persist(new UserAction(action, databaseConnection));

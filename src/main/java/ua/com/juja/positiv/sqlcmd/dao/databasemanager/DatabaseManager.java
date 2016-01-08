@@ -12,7 +12,7 @@ public interface DatabaseManager {
     DatabaseManager NULL = new NullDatabaseManager();
 
     void connect(String database, String user, String command)
-                                        throws DatabaseException;
+            throws DatabaseException;
 
     Set<String> getTableNames();
 
@@ -21,12 +21,12 @@ public interface DatabaseManager {
     List<List<String>> getTableData(String tableName);
 
     void createTable(String tableName, String keyName,
-                                        Map<String, Object> columnParameters);
+                     Map<String, Object> columnParameters);
 
     void createRecord(String tableName, Map<String, Object> columnData);
 
     void updateRecord(String tableName, String keyName, String keyValue,
-                                        Map<String, Object> columnData);
+                      Map<String, Object> columnData);
 
     void deleteRecord(String tableName, String keyName, String keyValue);
 

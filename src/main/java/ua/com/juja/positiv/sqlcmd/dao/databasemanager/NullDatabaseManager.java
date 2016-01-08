@@ -9,12 +9,13 @@ public class NullDatabaseManager implements DatabaseManager {
 
     @Override
     public void connect(String database, String user, String command)
-                                            throws DatabaseException {
+            throws DatabaseException
+    {
         //do nothing
     }
 
     @Override
-    public Set<String> getTableNames(){
+    public Set<String> getTableNames() {
         return new HashSet<>();
     }
 
@@ -25,7 +26,8 @@ public class NullDatabaseManager implements DatabaseManager {
 
     @Override
     public void createTable(String tableName, String keyName,
-                            Map<String, Object> columnParameters) {
+                            Map<String, Object> columnParameters)
+    {
         //do nothing
     }
 
@@ -41,7 +43,8 @@ public class NullDatabaseManager implements DatabaseManager {
 
     @Override
     public void updateRecord(String tableName, String keyName, String keyValue,
-                             Map<String, Object> columnData) {
+                             Map<String, Object> columnData)
+    {
         //do nothing
     }
 

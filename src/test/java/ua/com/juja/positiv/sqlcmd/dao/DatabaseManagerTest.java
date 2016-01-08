@@ -13,6 +13,7 @@ import ua.com.juja.positiv.sqlcmd.dao.databasemanager.PostgreDatabaseManager;
 import java.util.*;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 /**
  * Created by POSITIV on 16.09.2015.
@@ -216,9 +217,9 @@ public class DatabaseManagerTest {
         assertEquals("id", manager.getPrimaryKey("car"));
     }
 
-    @Test(expected = DatabaseException.class)
+    @Test
     public void testPrimaryKeyWithIncorrectData() throws DatabaseException {
-        manager.getPrimaryKey("qwe");
+        assertNull(manager.getPrimaryKey("qwe"));
     }
 
     @Test
