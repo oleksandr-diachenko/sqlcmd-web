@@ -7,11 +7,10 @@
 <body>
     <form action="create-record" method="post">
         <table>
-            <tr>
-                <c:forEach items="${columnNames}" var="column" varStatus="loop">
-            <tr>
-                <td>${column}</td><td><input type="text" name="${column}"/></td>
-            </tr>
+            <c:forEach items="${columnNames}" var="column" varStatus="loop">
+                <tr>
+                    <td>${column}</td><td><input type="text" name="${column}"/></td>
+                </tr>
             </c:forEach>
             <tr>
                 <td></td>

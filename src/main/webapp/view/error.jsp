@@ -5,7 +5,7 @@
     <title>sqlcmd</title>
 </head>
     <body>
-    Something going wrong...<br>
+        Something going wrong...<br>
         ${message}<br>
         <tr>
             <td><b>To menu <a href="/sqlcmd/menu">menu</a></b></td>
