@@ -5,15 +5,11 @@
 <head>
     <title>sqlcmd</title>
 </head>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/jquery.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/menu.js"></script>
 <table border="1">
     <body>
-        <c:forEach items="${items}" var="item">
-            <tr>
-                <td>
-                    <b> <a href="${item}">${item}</a></b><br>
-                </td>
-            </tr>
-        </c:forEach>
+        <div id="menu_container"></div>
     </body>
 </table>
 </html>

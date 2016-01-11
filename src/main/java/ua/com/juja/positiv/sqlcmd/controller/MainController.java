@@ -1,7 +1,6 @@
 package ua.com.juja.positiv.sqlcmd.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -25,8 +24,7 @@ public class MainController {
     private Service service;
 
     @RequestMapping(value = {"/menu", "/"}, method = RequestMethod.GET)
-    public String menu(ModelMap model) {
-        model.put("items", service.commandList());
+    public String menu() {
         return "menu";
     }
 
