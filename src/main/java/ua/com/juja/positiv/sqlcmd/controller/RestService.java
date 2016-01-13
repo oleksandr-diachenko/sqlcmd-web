@@ -32,10 +32,10 @@ public class RestService {
     }
 
 
-    @RequestMapping(value = "tables/car/content", method = RequestMethod.GET)
-    public List<List<String>> tableData(HttpSession session)
+    @RequestMapping(value = "tables/{tableName}/content", method = RequestMethod.GET)
+    public List<List<String>> tableData(HttpSession session, @PathVariable("tableName") String tableName)
     {
-        return service.getTableData(getManager(session), "car");
+        return service.getTableData(getManager(session), tableName);
     }
 
     private DatabaseManager getManager(HttpSession session) {

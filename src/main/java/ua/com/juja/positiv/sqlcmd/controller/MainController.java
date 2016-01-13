@@ -57,7 +57,7 @@ public class MainController {
         return "tables";
     }
 
-    @RequestMapping(value = "/tables/car", method = RequestMethod.GET)
+    @RequestMapping(value = "/tables/{tableName}", method = RequestMethod.GET)
     public String tableData() {
         return "table-data";
     }
