@@ -5,11 +5,9 @@
 <head>
     <title>sqlcmd</title>
 </head>
-<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/jquery.js"></script>
-<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/menu.js"></script>
-<table border="1">
     <body>
+        <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/jquery-2.2.0.js"></script>
+        <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/menu.js"></script>
         <div id="menu_container"></div>
     </body>
-</table>
 </html>

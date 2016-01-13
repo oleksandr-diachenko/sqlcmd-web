@@ -4,21 +4,9 @@
 <head>
     <title>sqlcmd</title>
 </head>
-<body>
-    <table border="1">
-        <tr>
-            <td></td>
-            <td>Tables</td>
-        </tr>
-        <c:forEach items="${list}" var="table" varStatus="loop">
-            <tr>
-                <td>${loop.count}</td>
-                <td><a href="tables/${table}">${table}</a></td>
-            </tr>
-        </c:forEach>
-    </table>
-    <tr>
-        <td><b>To menu <a href="/sqlcmd/menu">menu</a></b></td>
-    </tr>
-</body>
+    <body>
+        <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/jquery-2.2.0.js"></script>
+        <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/tables.js"></script>
+        <div id="tables_container"></div>
+    </body>
 </html>

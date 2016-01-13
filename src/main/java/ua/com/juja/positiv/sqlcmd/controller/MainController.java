@@ -53,27 +53,13 @@ public class MainController {
     }
 
     @RequestMapping(value = "/tables", method = RequestMethod.GET)
-    public String tableNames(Model model, HttpSession session) {
-        try {
-            Set<String> tableNames = service.getTableNames(getManager(session));
-            model.addAttribute("list", tableNames);
-            return "tables";
-        } catch (Exception e) {
-            return error(model, e);
-        }
+    public String tableNames() {
+        return "tables";
     }
 
-    @RequestMapping(value = "/tables/{tableName}", method = RequestMethod.GET)
-    public String tableData(Model model, HttpSession session,
-                            @PathVariable(value = "tableName") String tableName)
-    {
-        try {
-            List<List<String>> tableData = service.getTableData(getManager(session), tableName);
-            model.addAttribute("table", tableData);
-            return "table-data";
-        } catch (Exception e) {
-            return error(model, e);
-        }
+    @RequestMapping(value = "/tables/car", method = RequestMethod.GET)
+    public String tableData() {
+        return "table-data";
     }
 
     @RequestMapping(value = "tables/{tableName}/clear-table", method = RequestMethod.GET)
