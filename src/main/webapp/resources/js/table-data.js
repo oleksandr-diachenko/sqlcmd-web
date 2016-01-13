@@ -6,8 +6,8 @@ $(window).load(function(){
         for (var rowIndex in data) {
             var row = data[rowIndex];
             container.append('<tr>');
-            for (var elementItem in row) {
-                var element = row[elementItem]
+            for (var elementIndex in row) {
+                var element = row[elementIndex]
                 container.append('<td>' + element + '</td>');
             }
             container.append('<br>')
