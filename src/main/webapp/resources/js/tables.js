@@ -3,7 +3,7 @@ $(window).load(function(){
         var container = $("#tables_container");
         for (var index in data) {
             var element = data[index];
-            container.append('<a href="tables/' + element + '">' + element + '</a></br>');
+            container.append('<tr><td><a href="tables/' + element + '">' + element + '</a></br></td></tr>');
         }
     });
 });

@@ -5,11 +5,12 @@ $(window).load(function(){
         var container = $("#table_data_container");
         for (var rowIndex in data) {
             var row = data[rowIndex];
-            for (var itemIndex in row) {
-                var item = row[itemIndex]
-                container.append(item + ' ');
+            container.append('<tr>');
+            for (var elementItem in row) {
+                var element = row[elementItem]
+                container.append('<td>' + element + '</td>');
             }
-            container.append('</br>')
+            container.append('<br>')
         }
     });
 });

@@ -5,8 +5,9 @@
     <title>sqlcmd</title>
 </head>
     <body>
-        <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/jquery-2.2.0.js"></script>
-        <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/tables.js"></script>
-        <div id="tables_container"></div>
+        <table id="tables_container" border="1">
+            <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/jquery-2.2.0.js"></script>
+            <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/tables.js"></script>
+        </table>
     </body>
 </html>
