@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import ua.com.juja.positiv.sqlcmd.dao.databasemanager.DatabaseException;
 import ua.com.juja.positiv.sqlcmd.dao.databasemanager.DatabaseManager;
+import ua.com.juja.positiv.sqlcmd.dao.entity.Success;
 import ua.com.juja.positiv.sqlcmd.dao.entity.UserAction;
 import ua.com.juja.positiv.sqlcmd.dao.repository.UserActionRepository;
 
@@ -135,6 +136,11 @@ public abstract class ServiceImpl implements Service {
             throw new IllegalArgumentException("User name cant be null");
         }
         return userAction.findByUserName(userName);
+    }
+
+    @Override
+    public Success success(String action) {
+        return new Success(action);
     }
 
     public void setCommands(List<String> commands) {

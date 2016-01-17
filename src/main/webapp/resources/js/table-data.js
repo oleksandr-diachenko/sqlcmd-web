@@ -1,6 +1,6 @@
 $(window).load(function(){
     var urlParts = window.location.href.split('/');
-    var tableName = urlParts[5];
+    var tableName = urlParts[urlParts.length - 1];
     $.get(tableName + "/content", function(data) {
         var container = $("#table_data_container");
         for (var rowIndex in data) {
