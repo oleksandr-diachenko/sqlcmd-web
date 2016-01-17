@@ -10,7 +10,7 @@
         <c:forEach items="${columnNames}" var="column" varStatus="loop">
             <tr>
                 <td>
-                ${column}
+                    ${column}
                 </td>
                 <td>
                     <input type="text" name="${column}"/>
