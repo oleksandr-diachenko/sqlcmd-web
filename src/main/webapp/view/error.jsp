@@ -8,7 +8,11 @@
         Something going wrong...<br>
         ${message}<br>
         <tr>
-            <td><b>To menu <a href="/sqlcmd/menu">menu</a></b></td>
+            <td>
+                <b>
+                    To menu <a href="/sqlcmd/menu">menu</a>
+                </b>
+            </td>
         </tr>
     </body>
 </html>

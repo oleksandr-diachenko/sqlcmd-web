@@ -8,13 +8,19 @@
 <form action="delete-record" method="post">
     <table>
         <tr>
-            <td>Key value</td>
-            <td><input type="text" name="keyValue"/></td>
+            <td>
+                Key value
+            </td>
+            <td>
+                <input type="text" name="keyValue"/>
+            </td>
         </tr>
 
         <tr>
             <td></td>
-            <td><input type="submit" value="OK"/></td>
+            <td>
+                <input type="submit" value="OK"/>
+            </td>
         </tr>
     </table>
 </form>

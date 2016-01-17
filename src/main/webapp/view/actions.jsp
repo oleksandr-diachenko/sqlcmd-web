@@ -8,9 +8,15 @@
     <body>
     <c:forEach items="${actions}" var="action">
         <tr>
-            <td>${action.connection.userName}</td>
-            <td>${action.connection.dbName}</td>
-            <td>${action.action}</td>
+            <td>
+                ${action.connection.userName}
+            </td>
+            <td>
+                ${action.connection.dbName}
+            </td>
+            <td>
+                ${action.action}
+            </td>
         </tr>
     </c:forEach>
     </body>

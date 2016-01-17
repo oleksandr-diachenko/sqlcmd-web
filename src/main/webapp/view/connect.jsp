@@ -9,20 +9,34 @@
         <b>Connect to database.</b>
         <table>
             <tr>
-                <td>database</td>
-                <td><input type="text" name="database"/></td>
+                <td>
+                    database
+                </td>
+                <td>
+                    <input type="text" name="database"/>
+                </td>
             </tr>
             <tr>
-                <td>user</td>
-                <td><input type="text" name="user"/></td>
+                <td>
+                    user
+                </td>
+                <td>
+                    <input type="text" name="user"/>
+                </td>
             </tr>
             <tr>
-                <td>password</td>
-                <td><input type="password" name="password"/></td>
+                <td>
+                    password
+                </td>
+                <td>
+                    <input type="password" name="password"/>
+                </td>
             </tr>
             <tr>
                 <td></td>
-                <td><input type="submit" value="connect"/></td>
+                <td>
+                    <input type="submit" value="connect"/>
+                </td>
             </tr>
         </table>
     </form>

@@ -8,14 +8,20 @@
     <form method="post">
         <table>
             <tr>
-                <td>Database name</td>
-                <td><label>
-                    <input type="text" name="databaseName"/>
-                </label></td>
+                <td>
+                    Database name
+                </td>
+                <td>
+                    <label>
+                        <input type="text" name="databaseName"/>
+                    </label>
+                </td>
             </tr>
             <tr>
                 <td></td>
-                <td><input type="submit" value="create"/></td>
+                <td>
+                    <input type="submit" value="create"/>
+                </td>
             </tr>
         </table>
     </form>

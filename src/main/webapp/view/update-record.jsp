@@ -9,12 +9,19 @@
     <table>
         <c:forEach items="${columnNames}" var="column" varStatus="loop">
             <tr>
-                <td>${column}</td><td><input type="text" name="${column}"/></td>
+                <td>
+                ${column}
+                </td>
+                <td>
+                    <input type="text" name="${column}"/>
+                </td>
             </tr>
         </c:forEach>
         <tr>
             <td></td>
-            <td><input type="submit" value="update"/></td>
+            <td>
+                <input type="submit" value="update"/>
+            </td>
         </tr>
     </table>
 </form>
