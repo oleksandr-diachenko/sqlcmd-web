@@ -40,9 +40,10 @@ public class RestService {
     }
 
     @RequestMapping(value = "tables/{tableName}/{action}/content", method = RequestMethod.GET)
-    public Success success(@PathVariable("tableName") String tableName)
+    public Success success(@PathVariable("tableName") String tableName,
+                           @PathVariable("action") String action)
     {
-        return service.success("Table " + tableName + " successfully updated");
+        return service.success("[" + tableName + "] " + action + " success!");
     }
 
     private DatabaseManager getManager(HttpSession session) {
