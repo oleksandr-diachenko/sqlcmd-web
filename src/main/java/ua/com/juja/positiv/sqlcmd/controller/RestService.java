@@ -40,10 +40,15 @@ public class RestService {
     }
 
     @RequestMapping(value = "tables/{tableName}/{action}/content", method = RequestMethod.GET)
-    public Success success(@PathVariable("tableName") String tableName,
+    public Success successTableCRUD(@PathVariable("tableName") String tableName,
                            @PathVariable("action") String action)
     {
         return service.success("[" + tableName + "] " + action + " success!");
+    }
+
+    @RequestMapping(value = {"create-database/content", "delete-database/content"}, method = RequestMethod.GET)
+    public Success successDatabaseCRUD() {
+        return service.success("Success!");
     }
 
     private DatabaseManager getManager(HttpSession session) {
