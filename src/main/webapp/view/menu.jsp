@@ -1,14 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<html>
-<head>
-    <title>sqlcmd</title>
-</head>
-    <body>
-        <table id="menu_container" border="1">
-                <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/jquery-2.2.0.js"></script>
-                <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/menu.js"></script>
-        </table>
-    </body>
-</html>
+
+<div id="menu">
+    <div class="container">
+        <script template type="text/x-jquery-tmpl">
+            <a href="#/{{= $data}}">{{= $data}}</a></br>
+        </script>
+    </div>
+</div>

@@ -9,6 +9,7 @@ import ua.com.juja.positiv.sqlcmd.dao.databasemanager.DatabaseManager;
 import ua.com.juja.positiv.sqlcmd.dao.entity.Success;
 import ua.com.juja.positiv.sqlcmd.service.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.Set;
@@ -50,6 +51,13 @@ public class RestService {
     public Success successDatabaseCRUD() {
         return service.success("Success!");
     }
+
+    @RequestMapping(value = "/connected", method = RequestMethod.GET)
+    public boolean isConnected(HttpServletRequest request) {
+        DatabaseManager manager = getManager(request.getSession());
+        return manager != null && manager != DatabaseManager.NULL;
+    }
+
 
     private DatabaseManager getManager(HttpSession session) {
         DatabaseManager manager = (DatabaseManager) session.getAttribute("manager");

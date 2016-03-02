@@ -3,10 +3,7 @@ package ua.com.juja.positiv.sqlcmd.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import ua.com.juja.positiv.sqlcmd.dao.databasemanager.DatabaseManager;
 import ua.com.juja.positiv.sqlcmd.service.Service;
 
@@ -22,34 +19,45 @@ public class MainController {
     @Autowired
     private Service service;
 
-    @RequestMapping(value = {"/menu", "/"}, method = RequestMethod.GET)
-    public String menu() {
-        return "menu";
+    @RequestMapping(value = {"/main", "/"}, method = RequestMethod.GET)
+    public String main() {
+        return "main";
     }
 
     @RequestMapping(value = "/connect", method = RequestMethod.GET)
-    public String connect(HttpSession session) {
-        DatabaseManager manager = getManager(session);
-        if (manager == null || manager == DatabaseManager.NULL) {
-            return "connect";
+    public String connect(HttpSession session, Model model,
+                          @RequestParam(required = false, value = "fromPage") String fromPage) {
+        String page = (String) session.getAttribute("from-page");
+        session.removeAttribute("from-page");
+        Connection connection = new Connection(page);
+        if (fromPage != null) {
+            connection.setFromPage(fromPage);
         }
-        return "redirect:menu";
+        model.addAttribute("connection", connection);
+
+        if (getManager(session) == null || getManager(session) == DatabaseManager.NULL) {
+            return "connect";
+        } else {
+            return "menu";
+        }
     }
 
     @RequestMapping(value = "/connect", method = RequestMethod.POST)
-    public String connecting(Model model, HttpSession session,
-                             @RequestParam(value = "database") String database,
-                             @RequestParam(value = "user") String user,
-                             @RequestParam(value = "password") String password)
+    public String connecting(@ModelAttribute("connection") Connection connection,
+                             HttpSession session, Model model)
     {
         try {
-            DatabaseManager manager = service.connect(database, user, password);
+            DatabaseManager manager = service.connect(connection.getDbName(),
+                    connection.getUserName(), connection.getPassword());
             session.setAttribute("manager", manager);
-            return "redirect:menu";
+            return "redirect:" + connection.getFromPage();
         } catch (Exception e) {
-            return error(model, e);
+            e.printStackTrace();
+            model.addAttribute("message", e.getMessage());
+            return "error";
         }
     }
+
 
     @RequestMapping(value = "/tables", method = RequestMethod.GET)
     public String tableNames() {
