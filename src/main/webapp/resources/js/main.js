@@ -36,7 +36,7 @@ function init(ctx) {
 
     var initTableData = function(tableName) {
         isConnected("tables/" + tableName, function() {
-            show('#tables');
+            show('#tableData');
 
             $.getJSON(ctx + '/tables/' + tableName + '/content', function(elements) {
                 $('#loading').hide(300, function() {
