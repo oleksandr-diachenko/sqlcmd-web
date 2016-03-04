@@ -67,12 +67,25 @@ function init(ctx) {
         $("#loading").show();
 
         var page = data[0];
+
+        function initCreateDatabase() {
+            window.location = ctx + '/create-database';
+        }
+
+        function initDeleteDatabase() {
+            window.location = ctx + '/delete-database';
+        }
+
         if (!data[1] && page == 'tables') {
             initTables();
         } else if (page == 'tables') {
             initTableData(data[1]);
         } else if (page == 'menu') {
             initMenu();
+        } else if (page == 'create-database') {
+            initCreateDatabase();
+        } else if (page == 'delete-database') {
+            initDeleteDatabase();
         } else {
             window.location.hash = "/menu";
         }

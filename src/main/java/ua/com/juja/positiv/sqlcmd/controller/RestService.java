@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import ua.com.juja.positiv.sqlcmd.dao.databasemanager.DatabaseManager;
-import ua.com.juja.positiv.sqlcmd.dao.entity.Success;
 import ua.com.juja.positiv.sqlcmd.service.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -38,18 +37,6 @@ public class RestService {
     public List<List<String>> tableData(HttpSession session, @PathVariable("tableName") String tableName)
     {
         return service.getTableData(getManager(session), tableName);
-    }
-
-    @RequestMapping(value = "tables/{tableName}/{action}/content", method = RequestMethod.GET)
-    public Success successTableCRUD(@PathVariable("tableName") String tableName,
-                           @PathVariable("action") String action)
-    {
-        return service.success("[" + tableName + "] " + action + " success!");
-    }
-
-    @RequestMapping(value = {"create-database/content", "delete-database/content"}, method = RequestMethod.GET)
-    public Success successDatabaseCRUD() {
-        return service.success("Success!");
     }
 
     @RequestMapping(value = "/connected", method = RequestMethod.GET)

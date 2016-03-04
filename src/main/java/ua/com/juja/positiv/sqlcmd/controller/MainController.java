@@ -19,7 +19,7 @@ public class MainController {
     @Autowired
     private Service service;
 
-    @RequestMapping(value = {"/main", "/"}, method = RequestMethod.GET)
+    @RequestMapping(value = {"/main", "/", "menu"}, method = RequestMethod.GET)
     public String main() {
         return "main";
     }

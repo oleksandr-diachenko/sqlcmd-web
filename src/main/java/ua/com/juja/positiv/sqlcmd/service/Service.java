@@ -2,7 +2,6 @@ package ua.com.juja.positiv.sqlcmd.service;
 
 import org.springframework.stereotype.Component;
 import ua.com.juja.positiv.sqlcmd.dao.databasemanager.DatabaseManager;
-import ua.com.juja.positiv.sqlcmd.dao.entity.Success;
 import ua.com.juja.positiv.sqlcmd.dao.entity.UserAction;
 
 import java.util.List;
@@ -47,5 +46,4 @@ public interface Service {
 
     List<UserAction> getAllFor(String userName);
 
-    Success success(String action);
 }
