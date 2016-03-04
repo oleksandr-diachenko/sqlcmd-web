@@ -58,17 +58,6 @@ public class MainController {
         }
     }
 
-
-    @RequestMapping(value = "/tables", method = RequestMethod.GET)
-    public String tableNames() {
-        return "tables";
-    }
-
-    @RequestMapping(value = "/tables/{tableName}", method = RequestMethod.GET)
-    public String tableData() {
-        return "table-data";
-    }
-
     @RequestMapping(value = "tables/{tableName}/clear-table", method = RequestMethod.GET)
     public String clearTable(Model model, HttpSession session,
                              @PathVariable(value = "tableName") String tableName)

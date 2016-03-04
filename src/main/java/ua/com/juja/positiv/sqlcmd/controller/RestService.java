@@ -32,7 +32,6 @@ public class RestService {
         return service.getTableNames(getManager(session));
     }
 
-
     @RequestMapping(value = "tables/{tableName}/content", method = RequestMethod.GET)
     public List<List<String>> tableData(HttpSession session, @PathVariable("tableName") String tableName)
     {
